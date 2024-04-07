@@ -1,3 +1,3 @@
 # Lost-Pets
 
-Front End repository to Lost Pets app
+Front End repository for Lost Pets app
