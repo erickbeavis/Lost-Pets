@@ -7,8 +7,24 @@ export const ModalMenu = ({ visible, closeModal }) => {
   const navigation = useNavigation();
 
   const handleLogOut = () => {
-    navigation.navigate('login');
-    closeModal();
+    Alert.alert(
+        'Sair',
+        'Tem certeza que deseja sair?',
+        [
+          {
+            text: 'Cancelar',
+            style: 'destructive',
+          },
+          {
+            text: 'Sair',
+            onPress: () => {
+              navigation.navigate('login');
+              closeModal();
+            },
+          },
+        ],
+        { cancelable: false }
+    );
   };
 
   return (
