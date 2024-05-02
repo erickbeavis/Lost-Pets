@@ -12,6 +12,12 @@ export const Feed = ({ username, tweet }) => {
       <View style={styles.notFoundcontainer}>
         <Text style={styles.notFoundText}>Não há publicações no momento</Text>
       </View>
+      <TouchableOpacity style={styles.addPublicationContainer}>
+        <Image
+          source={require('../../../assets/plus-icon.png')}
+          style={styles.addPublicationIcon}
+        />
+      </TouchableOpacity>
       <BottomMenu />
     </View>
   );
