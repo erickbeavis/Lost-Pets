@@ -1,38 +1,34 @@
-import { View, Text, TouchableOpacity, Modal, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, Modal, Image, Alert } from 'react-native';
 
-import { styles } from './styles' 
+import { styles } from './styles';
 
 export const ModalMenu = ({ visible, closeModal }) => {
   const navigation = useNavigation();
 
   const handleLogOut = () => {
     Alert.alert(
-        'Sair',
-        'Tem certeza que deseja sair?',
-        [
-          {
-            text: 'Cancelar',
-            style: 'destructive',
+      'Sair',
+      'Tem certeza que deseja sair?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'destructive',
+        },
+        {
+          text: 'Sair',
+          onPress: () => {
+            navigation.navigate('login');
+            closeModal();
           },
-          {
-            text: 'Sair',
-            onPress: () => {
-              navigation.navigate('login');
-              closeModal();
-            },
-          },
-        ],
-        { cancelable: false }
+        },
+      ],
+      { cancelable: false }
     );
   };
 
   return (
-    <Modal
-      animationType="slide"
-      visible={visible}
-      onRequestClose={closeModal}
-    >
+    <Modal animationType="slide" visible={visible} onRequestClose={closeModal}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
@@ -51,7 +47,7 @@ export const ModalMenu = ({ visible, closeModal }) => {
             <TouchableOpacity style={styles.menuItem}>
               <Text style={styles.menuItemText}>Configurações</Text>
             </TouchableOpacity>
-            <View style={styles.bar}></View>
+            <View style={styles.bar} />
             <TouchableOpacity style={[styles.menuItem, styles.logoutButton]} onPress={handleLogOut}>
               <Text style={[styles.menuItemText, styles.logoutButtonText]}>Sair</Text>
             </TouchableOpacity>

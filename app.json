@@ -1,19 +1,30 @@
 {
   "expo": {
-    "name": "LostPets",
-    "slug": "lostpets",
+    "name": "lost-pets2",
+    "slug": "lost-pets2",
     "version": "1.0.0",
+
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+
+    "experiments": {
+      "tsconfigPaths": true
+    },
+
+    "plugins": [],
+
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+
     "userInterfaceStyle": "light",
+
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -22,15 +33,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "ba75c39a-a02e-464c-ab13-1b9456cb6c0b"
-      }
-    },
-    "owner": "brntava"
+    }
   }
 }
