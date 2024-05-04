@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   modalContainer: {
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     width: '100%',
-    height: '100vh'
+    height: '100vh',
   },
   modalHeader: {
     justifyContent: 'center',
@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   menuTitle: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: 'black'
+    color: 'black',
   },
   closeButton: {
     justifyContent: 'center',
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   menuItems: {
     marginBottom: 10,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   menuItem: {
     padding: 16,
@@ -45,12 +45,12 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#228c80',
     alignItems: 'center',
-    borderRadius: 5
+    borderRadius: 5,
   },
   menuItemText: {
     fontSize: 16,
-    fontWeight: 600,
-    color: '#228c80'
+    fontWeight: 'bold',
+    color: '#228c80',
   },
   bar: {
     borderWidth: 1,

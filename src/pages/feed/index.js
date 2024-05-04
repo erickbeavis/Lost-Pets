@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 
 import { styles } from './styles';
 import { BottomMenu } from '../../components/BottomMenu';
-import { FeedPublication } from '../../components/FeedPublication';
 import { TopMenu } from '../../components/TopMenu';
 
 export const Feed = () => {

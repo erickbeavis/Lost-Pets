@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native';
 
-import Routes from '~/routes/Routes';
+import Routes from './src/routes/Routes';
 
 export default function App() {
   return (

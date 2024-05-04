@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
-    fontWeight: 600
+    fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     textAlign: 'right',
-    fontWeight: 600
+    fontWeight: 'bold',
   },
   descriptionInput: {
     height: 100,

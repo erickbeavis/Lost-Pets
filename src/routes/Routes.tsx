@@ -7,16 +7,9 @@ import { Login } from '../pages/login';
 
 const Stack = createStackNavigator();
 
-export default function Routes() {
+const Routes = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="feed"
-        component={Feed}
-        options={{
-          headerShown: false,
-        }}
-      />
       <Stack.Screen
         name="login"
         component={Login}
@@ -25,23 +18,28 @@ export default function Routes() {
         }}
       />
       <Stack.Screen
-        name="createuser"
+        name="createUser"
         component={CreateUser}
         options={{
-          title: '',
-          headerTintColor: '#FFF',
-          headerTransparent: true,
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="feed"
+        component={Feed}
+        options={{
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="createLostPetPost"
         component={CreateLostPetPost}
         options={{
-          title: '',
-          headerTintColor: '#FFF',
-          headerTransparent: true,
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
   );
-}
+};
+
+export default Routes;

@@ -15,25 +15,25 @@ export const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 20,
     textTransform: 'uppercase',
-    fontWeight: 600
+    fontWeight: 'bold',
   },
   menuLogoContainer: {
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   menuLogoImage: {
     width: 50,
     height: 50,
     borderRadius: 100,
-    backgroundColor: "#FFF"
+    backgroundColor: '#FFF',
   },
   menuConfigContainer: {
     width: 50,
     height: 50,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     borderRadius: 10,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   menuBarImage: {
     width: 30,
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   modalCloseButtonContainer: {
     backgroundColor: '#FFF',
@@ -52,17 +52,17 @@ export const styles = StyleSheet.create({
   },
   modalCloseButton: {
     width: 50,
-    height: 50
+    height: 50,
   },
   modalTitle: {
     fontSize: 45,
     fontWeight: 700,
-    marginBottom: 16
+    marginBottom: 16,
   },
   modalOptionsContainer: {
     padding: 16,
     justifyContent: 'center',
-    alignItems: 'left'
+    alignItems: 'left',
   },
   modalOption: {
     backgroundColor: '#FFF',
@@ -71,6 +71,6 @@ export const styles = StyleSheet.create({
     padding: 16,
     margin: 8,
     width: 200,
-    alignItems: 'center'
-  }
-})
+    alignItems: 'center',
+  },
+});

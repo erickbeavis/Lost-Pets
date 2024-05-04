@@ -4,18 +4,17 @@ export const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     maxHeight: '100vh',
-    height: '100%'
+    height: '100%',
   },
   notFoundcontainer: {
     flex: 1,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   notFoundText: {
-    fontWeight: 600,
+    fontWeight: 'bold',
     fontSize: 24,
-    textAlign: 'center'
   },
   addPublicationContainer: {
     display: 'flex',
@@ -31,8 +30,7 @@ export const styles = StyleSheet.create({
     right: '6%',
   },
   addPublicationIcon: {
-    textAlign: 'center',
     width: 40,
-    height: 40
-  }
-})
+    height: 40,
+  },
+});
