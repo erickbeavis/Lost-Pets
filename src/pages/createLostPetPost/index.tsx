@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, RefObject } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
 
 import { styles } from './styles';
 
 import { ImagePickerScreen } from '~/components/ImagePickerScreen';
+import { SighthingType } from '~/types/sighthing';
 import { formatDate } from '~/utils/formatDate';
 
 export const CreateLostPetPost = () => {
@@ -12,7 +13,7 @@ export const CreateLostPetPost = () => {
   const [species, setSpecies] = useState('');
   const [age, setAge] = useState('');
   const [description, setDescription] = useState('');
-  const [sightings, setSightings] = useState([]);
+  const [sightings, setSightings] = useState<SighthingType>([]);
   const [sightingDate, setSightingDate] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
@@ -20,7 +21,7 @@ export const CreateLostPetPost = () => {
   const [showSightings, setShowSightings] = useState(false);
   const [addSightingVisible, setAddSightingVisible] = useState(false);
 
-  const speciesInput = useRef(null);
+  const speciesInput = useRef(null) as HTMLInputElement;
   const ageInput = useRef(null);
   const descriptionInput = useRef(null);
   const sightingDateInput = useRef(null);
@@ -30,13 +31,15 @@ export const CreateLostPetPost = () => {
 
   const navigation = useNavigation();
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    navigation.navigate('feed');
+  };
 
   const handleCancel = () => {
     navigation.goBack();
   };
 
-  const handleNextInput = (nextInput) => {
+  const handleNextInput = (nextInput: RefObject<HTMLInputElement>) => {
     nextInput.current.focus();
   };
 
@@ -58,7 +61,7 @@ export const CreateLostPetPost = () => {
     setAddSightingVisible(false);
   };
 
-  const handleSightingDate = (date) => {
+  const handleSightingDate = (date: string) => {
     setSightingDate(formatDate(date));
   };
 
@@ -72,7 +75,7 @@ export const CreateLostPetPost = () => {
         <TextInput
           style={styles.input}
           value={name}
-          onChangeText={(text) => setName(text.slice(0, 100))}
+          onChangeText={(text: string) => setName(text.slice(0, 100))}
           onSubmitEditing={() => handleNextInput(speciesInput)}
           returnKeyType="next"
         />
@@ -81,7 +84,7 @@ export const CreateLostPetPost = () => {
           ref={speciesInput}
           style={styles.input}
           value={species}
-          onChangeText={(text) => setSpecies(text.slice(0, 100))}
+          onChangeText={(text: string) => setSpecies(text.slice(0, 100))}
           onSubmitEditing={() => handleNextInput(ageInput)}
           returnKeyType="next"
         />
@@ -90,7 +93,7 @@ export const CreateLostPetPost = () => {
           ref={ageInput}
           style={styles.input}
           value={age}
-          onChangeText={(text) => setAge(text.replace(/[^0-9]/g, '').slice(0, 2))}
+          onChangeText={(text: string) => setAge(text.replace(/[^0-9]/g, '').slice(0, 2))}
           onSubmitEditing={() => handleNextInput(descriptionInput)}
           keyboardType="numeric"
           returnKeyType="next"
@@ -107,11 +110,11 @@ export const CreateLostPetPost = () => {
           returnKeyType="next"
         />
         <TouchableOpacity style={styles.addButton} onPress={() => setAddSightingVisible(true)}>
-          <Text style={styles.addButtonLabel}>Adicionar Novo Avistamento</Text>
+          <Text style={styles.addButtonLabel}>Adicionar Avistamento</Text>
         </TouchableOpacity>
         {showSightings && (
           <>
-            {sightings.map((item, index) => {
+            {sightings.map((item: SighthingType, index: number) => {
               return (
                 <View style={styles.sightingItem} key={index}>
                   <Text style={styles.sightingDate}>{item.sightingDate}</Text>
@@ -124,15 +127,12 @@ export const CreateLostPetPost = () => {
             })}
           </>
         )}
-
-        <Text style={styles.label}>Fotos</Text>
         <ImagePickerScreen />
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Enviar Publicação</Text>
         </TouchableOpacity>
-
         <Modal visible={addSightingVisible} animationType="slide">
-          <ScrollView style={styles.container}>
+          <ScrollView style={[styles.container, styles.modalContainer]}>
             <TouchableOpacity onPress={() => setAddSightingVisible(false)}>
               <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>

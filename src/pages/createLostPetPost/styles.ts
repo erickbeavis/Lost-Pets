@@ -5,6 +5,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  modalContainer: {
+    marginTop: 20,
+  },
   label: {
     fontSize: 16,
     marginBottom: 5,
@@ -71,6 +74,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 12,
     alignItems: 'center',
+    marginTop: 25,
   },
   submitButtonText: {
     color: '#FFF',

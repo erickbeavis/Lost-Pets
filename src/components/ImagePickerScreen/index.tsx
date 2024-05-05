@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
-import { Button, View, Image, Platform } from 'react-native';
+import { TouchableOpacity, View, Image, Platform, Text } from 'react-native';
 
 import { styles } from './styles';
 
@@ -11,16 +11,17 @@ export const ImagePickerScreen = () => {
 
   useEffect(() => {
     (async () => {
-      if (Platform.OS !== 'web') {
-        const libraryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (libraryStatus.status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
+      if (Platform.OS === 'web') return;
 
-        const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
-        if (cameraStatus.status !== 'granted') {
-          alert('Sorry, we need camera permissions to make this work!');
-        }
+      const libraryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+
+      if (libraryStatus.status !== 'granted') {
+        alert('Desculpe, precisamos da permissão da galeria para continuar.');
+      }
+
+      if (cameraStatus.status !== 'granted') {
+        alert('Desculpe, precisamos da permissão da camêra para continuar.');
       }
     })();
   }, []);
@@ -33,18 +34,25 @@ export const ImagePickerScreen = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setImage((img: any) => [...img, result.assets[0]]);
-    }
+    if (result.canceled) return;
+
+    setImage((img: any) => [...img, result.assets[0]]);
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Adicionar Fotos" onPress={pickImage} />
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Fotos</Text>
+        {image.length < 4 && (
+          <TouchableOpacity onPress={pickImage}>
+            <Text style={styles.addImg}>+</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       {image && (
         <View style={styles.imageContainer}>
-          {image.map((img: any) => {
-            return <Image source={{ uri: img.uri }} style={styles.image} />;
+          {image.map((img: any, index: number) => {
+            return <Image source={{ uri: img.uri }} style={styles.image} key={index} />;
           })}
         </View>
       )}

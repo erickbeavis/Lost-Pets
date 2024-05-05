@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 
-export const FeedPublication = ({ username, tweet }) => {
+export const FeedPublication = ({ username, tweet }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>

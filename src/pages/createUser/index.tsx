@@ -30,7 +30,7 @@ export const CreateUser = () => {
           autoCapitalize="none"
           placeholderTextColor="#000"
           autoCorrect={false}
-          onChangeText={(event) => setName(event)}
+          onChangeText={(event: HTMLInputElement) => setName(event)}
         />
         <TextInput
           style={styles.inputForm}
@@ -39,7 +39,7 @@ export const CreateUser = () => {
           autoCapitalize="none"
           autoCorrect={false}
           placeholderTextColor="#000"
-          onChangeText={(event) => setEmail(event)}
+          onChangeText={(event: HTMLInputElement) => setEmail(event)}
         />
         <TextInput
           style={styles.inputForm}
@@ -48,7 +48,7 @@ export const CreateUser = () => {
           autoCapitalize="none"
           placeholderTextColor="#000"
           autoCorrect={false}
-          onChangeText={(event) => setPassword(event)}
+          onChangeText={(event: HTMLInputElement) => setPassword(event)}
         />
         <TextInput
           style={styles.inputForm}
@@ -57,7 +57,7 @@ export const CreateUser = () => {
           autoCapitalize="none"
           autoCorrect={false}
           placeholderTextColor="#000"
-          onChangeText={(event) => setPasswordConfirm(event)}
+          onChangeText={(event: HTMLInputElement) => setPasswordConfirm(event)}
         />
         <TouchableOpacity style={styles.buttonForm} onPress={handleCreateUser}>
           <Text style={styles.textButton}>Cadastrar</Text>

@@ -3,7 +3,12 @@ import { View, Text, TouchableOpacity, Modal, Image, Alert } from 'react-native'
 
 import { styles } from './styles';
 
-export const ModalMenu = ({ visible, closeModal }) => {
+type ModalMenuProps = {
+  visible: boolean;
+  closeModal: () => boolean;
+};
+
+export const ModalMenu = ({ visible, closeModal }: ModalMenuProps) => {
   const navigation = useNavigation();
 
   const handleLogOut = () => {
