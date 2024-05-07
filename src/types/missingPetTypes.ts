@@ -1,29 +1,13 @@
-export interface MissingPetType {
-  sightings: [
-    {
-      sightingDate: string;
-      location: {
-        latitude: number;
-        longitude: number;
-      };
-      description: string;
-    },
-  ];
-  pet: {
-    name: string;
-    species: string;
-    age: number;
-    photos: [
-      {
-        content: string;
-      },
-    ];
-    description: string;
-  };
-}
+import { CommentsType } from './commentTypes';
+import { PetType } from './petTypes';
+import { SighthingType } from './sighthingTypes';
 
-export interface CommentsType {
-  missingPetId: string;
-  awnsersTo: string;
-  content: string;
+export interface MissingPetType {
+  id: string;
+  createdAt: string;
+  sightings: SighthingType[];
+  userId: string;
+  pet: PetType;
+  comments: CommentsType;
+  status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
 }
