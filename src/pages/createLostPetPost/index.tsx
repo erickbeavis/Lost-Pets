@@ -5,7 +5,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from 'reac
 import { styles } from './styles';
 
 import { ImagePickerScreen } from '~/components/ImagePickerScreen';
-import { SighthingType } from '~/types/sighthing';
+import { SighthingType } from '~/types/sighthingTypes';
 import { formatDate } from '~/utils/formatDate';
 
 export const CreateLostPetPost = () => {
