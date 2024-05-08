@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 
 import { styles } from './styles';
 import { BottomMenu } from '../../components/BottomMenu';
 import { TopMenu } from '../../components/TopMenu';
+
+import { FeedPost } from '~/components/FeedPost';
 
 export const Feed = () => {
   const navigation = useNavigation();
@@ -11,9 +13,11 @@ export const Feed = () => {
   return (
     <View style={styles.container}>
       <TopMenu />
-      <View style={styles.notFoundcontainer}>
+      <FeedPost />
+      {/* <View style={styles.notFoundcontainer}>
         <Text style={styles.notFoundText}>Não há publicações no momento</Text>
-      </View>
+      </View> */}
+
       <TouchableOpacity
         style={styles.addPublicationContainer}
         onPress={() => navigation.navigate('createLostPetPost')}>

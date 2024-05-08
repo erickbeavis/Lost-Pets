@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    maxHeight: '100vh',
+    maxHeight: '100%',
     height: '100%',
   },
   notFoundcontainer: {
