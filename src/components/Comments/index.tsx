@@ -14,7 +14,18 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={hideModal} style={styles.modalContainer}>
+      <Modal visible={visible} style={styles.modalContainer}>
+        <View style={styles.modalHeaderContainer}>
+          <Text variant="titleLarge" style={styles.modalTitle}>
+            Comentarios
+          </Text>
+          <Avatar.Icon
+            icon="close"
+            style={styles.modalCloseIcon}
+            size={45}
+            onTouchStart={hideModal}
+          />
+        </View>
         <View style={styles.modalCardContainer}>
           <ScrollView>
             <Card style={styles.modalCard}>

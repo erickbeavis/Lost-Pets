@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import { Avatar, Card, IconButton, Text, Chip, Portal, Modal } from 'react-native-paper';
+import { Avatar, Card, IconButton, Text, Chip } from 'react-native-paper';
 
 import { styles } from './styles';
 import { Comments } from '../Comments';
