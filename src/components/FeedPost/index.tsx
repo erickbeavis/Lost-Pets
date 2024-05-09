@@ -1,9 +1,16 @@
+import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import { Avatar, Card, IconButton, Text, Chip } from 'react-native-paper';
+import { Avatar, Card, IconButton, Text, Chip, Portal, Modal } from 'react-native-paper';
 
 import { styles } from './styles';
+import { Comments } from '../Comments';
 
 export const FeedPost = () => {
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+
   return (
     <View style={styles.cardContainer}>
       <Card>
@@ -11,8 +18,8 @@ export const FeedPost = () => {
           title="Bruno Tavares"
           subtitle="25/03/2024"
           titleVariant="titleMedium"
-          left={() => (
-            <Avatar.Image source={require('../../../assets/avatar-icon.png')} size={45} />
+          left={(props) => (
+            <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
           )}
           right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
         />
@@ -27,9 +34,10 @@ export const FeedPost = () => {
             </View>
           </ScrollView>
         </Card.Content>
-        <Chip icon="comment" style={styles.cardComment} onPress={() => console.log('Pressed')}>
+        <Chip icon="comment" style={styles.cardComment} onPress={showModal}>
           Comentarios...
         </Chip>
+        <Comments visible={visible} hideModal={hideModal} />
       </Card>
     </View>
   );
