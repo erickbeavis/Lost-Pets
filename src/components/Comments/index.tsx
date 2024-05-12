@@ -12,6 +12,39 @@ type CommentsProps = {
 export const Comments = ({ visible, hideModal }: CommentsProps) => {
   const [text, setText] = useState('');
 
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      userId: '',
+      createdAt: '',
+      awnsersTo: '',
+      answers: '',
+      content: 'Comentario 1',
+    },
+    {
+      id: 2,
+      userId: '',
+      createdAt: '',
+      awnsersTo: '',
+      answers: '',
+      content: 'Comentario 2',
+    },
+    {
+      id: 3,
+      userId: '',
+      createdAt: '',
+      awnsersTo: '',
+      answers: '',
+      content: 'Comentario 3',
+    },
+  ]);
+
+  const handleDeleteComment = (id: number) => {
+    setComments(comments.filter((comment) => comment.id !== id));
+  };
+
+  const handleEditComment = (id: number) => {};
+
   const renderInputs = () => {
     return (
       <View style={styles.modalInputContainerAndroid}>
@@ -42,126 +75,48 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
         </View>
         <View style={styles.modalCardContainer}>
           <ScrollView>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
-            <Card style={styles.modalCard}>
-              <Card.Title
-                title="Bruno Tavares"
-                subtitle="25/03/2024"
-                titleVariant="titleSmall"
-                subtitleVariant="labelSmall"
-                left={(props) => (
-                  <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
-                )}
-                right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
-              />
-              <Card.Content>
-                <Text>Comentario legal e etc</Text>
-              </Card.Content>
-            </Card>
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <Card key={comment.id} style={styles.modalCard}>
+                  <Card.Title
+                    title="Bruno Tavares"
+                    subtitle="25/03/2024"
+                    titleVariant="titleSmall"
+                    subtitleVariant="labelSmall"
+                    left={(props) => (
+                      <Avatar.Icon
+                        {...props}
+                        icon="account"
+                        style={{ backgroundColor: '#ededed' }}
+                      />
+                    )}
+                    right={(props) => (
+                      <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                        <IconButton
+                          {...props}
+                          icon="pencil"
+                          size={15}
+                          style={{ paddingLeft: 10 }}
+                          onPress={() => handleEditComment(comment.id)}
+                        />
+                        <IconButton
+                          {...props}
+                          icon="trash-can-outline"
+                          size={15}
+                          style={{ paddingRight: 10 }}
+                          onPress={() => handleDeleteComment(comment.id)}
+                        />
+                      </View>
+                    )}
+                  />
+                  <Card.Content>
+                    <Text>{comment.content}</Text>
+                  </Card.Content>
+                </Card>
+              ))
+            ) : (
+              <Text>Não ha comentarios</Text>
+            )}
           </ScrollView>
         </View>
         {Platform.OS === 'android' ? (
