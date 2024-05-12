@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text } from 'react-native-paper';
 
 import { styles } from './styles';
@@ -11,6 +11,20 @@ type CommentsProps = {
 
 export const Comments = ({ visible, hideModal }: CommentsProps) => {
   const [text, setText] = useState('');
+
+  const renderInputs = () => {
+    return (
+      <View style={styles.modalInputContainerAndroid}>
+        <TextInput
+          placeholder="Digite o comentario..."
+          maxLength={100}
+          value={text}
+          onChangeText={(text) => setText(text)}
+          style={styles.modalInput}
+        />
+      </View>
+    );
+  };
 
   return (
     <Portal>
@@ -150,14 +164,20 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
             </Card>
           </ScrollView>
         </View>
-        <View style={styles.modalInputContainer}>
-          <TextInput
-            placeholder="Digite o comentario..."
-            maxLength={100}
-            value={text}
-            onChangeText={(text) => setText(text)}
-          />
-        </View>
+        {Platform.OS === 'android' ? (
+          renderInputs()
+        ) : (
+          <KeyboardAvoidingView behavior="position">
+            <View style={styles.modalInputContainerIOS}>
+              <TextInput
+                placeholder="Digite o comentario..."
+                maxLength={100}
+                value={text}
+                onChangeText={(text) => setText(text)}
+              />
+            </View>
+          </KeyboardAvoidingView>
+        )}
       </Modal>
     </Portal>
   );

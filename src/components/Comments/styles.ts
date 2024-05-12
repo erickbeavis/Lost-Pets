@@ -16,14 +16,19 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0.2,
     borderBottomColor: '#ededed',
   },
+  modalInputContainerAndroid: {
+    marginBottom: 0,
+    paddingBottom: 20,
+    justifyContent: 'flex-end',
+    height: '10%',
+  },
+  modalInputContainerIOS: {
+    marginBottom: 50,
+  },
   modalCardContainer: {
-    height: '75%',
+    height: '78%',
     paddingBottom: 10,
     paddingTop: 10,
-  },
-  modalInputContainer: {
-    height: '15%',
-    justifyContent: 'center',
   },
   modalTitle: {
     width: '80%',
@@ -31,7 +36,12 @@ export const styles = StyleSheet.create({
   },
   modalCard: {
     marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
     backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    shadowColor: 'rgba(0,0,0, 0.0)',
   },
   modalCloseIcon: {
     backgroundColor: '#fff',

@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './styles';
 import { BottomMenu } from '../../components/BottomMenu';
@@ -11,7 +12,7 @@ export const Feed = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <TopMenu />
       <FeedPost />
       {/* <View style={styles.notFoundcontainer}>
@@ -27,6 +28,6 @@ export const Feed = () => {
         />
       </TouchableOpacity>
       <BottomMenu />
-    </View>
+    </SafeAreaView>
   );
 };
