@@ -49,4 +49,8 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#228c80',
   },
+  modalNoComments: {
+    height: '100%',
+    textAlign: 'center',
+  },
 });

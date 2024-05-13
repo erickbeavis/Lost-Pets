@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { useState } from 'react';
 import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text } from 'react-native-paper';
@@ -10,53 +11,54 @@ type CommentsProps = {
 };
 
 export const Comments = ({ visible, hideModal }: CommentsProps) => {
-  const [text, setText] = useState('');
+  const [textInput, setTextInput] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingText, setEditingText] = useState('');
+  const [comments, setComments] = useState<any[]>([]);
 
-  const [comments, setComments] = useState([
-    {
-      id: 1,
+  const formattedDate = format(new Date(), 'dd/MM/yyyy');
+
+  const handleAddComment = (createdAt: string, content: string) => {
+    if (content === '') return;
+
+    const newComment = {
+      id: comments.length + 1,
       userId: '',
-      createdAt: '',
+      createdAt,
       awnsersTo: '',
       answers: '',
-      content: 'Comentario 1',
-    },
-    {
-      id: 2,
-      userId: '',
-      createdAt: '',
-      awnsersTo: '',
-      answers: '',
-      content: 'Comentario 2',
-    },
-    {
-      id: 3,
-      userId: '',
-      createdAt: '',
-      awnsersTo: '',
-      answers: '',
-      content: 'Comentario 3',
-    },
-  ]);
+      content,
+    };
+
+    setComments([...comments, newComment]);
+    setTextInput('');
+  };
 
   const handleDeleteComment = (id: number) => {
     setComments(comments.filter((comment) => comment.id !== id));
   };
 
-  const handleEditComment = (id: number) => {};
+  const handleEditComment = (id: number) => {
+    setEditingCommentId(id);
 
-  const renderInputs = () => {
-    return (
-      <View style={styles.modalInputContainerAndroid}>
-        <TextInput
-          placeholder="Digite o comentario..."
-          maxLength={100}
-          value={text}
-          onChangeText={(text) => setText(text)}
-          style={styles.modalInput}
-        />
-      </View>
-    );
+    const commentToEdit = comments.find((comment) => comment.id === id);
+
+    if (commentToEdit) setEditingText(commentToEdit.content);
+  };
+
+  const handleSaveEditComment = () => {
+    if (!editingCommentId) return;
+
+    const updatedComments = comments.map((comment) => {
+      if (comment.id === editingCommentId) {
+        return { ...comment, content: editingText };
+      }
+
+      return comment;
+    });
+
+    setComments(updatedComments);
+    setEditingCommentId(null);
   };
 
   return (
@@ -80,7 +82,7 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
                 <Card key={comment.id} style={styles.modalCard}>
                   <Card.Title
                     title="Bruno Tavares"
-                    subtitle="25/03/2024"
+                    subtitle={formattedDate}
                     titleVariant="titleSmall"
                     subtitleVariant="labelSmall"
                     left={(props) => (
@@ -110,25 +112,46 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
                     )}
                   />
                   <Card.Content>
-                    <Text>{comment.content}</Text>
+                    {editingCommentId === comment.id ? (
+                      <TextInput
+                        value={editingText}
+                        maxLength={100}
+                        onChangeText={setEditingText}
+                        onBlur={handleSaveEditComment}
+                        autoFocus
+                      />
+                    ) : (
+                      <Text>{comment.content}</Text>
+                    )}
                   </Card.Content>
                 </Card>
               ))
             ) : (
-              <Text>Não ha comentarios</Text>
+              <Text variant="titleMedium" style={styles.modalNoComments}>
+                Não ha comentarios
+              </Text>
             )}
           </ScrollView>
         </View>
         {Platform.OS === 'android' ? (
-          renderInputs()
+          <View style={styles.modalInputContainerAndroid}>
+            <TextInput
+              placeholder="Digite o comentario..."
+              maxLength={100}
+              value={textInput}
+              onChangeText={(text) => setTextInput(text)}
+              onBlur={() => handleAddComment(formattedDate, textInput)}
+            />
+          </View>
         ) : (
           <KeyboardAvoidingView behavior="position">
             <View style={styles.modalInputContainerIOS}>
               <TextInput
                 placeholder="Digite o comentario..."
                 maxLength={100}
-                value={text}
-                onChangeText={(text) => setText(text)}
+                value={textInput}
+                onChangeText={(text) => setTextInput(text)}
+                onBlur={() => handleAddComment(formattedDate, textInput)}
               />
             </View>
           </KeyboardAvoidingView>
