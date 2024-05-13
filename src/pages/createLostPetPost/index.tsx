@@ -1,27 +1,41 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useRef, RefObject } from 'react';
+import React, { useRef, RefObject } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
 
 import { styles } from './styles';
 
 import { ImagePickerScreen } from '~/components/ImagePickerScreen';
+import { SightingMap } from '~/components/SightingMap';
+import { usePetsContext } from '~/context/petsContext';
 import { SighthingType } from '~/types/sighthingTypes';
-import { formatDate } from '~/utils/formatDate';
 
 export const CreateLostPetPost = () => {
-  const [name, setName] = useState('');
-  const [species, setSpecies] = useState('');
-  const [age, setAge] = useState('');
-  const [description, setDescription] = useState('');
-  const [sightings, setSightings] = useState<SighthingType>([]);
-  const [sightingDate, setSightingDate] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [sightingDescription, setSightingDescription] = useState('');
-  const [showSightings, setShowSightings] = useState(false);
-  const [addSightingVisible, setAddSightingVisible] = useState(false);
+  const {
+    name,
+    setName,
+    species,
+    setSpecies,
+    age,
+    setAge,
+    description,
+    setDescription,
+    sightings,
+    sightingDate,
+    setSightingDate,
+    latitude,
+    setLatitude,
+    longitude,
+    setLongitude,
+    sightingDescription,
+    setSightingDescription,
+    showSightings,
+    addSightingVisible,
+    setAddSightingVisible,
+    handleAddSighting,
+    handleSubmit,
+  } = usePetsContext();
 
-  const speciesInput = useRef(null) as HTMLInputElement;
+  const speciesInput = useRef(null);
   const ageInput = useRef(null);
   const descriptionInput = useRef(null);
   const sightingDateInput = useRef(null);
@@ -31,10 +45,6 @@ export const CreateLostPetPost = () => {
 
   const navigation = useNavigation();
 
-  const handleSubmit = async () => {
-    navigation.navigate('feed');
-  };
-
   const handleCancel = () => {
     navigation.goBack();
   };
@@ -43,26 +53,13 @@ export const CreateLostPetPost = () => {
     nextInput.current.focus();
   };
 
-  const handleAddSighting = () => {
-    const newSighting = {
-      sightingDate,
-      location: {
-        latitude,
-        longitude,
-      },
-      description: sightingDescription,
-    };
-    setSightings([...sightings, newSighting]);
-    setSightingDate('');
-    setLatitude('');
-    setLongitude('');
-    setSightingDescription('');
-    setShowSightings(true);
-    setAddSightingVisible(false);
+  const handleLocationSelect = ({ latitude, longitude }: any) => {
+    setLatitude(String(latitude));
+    setLongitude(String(longitude));
   };
 
-  const handleSightingDate = (date: string) => {
-    setSightingDate(formatDate(date));
+  const handleTextInputChange = (valueSetter: any) => (text: any) => {
+    valueSetter(text);
   };
 
   return (
@@ -141,7 +138,7 @@ export const CreateLostPetPost = () => {
               ref={sightingDateInput}
               style={styles.input}
               value={sightingDate}
-              onChangeText={handleSightingDate}
+              onChangeText={setSightingDate}
               placeholder="DD/MM/AAAA"
               keyboardType="numeric"
               returnKeyType="next"
@@ -151,7 +148,7 @@ export const CreateLostPetPost = () => {
               ref={latitudeInput}
               style={styles.input}
               value={latitude}
-              onChangeText={setLatitude}
+              onChangeText={handleTextInputChange(setLatitude)}
               keyboardType="numeric"
               returnKeyType="next"
             />
@@ -160,7 +157,7 @@ export const CreateLostPetPost = () => {
               ref={longitudeInput}
               style={styles.input}
               value={longitude}
-              onChangeText={setLongitude}
+              onChangeText={handleTextInputChange(setLongitude)}
               keyboardType="numeric"
               returnKeyType="next"
             />
@@ -174,6 +171,8 @@ export const CreateLostPetPost = () => {
               onChangeText={setSightingDescription}
               returnKeyType="done"
             />
+            <Text style={styles.label}>Avistado pela ultima vez:</Text>
+            <SightingMap onLocationSelect={handleLocationSelect} />
             <TouchableOpacity style={styles.submitButton} onPress={handleAddSighting}>
               <Text style={styles.submitButtonText}>Salvar</Text>
             </TouchableOpacity>
@@ -183,5 +182,3 @@ export const CreateLostPetPost = () => {
     </ScrollView>
   );
 };
-
-export default CreateLostPetPost;

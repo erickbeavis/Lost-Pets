@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity, Image } from 'react-native';
+import { IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './styles';
@@ -19,14 +20,13 @@ export const Feed = () => {
         <Text style={styles.notFoundText}>Não há publicações no momento</Text>
       </View> */}
 
-      <TouchableOpacity
-        style={styles.addPublicationContainer}
-        onPress={() => navigation.navigate('createLostPetPost')}>
-        <Image
-          source={require('../../../assets/plus-icon.png')}
-          style={styles.addPublicationIcon}
-        />
-      </TouchableOpacity>
+      <IconButton
+        icon="plus"
+        iconColor="#fff"
+        size={40}
+        style={styles.addPublicationButton}
+        onPress={() => navigation.navigate('createLostPetPost')}
+      />
       <BottomMenu />
     </SafeAreaView>
   );

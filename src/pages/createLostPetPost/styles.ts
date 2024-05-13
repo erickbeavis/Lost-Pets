@@ -6,11 +6,12 @@ export const styles = StyleSheet.create({
     padding: 20,
   },
   modalContainer: {
-    marginTop: 20,
+    paddingTop: 20,
   },
   label: {
     fontSize: 16,
     marginBottom: 5,
+    marginTop: 12,
     fontWeight: 'bold',
   },
   input: {
@@ -18,11 +19,11 @@ export const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 15,
   },
   cancelText: {
     color: '#f00',
     fontSize: 16,
+    marginTop: 20,
     marginBottom: 10,
     textAlign: 'right',
     fontWeight: 'bold',
@@ -36,6 +37,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
     marginBottom: 20,
+    marginTop: 20,
   },
   addButtonLabel: {
     color: '#FFF',

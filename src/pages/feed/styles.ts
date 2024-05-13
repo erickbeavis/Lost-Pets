@@ -16,21 +16,14 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
   },
-  addPublicationContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  addPublicationButton: {
     position: 'absolute',
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 50,
     backgroundColor: '#228c80',
     zIndex: 999,
     top: '76%',
     right: '6%',
-  },
-  addPublicationIcon: {
-    width: 40,
-    height: 40,
   },
 });
