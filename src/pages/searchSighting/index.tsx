@@ -9,7 +9,7 @@ import { usePetsContext } from '~/context/petsContext';
 const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 
 export const SearchSighting = () => {
-  const { region, setRegion } = usePetsContext();
+  const { sightingRegion, setSightingRegion } = usePetsContext();
 
   return (
     <View>
@@ -20,7 +20,7 @@ export const SearchSighting = () => {
 
           const { lat, lng } = details.geometry.location;
 
-          setRegion({ ...region, latitude: lat, longitude: lng });
+          setSightingRegion({ ...sightingRegion, latitude: lat, longitude: lng });
         }}
         fetchDetails
         query={{
@@ -56,7 +56,7 @@ export const SearchSighting = () => {
           },
           listView: {
             flex: 1,
-            maxHeight: 200, // Defina a altura máxima desejada
+            maxHeight: 200,
             width: '100%',
             maxWidth: '98%',
             borderWidth: 1,

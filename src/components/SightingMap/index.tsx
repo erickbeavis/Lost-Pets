@@ -5,22 +5,22 @@ import MapView, { Marker } from 'react-native-maps';
 import { usePetsContext } from '~/context/petsContext';
 
 export const SightingMap = () => {
-  const { region, setRegion } = usePetsContext();
+  const { sightingRegion, setSightingRegion } = usePetsContext();
 
   const handleMapPress = (event: any) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
 
-    setRegion({ ...region, latitude, longitude });
+    setSightingRegion({ ...sightingRegion, latitude, longitude });
   };
 
   return (
-    <View>
+    <View style={{ height: 100 }}>
       <MapView
-        region={region}
+        region={sightingRegion}
         showsUserLocation
         style={{ height: '100%' }}
         onPress={handleMapPress}>
-        <Marker coordinate={region} />
+        <Marker coordinate={sightingRegion} />
       </MapView>
     </View>
   );

@@ -28,8 +28,8 @@ type MyContextType = {
   setAddSightingVisible: (addSightingVisible: boolean) => void;
   handleAddSighting: () => void;
   handleSubmit: () => void;
-  region: RegionType;
-  setRegion: (region: RegionType) => void;
+  sightingRegion: RegionType;
+  setSightingRegion: (sightingRegion: RegionType) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -48,7 +48,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [showSightings, setShowSightings] = useState(false);
   const [addSightingVisible, setAddSightingVisible] = useState(false);
 
-  const [region, setRegion] = useState<RegionType>({
+  const [sightingRegion, setSightingRegion] = useState<RegionType>({
     latitude: 0,
     longitude: 0,
     latitudeDelta: 0.0022,
@@ -144,8 +144,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setAddSightingVisible,
         handleAddSighting,
         handleSubmit,
-        region,
-        setRegion,
+        sightingRegion,
+        setSightingRegion,
       }}>
       {children}
     </PetsContext.Provider>
