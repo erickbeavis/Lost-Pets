@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     padding: 20,
+    paddingTop: 0,
+    backgroundColor: '#fff',
   },
   modalContainer: {
     paddingTop: 20,
@@ -18,14 +20,6 @@ export const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
-  },
-  cancelText: {
-    color: '#f00',
-    fontSize: 16,
-    marginTop: 20,
-    marginBottom: 10,
-    textAlign: 'right',
-    fontWeight: 'bold',
   },
   descriptionInput: {
     height: 100,

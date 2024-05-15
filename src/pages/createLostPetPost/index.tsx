@@ -6,8 +6,6 @@ import { ScrollView } from 'react-native-virtualized-view';
 import { styles } from './styles';
 
 import { ImagePickerScreen } from '~/components/ImagePickerScreen';
-import { SightingMap } from '~/components/SightingMap';
-import { SightingModal } from '~/components/SightingModal';
 import { usePetsContext } from '~/context/petsContext';
 import { SighthingType } from '~/types/sighthingTypes';
 
@@ -23,7 +21,6 @@ export const CreateLostPetPost = () => {
     setDescription,
     sightings,
     showSightings,
-    setAddSightingVisible,
     handleSubmit,
   } = usePetsContext();
 
@@ -34,10 +31,6 @@ export const CreateLostPetPost = () => {
 
   const navigation = useNavigation();
 
-  const handleCancel = () => {
-    navigation.goBack();
-  };
-
   const handleNextInput = (nextInput: RefObject<HTMLInputElement>) => {
     nextInput.current.focus();
   };
@@ -45,9 +38,6 @@ export const CreateLostPetPost = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <TouchableOpacity onPress={handleCancel}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </TouchableOpacity>
         <Text style={styles.label}>Nome</Text>
         <TextInput
           style={styles.input}
@@ -86,7 +76,9 @@ export const CreateLostPetPost = () => {
           onSubmitEditing={() => handleNextInput(sightingDateInput)}
           returnKeyType="next"
         />
-        <TouchableOpacity style={styles.addButton} onPress={() => setAddSightingVisible(true)}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('sightingModal')}>
           <Text style={styles.addButtonLabel}>Adicionar Avistamento</Text>
         </TouchableOpacity>
         {showSightings && (
@@ -108,9 +100,7 @@ export const CreateLostPetPost = () => {
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Enviar Publicação</Text>
         </TouchableOpacity>
-        <SightingModal />
       </View>
-      <SightingMap />
     </ScrollView>
   );
 };

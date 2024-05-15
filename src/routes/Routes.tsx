@@ -5,6 +5,9 @@ import { CreateUser } from '../pages/createUser';
 import { Feed } from '../pages/feed/index';
 import { Login } from '../pages/login';
 
+import { SearchSighting } from '~/pages/searchSighting';
+import { SightingModal } from '~/pages/sightingModal';
+
 const Stack = createStackNavigator();
 
 const Routes = () => {
@@ -21,7 +24,7 @@ const Routes = () => {
         name="createUser"
         component={CreateUser}
         options={{
-          headerShown: false,
+          headerShown: true,
         }}
       />
       <Stack.Screen
@@ -35,7 +38,24 @@ const Routes = () => {
         name="createLostPetPost"
         component={CreateLostPetPost}
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerTitle: 'Voltar',
+        }}
+      />
+      <Stack.Screen
+        name="sightingModal"
+        component={SightingModal}
+        options={{
+          headerShown: true,
+          headerTitle: 'Voltar',
+        }}
+      />
+      <Stack.Screen
+        name="searchSighting"
+        component={SearchSighting}
+        options={{
+          headerShown: true,
+          headerTitle: 'Voltar',
         }}
       />
     </Stack.Navigator>
