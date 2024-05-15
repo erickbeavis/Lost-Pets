@@ -51,8 +51,9 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [sightingRegion, setSightingRegion] = useState<RegionType>({
     latitude: 0,
     longitude: 0,
-    latitudeDelta: 0.0022,
-    longitudeDelta: 0.0022,
+    latitudeDelta: 0.0032,
+    longitudeDelta: 0.0032,
+    address: '',
   });
 
   const navigation = useNavigation();

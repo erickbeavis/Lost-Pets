@@ -52,11 +52,18 @@ export const SightingModal = () => {
             right={(props) => <IconButton {...props} icon="arrow-right-bold" />}
           />
         </TouchableOpacity>
+        <Card.Content style={styles.cardContentContainer}>
+          <Text variant="titleMedium" style={styles.cardContentAddres}>
+            {sightingRegion.address}
+          </Text>
+          {sightingRegion.latitude !== 0 && sightingRegion.longitude !== 0 && (
+            <SightingMap isModal />
+          )}
+        </Card.Content>
+        <TouchableOpacity style={styles.submitButton} onPress={handleAddSighting}>
+          <Text style={styles.submitButtonText}>Salvar</Text>
+        </TouchableOpacity>
       </Card>
-      {sightingRegion.latitude !== 0 && sightingRegion.longitude !== 0 && <SightingMap />}
-      <TouchableOpacity style={styles.submitButton} onPress={handleAddSighting}>
-        <Text style={styles.submitButtonText}>Salvar</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };

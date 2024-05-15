@@ -7,4 +7,5 @@ export interface RegionType {
   longitude: number;
   latitudeDelta: number;
   longitudeDelta: number;
+  address?: string;
 }

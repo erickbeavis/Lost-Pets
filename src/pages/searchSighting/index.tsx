@@ -1,5 +1,7 @@
+import { useNavigation } from '@react-navigation/native';
 import { View } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { IconButton } from 'react-native-paper';
 
 import { styles } from './styles';
 
@@ -11,6 +13,8 @@ const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 export const SearchSighting = () => {
   const { sightingRegion, setSightingRegion } = usePetsContext();
 
+  const navigation = useNavigation();
+
   return (
     <View>
       <GooglePlacesAutocomplete
@@ -20,7 +24,12 @@ export const SearchSighting = () => {
 
           const { lat, lng } = details.geometry.location;
 
-          setSightingRegion({ ...sightingRegion, latitude: lat, longitude: lng });
+          setSightingRegion({
+            ...sightingRegion,
+            latitude: lat,
+            longitude: lng,
+            address: details.formatted_address,
+          });
         }}
         fetchDetails
         query={{
@@ -42,6 +51,11 @@ export const SearchSighting = () => {
             marginLeft: 3,
             borderWidth: 1,
             borderRadius: 5,
+            borderColor: '#ccc',
+            elevation: 20,
+            shadowColor: '#52006A',
+            shadowOffset: { width: -2, height: 4 },
+            shadowOpacity: 0.5,
           },
           textInput: {
             marginLeft: 0,
@@ -71,7 +85,16 @@ export const SearchSighting = () => {
           },
         }}
       />
-      <SightingMap />
+      <View style={styles.confirmButtonContainer}>
+        <IconButton
+          icon="plus"
+          iconColor="#fff"
+          size={50}
+          onPress={() => navigation.navigate('sightingModal')}
+          style={styles.confirmButton}
+        />
+      </View>
+      <SightingMap isModal={false} />
     </View>
   );
 };

@@ -1,20 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 import { usePetsContext } from '~/context/petsContext';
 
-export const SightingMap = () => {
+type SightingMapProps = {
+  isModal: boolean;
+};
+
+export const SightingMap = ({ isModal }: SightingMapProps) => {
   const { sightingRegion, setSightingRegion } = usePetsContext();
 
   const handleMapPress = (event: any) => {
+    if (isModal) return;
+
     const { latitude, longitude } = event.nativeEvent.coordinate;
 
     setSightingRegion({ ...sightingRegion, latitude, longitude });
   };
 
   return (
-    <View style={{ height: 100 }}>
+    <View style={isModal ? { height: 200 } : null}>
       <MapView
         region={sightingRegion}
         showsUserLocation
