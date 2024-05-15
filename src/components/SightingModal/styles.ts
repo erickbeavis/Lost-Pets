@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
+    flexGrow: 10,
     padding: 20,
   },
   modalContainer: {
@@ -14,10 +15,8 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
-    padding: 10,
+    backgroundColor: '#ededed',
   },
   cancelText: {
     color: '#f00',

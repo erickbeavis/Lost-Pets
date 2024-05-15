@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity, Image } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

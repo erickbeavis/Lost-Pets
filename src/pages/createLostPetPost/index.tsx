@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, RefObject } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-virtualized-view';
 
 import { styles } from './styles';
 
 import { ImagePickerScreen } from '~/components/ImagePickerScreen';
 import { SightingMap } from '~/components/SightingMap';
+import { SightingModal } from '~/components/SightingModal';
 import { usePetsContext } from '~/context/petsContext';
 import { SighthingType } from '~/types/sighthingTypes';
 
@@ -20,18 +22,8 @@ export const CreateLostPetPost = () => {
     description,
     setDescription,
     sightings,
-    sightingDate,
-    setSightingDate,
-    latitude,
-    setLatitude,
-    longitude,
-    setLongitude,
-    sightingDescription,
-    setSightingDescription,
     showSightings,
-    addSightingVisible,
     setAddSightingVisible,
-    handleAddSighting,
     handleSubmit,
   } = usePetsContext();
 
@@ -39,9 +31,6 @@ export const CreateLostPetPost = () => {
   const ageInput = useRef(null);
   const descriptionInput = useRef(null);
   const sightingDateInput = useRef(null);
-  const latitudeInput = useRef(null);
-  const longitudeInput = useRef(null);
-  const sightingDescriptionInput = useRef(null);
 
   const navigation = useNavigation();
 
@@ -51,15 +40,6 @@ export const CreateLostPetPost = () => {
 
   const handleNextInput = (nextInput: RefObject<HTMLInputElement>) => {
     nextInput.current.focus();
-  };
-
-  const handleLocationSelect = ({ latitude, longitude }: any) => {
-    setLatitude(String(latitude));
-    setLongitude(String(longitude));
-  };
-
-  const handleTextInputChange = (valueSetter: any) => (text: any) => {
-    valueSetter(text);
   };
 
   return (
@@ -128,57 +108,9 @@ export const CreateLostPetPost = () => {
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Enviar Publicação</Text>
         </TouchableOpacity>
-        <Modal visible={addSightingVisible} animationType="slide">
-          <ScrollView style={[styles.container, styles.modalContainer]}>
-            <TouchableOpacity onPress={() => setAddSightingVisible(false)}>
-              <Text style={styles.cancelText}>Cancelar</Text>
-            </TouchableOpacity>
-            <Text style={styles.label}>Data do Avistamento</Text>
-            <TextInput
-              ref={sightingDateInput}
-              style={styles.input}
-              value={sightingDate}
-              onChangeText={setSightingDate}
-              placeholder="DD/MM/AAAA"
-              keyboardType="numeric"
-              returnKeyType="next"
-            />
-            <Text style={styles.label}>Latitude</Text>
-            <TextInput
-              ref={latitudeInput}
-              style={styles.input}
-              value={latitude}
-              onChangeText={handleTextInputChange(setLatitude)}
-              keyboardType="numeric"
-              returnKeyType="next"
-            />
-            <Text style={styles.label}>Longitude</Text>
-            <TextInput
-              ref={longitudeInput}
-              style={styles.input}
-              value={longitude}
-              onChangeText={handleTextInputChange(setLongitude)}
-              keyboardType="numeric"
-              returnKeyType="next"
-            />
-            <Text style={styles.label}>Descrição do Avistamento</Text>
-            <TextInput
-              ref={sightingDescriptionInput}
-              style={[styles.input, styles.descriptionInput]}
-              multiline
-              numberOfLines={4}
-              value={sightingDescription}
-              onChangeText={setSightingDescription}
-              returnKeyType="done"
-            />
-            <Text style={styles.label}>Avistado pela ultima vez:</Text>
-            <SightingMap onLocationSelect={handleLocationSelect} />
-            <TouchableOpacity style={styles.submitButton} onPress={handleAddSighting}>
-              <Text style={styles.submitButtonText}>Salvar</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </Modal>
+        <SightingModal />
       </View>
+      <SightingMap />
     </ScrollView>
   );
 };
