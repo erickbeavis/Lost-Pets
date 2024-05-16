@@ -2,17 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState } from 'react';
 
 import { LocationType } from '~/types/locationTypes';
+import { ImageType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
 
 type MyContextType = {
-  name: string;
-  setName: (name: string) => void;
-  species: string;
-  setSpecies: (species: string) => void;
-  age: string;
-  setAge: (age: string) => void;
-  description: string;
-  setDescription: (description: string) => void;
+  petName: string;
+  setPetName: (petName: string) => void;
+  petSpecies: string;
+  setPetSpecies: (petSpecies: string) => void;
+  petAge: string;
+  setPetAge: (petAge: string) => void;
+  petDescription: string;
+  setPetDescription: (petDescription: string) => void;
   sightings: any[];
   setSightings: (sightings: any) => void;
   sightingDate: string;
@@ -24,25 +25,29 @@ type MyContextType = {
   addSightingVisible: boolean;
   setAddSightingVisible: (addSightingVisible: boolean) => void;
   handleAddSighting: () => void;
-  handleSubmit: () => void;
+  handleSubmitMissingPet: () => void;
   sightingLocation: LocationType;
   setSightingLocation: (sightingLocation: LocationType) => void;
   missingPetPost: any[];
   setMissingPetPost: (missingPetPost: any[]) => void;
+  petPhoto: any[];
+  setPetPhoto: (petPhoto: any) => void;
+  missingPetContact: string;
+  setMissingPetContact: (missingPetContact: string) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
 
 export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [name, setName] = useState('');
-  const [species, setSpecies] = useState('');
-  const [age, setAge] = useState('');
-  const [description, setDescription] = useState('');
+  const [petName, setPetName] = useState('');
+  const [petSpecies, setPetSpecies] = useState('');
+  const [petAge, setPetAge] = useState('');
+  const [petDescription, setPetDescription] = useState('');
+
   const [sightingDate, setSightingDate] = useState('');
   const [sightingDescription, setSightingDescription] = useState('');
   const [showSightings, setShowSightings] = useState(false);
   const [addSightingVisible, setAddSightingVisible] = useState(false);
-
   const [sightingLocation, setSightingLocation] = useState<LocationType>({
     latitude: 0,
     longitude: 0,
@@ -50,12 +55,13 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     longitudeDelta: 0.0032,
     address: '',
   });
-
-  const { latitude, longitude, address } = sightingLocation;
-
+  const [petPhoto, setPetPhoto] = useState<any>([]);
   const [sightings, setSightings] = useState<SighthingType[]>([]);
+  const [missingPetContact, setMissingPetContact] = useState('');
 
   const [missingPetPost, setMissingPetPost] = useState<any[]>([]);
+
+  const { latitude, longitude, address } = sightingLocation;
 
   const navigation = useNavigation();
 
@@ -86,15 +92,15 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     navigation.goBack();
   };
 
-  const handleSubmit = () => {
-    if (!name || !species || !age || !description || sightings.length === 0) {
-      alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
-      return;
-    }
+  const handleSubmitMissingPet = () => {
+    // if (!petName || !petSpecies || !petAge || !petDescription || sightings.length === 0) {
+    //   alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
+    //   return;
+    // }
 
     const postData = {
       id: '',
-      createdAt: new Date().toDateString(),
+      createdAt: new Date().toLocaleDateString('pt-br'),
       sightings: sightings.map((sighting, index) => ({
         id: index.toString(),
         sightingDate: sighting.sightingDate,
@@ -105,14 +111,32 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         userId: '',
         description: sighting.description,
       })),
-      userId: '',
+      user: {
+        id: '',
+        createdAt: '2024-05-16T13:35:43.174Z',
+        updatedAt: '2024-05-16T13:35:43.174Z',
+        email: 'user@example.com',
+        contacts: [
+          {
+            id: '',
+            createdAt: '2024-05-16T13:35:43.174Z',
+            updatedAt: '2024-05-16T13:35:43.174Z',
+            content: missingPetContact,
+            type: 0,
+          },
+        ],
+      },
       pet: {
         id: '',
-        name,
-        species,
-        age: Number(age),
-        photos: [],
-        description,
+        name: petName,
+        species: petSpecies,
+        age: Number(petAge),
+        photos: petPhoto.map((photo: ImageType, index: number) => ({
+          id: index.toString(),
+          location: photo.uri,
+          content: '',
+        })),
+        description: petDescription,
       },
       comments: [],
       status: 0,
@@ -121,24 +145,24 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setMissingPetPost([postData]);
     navigation.navigate('feed');
 
-    setName('');
-    setSpecies('');
-    setAge('');
-    setDescription('');
+    setPetName('');
+    setPetSpecies('');
+    setPetAge('');
+    setPetDescription('');
     setSightings([]);
   };
 
   return (
     <PetsContext.Provider
       value={{
-        name,
-        setName,
-        species,
-        setSpecies,
-        age,
-        setAge,
-        description,
-        setDescription,
+        petName,
+        setPetName,
+        petSpecies,
+        setPetSpecies,
+        petAge,
+        setPetAge,
+        petDescription,
+        setPetDescription,
         sightings,
         setSightings,
         sightingDate,
@@ -150,11 +174,15 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         addSightingVisible,
         setAddSightingVisible,
         handleAddSighting,
-        handleSubmit,
+        handleSubmitMissingPet,
         sightingLocation,
         setSightingLocation,
         missingPetPost,
         setMissingPetPost,
+        petPhoto,
+        setPetPhoto,
+        missingPetContact,
+        setMissingPetContact,
       }}>
       {children}
     </PetsContext.Provider>

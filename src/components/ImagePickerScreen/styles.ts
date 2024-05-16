@@ -28,9 +28,10 @@ export const styles = StyleSheet.create({
     marginRight: 8,
   },
   image: {
-    width: 150,
+    width: '43%',
     height: 150,
     marginTop: 20,
     marginRight: 20,
+    borderRadius: 10,
   },
 });

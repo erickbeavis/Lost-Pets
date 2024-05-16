@@ -96,7 +96,7 @@ export const SearchSighting = () => {
           style={styles.confirmButton}
         />
       </View>
-      <SightingMap isModal={false} />
+      <SightingMap isModal={false} location={sightingLocation} />
     </View>
   );
 };

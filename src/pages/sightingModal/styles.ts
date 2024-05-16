@@ -8,9 +8,9 @@ export const styles = StyleSheet.create({
   },
   sightingPlaceContainer: {
     borderWidth: 1,
+    borderColor: '#000',
     borderRadius: 5,
     marginTop: 20,
-    marginBottom: 20,
     paddingLeft: 12,
     paddingRight: 12,
     flexDirection: 'row',
@@ -30,12 +30,15 @@ export const styles = StyleSheet.create({
   input: {
     borderRadius: 5,
     backgroundColor: '#fff',
+    borderWidth: 1,
+    padding: 10,
+    fontSize: 16,
   },
   descriptionInput: {
     height: 100,
   },
   sightingAddres: {
-    marginBottom: 20,
+    marginTop: 20,
   },
   submitButton: {
     backgroundColor: '#228c80',
@@ -43,11 +46,11 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
     width: '100%',
-    marginTop: 20,
     marginBottom: 50,
   },
   submitButtonText: {
     color: '#FFF',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });

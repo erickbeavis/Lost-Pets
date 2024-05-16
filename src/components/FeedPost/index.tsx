@@ -6,6 +6,7 @@ import { styles } from './styles';
 import { Comments } from '../Comments';
 
 import { usePetsContext } from '~/context/petsContext';
+import { PhotoType } from '~/types/photoTypes';
 
 export const FeedPost = () => {
   const { missingPetPost } = usePetsContext();
@@ -17,6 +18,7 @@ export const FeedPost = () => {
   return (
     <View style={styles.cardContainer}>
       {missingPetPost.map((post, index) => {
+        console.log('TCL  post:', post);
         return (
           <Card key={index}>
             <Card.Title
@@ -32,25 +34,24 @@ export const FeedPost = () => {
               <Text variant="bodyLarge">{post.pet.description}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.cardImgContinainer}>
-                  <Card.Cover
-                    source={{ uri: 'https://picsum.photos/700' }}
-                    style={styles.cardImg}
-                  />
-                  <Card.Cover
-                    source={{ uri: 'https://picsum.photos/700' }}
-                    style={styles.cardImg}
-                  />
-                  <Card.Cover
-                    source={{ uri: 'https://picsum.photos/700' }}
-                    style={styles.cardImg}
-                  />
-                  <Card.Cover
-                    source={{ uri: 'https://picsum.photos/700' }}
-                    style={styles.cardImg}
-                  />
+                  {post.pet.photos.map((photo: PhotoType, index: number) => {
+                    return (
+                      <Card.Cover
+                        key={index}
+                        source={{ uri: photo.location }}
+                        style={styles.cardImg}
+                      />
+                    );
+                  })}
                 </View>
               </ScrollView>
             </Card.Content>
+            <Chip icon="cellphone" style={styles.cardComment} onPress={showModal}>
+              Contato
+            </Chip>
+            <Chip icon="map-marker" style={styles.cardComment} onPress={showModal}>
+              Avistamentos
+            </Chip>
             <Chip icon="comment" style={styles.cardComment} onPress={showModal}>
               Comentarios...
             </Chip>

@@ -12,14 +12,14 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
-    marginTop: 12,
+    marginTop: 20,
     fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
+    fontSize: 16,
   },
   descriptionInput: {
     height: 100,
@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
   addButtonLabel: {
     color: '#FFF',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   sightingCard: {
     backgroundColor: '#fff',
@@ -63,5 +64,20 @@ export const styles = StyleSheet.create({
   submitButtonText: {
     color: '#FFF',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  showSightingButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#228c80',
+    alignItems: 'center',
+    borderRadius: 5,
+    paddingVertical: 12,
+    marginBottom: 20,
+  },
+  showSightingButtonLabel: {
+    color: '#228c80',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

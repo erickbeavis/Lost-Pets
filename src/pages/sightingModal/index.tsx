@@ -1,8 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
-import { format } from 'date-fns';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, TextInput, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { IconButton, Text, TextInput } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 
 import { styles } from './styles';
 
@@ -59,7 +58,9 @@ export const SightingModal = () => {
         {sightingLocation.address}
       </Text>
       {sightingLocation.latitude !== 0 && sightingLocation.longitude !== 0 && (
-        <SightingMap isModal />
+        <View style={{ marginBottom: 20, marginTop: 20 }}>
+          <SightingMap isModal location={sightingLocation} />
+        </View>
       )}
       <TouchableOpacity style={styles.submitButton} onPress={handleAddSighting}>
         <Text style={styles.submitButtonText}>Salvar</Text>
