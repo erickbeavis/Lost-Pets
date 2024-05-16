@@ -11,7 +11,7 @@ import { usePetsContext } from '~/context/petsContext';
 const googleMapsKey = process.env.GOOGLE_MAPS_API_KEY;
 
 export const SearchSighting = () => {
-  const { sightingRegion, setSightingRegion } = usePetsContext();
+  const { sightingLocation, setSightingLocation } = usePetsContext();
 
   const navigation = useNavigation();
 
@@ -24,8 +24,8 @@ export const SearchSighting = () => {
 
           const { lat, lng } = details.geometry.location;
 
-          setSightingRegion({
-            ...sightingRegion,
+          setSightingLocation({
+            ...sightingLocation,
             latitude: lat,
             longitude: lng,
             address: details.formatted_address,
@@ -73,6 +73,7 @@ export const SearchSighting = () => {
             maxHeight: 200,
             width: '100%',
             maxWidth: '98%',
+            borderColor: '#ccc',
             borderWidth: 1,
             marginRight: 3,
             marginLeft: 3,
@@ -81,6 +82,7 @@ export const SearchSighting = () => {
           row: {
             width: '100%',
             borderTopWidth: 1,
+            borderColor: '#ccc',
             flexDirection: 'row',
           },
         }}

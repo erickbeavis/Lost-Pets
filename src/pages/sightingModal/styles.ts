@@ -6,17 +6,16 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: '100%',
   },
-  cardContainer: {
-    backgroundColor: '#fff',
-    marginTop: 20,
-    marginBottom: 30,
-    width: '100%',
-    height: '10%',
+  sightingPlaceContainer: {
     borderWidth: 1,
     borderRadius: 5,
-  },
-  cardContentContainer: {
     marginTop: 20,
+    marginBottom: 20,
+    paddingLeft: 12,
+    paddingRight: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   label: {
     fontSize: 16,
@@ -24,9 +23,9 @@ export const styles = StyleSheet.create({
     marginTop: 12,
     fontWeight: 'bold',
   },
-  cardLabel: {
-    height: '100%',
-    paddingBottom: 8,
+  sightingPlaceLabel: {
+    marginTop: 0,
+    marginBottom: 0,
   },
   input: {
     borderRadius: 5,
@@ -35,18 +34,20 @@ export const styles = StyleSheet.create({
   descriptionInput: {
     height: 100,
   },
+  sightingAddres: {
+    marginBottom: 20,
+  },
   submitButton: {
-    marginTop: 20,
     backgroundColor: '#228c80',
     borderRadius: 5,
     paddingVertical: 12,
     alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
+    marginBottom: 50,
   },
   submitButtonText: {
     color: '#FFF',
     fontSize: 16,
-  },
-  cardContentAddres: {
-    marginBottom: 20,
   },
 });

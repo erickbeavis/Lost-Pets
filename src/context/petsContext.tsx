@@ -1,7 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState } from 'react';
 
-import { RegionType } from '~/types/locationTypes';
+import { LocationType } from '~/types/locationTypes';
+import { SighthingType } from '~/types/sighthingTypes';
 
 type MyContextType = {
   name: string;
@@ -16,10 +17,6 @@ type MyContextType = {
   setSightings: (sightings: any) => void;
   sightingDate: string;
   setSightingDate: (sightingDate: string) => void;
-  latitude: string;
-  setLatitude: (latitude: string) => void;
-  longitude: string;
-  setLongitude: (logintude: string) => void;
   sightingDescription: string;
   setSightingDescription: (sightingDescription: string) => void;
   showSightings: boolean;
@@ -28,8 +25,10 @@ type MyContextType = {
   setAddSightingVisible: (addSightingVisible: boolean) => void;
   handleAddSighting: () => void;
   handleSubmit: () => void;
-  sightingRegion: RegionType;
-  setSightingRegion: (sightingRegion: RegionType) => void;
+  sightingLocation: LocationType;
+  setSightingLocation: (sightingLocation: LocationType) => void;
+  missingPetPost: any[];
+  setMissingPetPost: (missingPetPost: any[]) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -39,16 +38,12 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [species, setSpecies] = useState('');
   const [age, setAge] = useState('');
   const [description, setDescription] = useState('');
-  const [sightings, setSightings] = useState<any[]>([]);
-
   const [sightingDate, setSightingDate] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
   const [sightingDescription, setSightingDescription] = useState('');
   const [showSightings, setShowSightings] = useState(false);
   const [addSightingVisible, setAddSightingVisible] = useState(false);
 
-  const [sightingRegion, setSightingRegion] = useState<RegionType>({
+  const [sightingLocation, setSightingLocation] = useState<LocationType>({
     latitude: 0,
     longitude: 0,
     latitudeDelta: 0.0032,
@@ -56,30 +51,39 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     address: '',
   });
 
+  const { latitude, longitude, address } = sightingLocation;
+
+  const [sightings, setSightings] = useState<SighthingType[]>([]);
+
+  const [missingPetPost, setMissingPetPost] = useState<any[]>([]);
+
   const navigation = useNavigation();
 
   const handleAddSighting = () => {
-    if (!sightingDate || !latitude || !longitude || !sightingDescription) {
+    if (!sightingDate || !sightingLocation || !sightingDescription) {
       alert('É necessário preencher todos os campos informados');
       return;
     }
 
     const newSighting = {
+      id: '',
+      userId: '',
       sightingDate,
       location: {
         latitude,
         longitude,
+        address,
       },
       description: sightingDescription,
     };
 
     setSightings([...sightings, newSighting]);
     setSightingDate('');
-    setLatitude('');
-    setLongitude('');
     setSightingDescription('');
     setShowSightings(true);
     setAddSightingVisible(false);
+
+    navigation.goBack();
   };
 
   const handleSubmit = () => {
@@ -88,15 +92,15 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return;
     }
 
-    const publicationData = {
+    const postData = {
       id: '',
       createdAt: new Date().toISOString(),
       sightings: sightings.map((sighting, index) => ({
         id: index.toString(),
         sightingDate: sighting.sightingDate,
         location: {
-          latitude: parseFloat(sighting.location.latitude),
-          longitude: parseFloat(sighting.location.longitude),
+          latitude: sighting.location.latitude,
+          longitude: sighting.location.longitude,
         },
         userId: '',
         description: sighting.description,
@@ -114,8 +118,14 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       status: 0,
     };
 
-    console.log('Publicação enviada:', publicationData);
+    setMissingPetPost([postData]);
     navigation.navigate('feed');
+
+    setName('');
+    setSpecies('');
+    setAge('');
+    setDescription('');
+    setSightings([]);
   };
 
   return (
@@ -133,10 +143,6 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setSightings,
         sightingDate,
         setSightingDate,
-        latitude,
-        setLatitude,
-        longitude,
-        setLongitude,
         sightingDescription,
         setSightingDescription,
         showSightings,
@@ -145,8 +151,10 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setAddSightingVisible,
         handleAddSighting,
         handleSubmit,
-        sightingRegion,
-        setSightingRegion,
+        sightingLocation,
+        setSightingLocation,
+        missingPetPost,
+        setMissingPetPost,
       }}>
       {children}
     </PetsContext.Provider>

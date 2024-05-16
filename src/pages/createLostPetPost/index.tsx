@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef, RefObject } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useRef, RefObject, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity } from 'react-native';
+import { Card, IconButton, Text } from 'react-native-paper';
 import { ScrollView } from 'react-native-virtualized-view';
 
 import { styles } from './styles';
 
 import { ImagePickerScreen } from '~/components/ImagePickerScreen';
+import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
 import { SighthingType } from '~/types/sighthingTypes';
 
@@ -20,6 +22,7 @@ export const CreateLostPetPost = () => {
     description,
     setDescription,
     sightings,
+    setSightings,
     showSightings,
     handleSubmit,
   } = usePetsContext();
@@ -33,6 +36,14 @@ export const CreateLostPetPost = () => {
 
   const handleNextInput = (nextInput: RefObject<HTMLInputElement>) => {
     nextInput.current.focus();
+  };
+
+  const handleRemoveSighting = (index: number) => {
+    setSightings((prevSightings: any) => {
+      const newSightings = [...prevSightings];
+      newSightings.splice(index, 1);
+      return newSightings;
+    });
   };
 
   return (
@@ -85,18 +96,35 @@ export const CreateLostPetPost = () => {
           <>
             {sightings.map((item: SighthingType, index: number) => {
               return (
-                <View style={styles.sightingItem} key={index}>
-                  <Text style={styles.sightingDate}>{item.sightingDate}</Text>
-                  <Text style={styles.sightingLocation}>
-                    {item.location.latitude}, {item.location.longitude}
-                  </Text>
-                  <Text style={styles.sightingDescription}>{item.description}</Text>
-                </View>
+                <Card style={styles.sightingCard} key={index}>
+                  <Card.Title
+                    title={item.sightingDate}
+                    titleVariant="titleMedium"
+                    right={(props) => (
+                      <IconButton
+                        {...props}
+                        icon="trash-can-outline"
+                        onPress={() => handleRemoveSighting(index)}
+                        style={{ paddingRight: 10 }}
+                        size={20}
+                      />
+                    )}
+                  />
+                  <Card.Content>
+                    <Text style={styles.sightingDescription} variant="bodyMedium">
+                      {item.description}
+                    </Text>
+                    <Text variant="bodyMedium">{item.location.address}</Text>
+                    <View style={styles.sightingLocation}>
+                      <SightingMap isModal />
+                    </View>
+                  </Card.Content>
+                </Card>
               );
             })}
           </>
         )}
-        <ImagePickerScreen />
+        {/* <ImagePickerScreen /> */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Enviar Publicação</Text>
         </TouchableOpacity>

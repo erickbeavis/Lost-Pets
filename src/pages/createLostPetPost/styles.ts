@@ -36,33 +36,22 @@ export const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
   },
-  sightingItem: {
-    borderWidth: 1,
+  sightingCard: {
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
     borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  sightingDate: {
-    fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 16,
   },
   sightingLocation: {
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  sightingAddress: {
+    marginBottom: 10,
+    fontSize: 14,
   },
   sightingDescription: {
-    marginBottom: 5,
-  },
-  sightingButton: {
-    backgroundColor: '#228c80',
-    borderRadius: 5,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  sightingButtonText: {
-    color: '#FFF',
-    fontSize: 16,
+    marginBottom: 12,
   },
   submitButton: {
     backgroundColor: '#228c80',

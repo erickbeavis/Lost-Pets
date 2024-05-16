@@ -4,7 +4,6 @@ export const formatDate = (date: string) => {
     .slice(0, 8)
     .replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3')
     .replace(/\/\//g, '/');
-  console.log('TCL  formattedDate:', formattedDate);
 
   return formattedDate;
 };

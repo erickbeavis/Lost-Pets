@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { View, Text } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -7,17 +8,22 @@ import { BottomMenu } from '../../components/BottomMenu';
 import { TopMenu } from '../../components/TopMenu';
 
 import { FeedPost } from '~/components/FeedPost';
+import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
+  const { missingPetPost } = usePetsContext();
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
       <TopMenu />
-      <FeedPost />
-      {/* <View style={styles.notFoundcontainer}>
-        <Text style={styles.notFoundText}>Não há publicações no momento</Text>
-      </View> */}
+      {missingPetPost.length > 0 ? (
+        <FeedPost />
+      ) : (
+        <View style={styles.notFoundcontainer}>
+          <Text style={styles.notFoundText}>Não há publicações no momento</Text>
+        </View>
+      )}
 
       <IconButton
         icon="plus"
