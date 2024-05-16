@@ -6,9 +6,10 @@ import { usePetsContext } from '~/context/petsContext';
 
 type SightingMapProps = {
   isModal: boolean;
+  location?: any;
 };
 
-export const SightingMap = ({ isModal }: SightingMapProps) => {
+export const SightingMap = ({ isModal, location }: SightingMapProps) => {
   const { sightingLocation, setSightingLocation } = usePetsContext();
 
   const handleMapPress = (event: any) => {
@@ -23,10 +24,10 @@ export const SightingMap = ({ isModal }: SightingMapProps) => {
     <View style={isModal ? { height: 200 } : null}>
       <MapView
         scrollEnabled={!isModal}
-        region={sightingLocation}
+        region={isModal ? location : sightingLocation}
         style={{ height: '100%' }}
         onPress={handleMapPress}>
-        <Marker coordinate={sightingLocation} />
+        <Marker coordinate={isModal ? location : sightingLocation} />
       </MapView>
     </View>
   );

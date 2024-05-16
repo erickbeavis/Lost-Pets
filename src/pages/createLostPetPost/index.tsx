@@ -116,7 +116,7 @@ export const CreateLostPetPost = () => {
                     </Text>
                     <Text variant="bodyMedium">{item.location.address}</Text>
                     <View style={styles.sightingLocation}>
-                      <SightingMap isModal />
+                      <SightingMap isModal location={item.location} />
                     </View>
                   </Card.Content>
                 </Card>

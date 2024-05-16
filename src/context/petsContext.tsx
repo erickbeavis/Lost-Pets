@@ -94,7 +94,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const postData = {
       id: '',
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toDateString(),
       sightings: sightings.map((sighting, index) => ({
         id: index.toString(),
         sightingDate: sighting.sightingDate,
