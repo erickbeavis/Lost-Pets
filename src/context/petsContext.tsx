@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState } from 'react';
 
 import { LocationType } from '~/types/locationTypes';
@@ -152,13 +152,20 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     setMissingPetPost([postData]);
-    navigation.navigate('feed');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'feed' }],
+      })
+    );
 
     setPetName('');
     setPetSpecies('');
     setPetAge('');
     setPetDescription('');
     setSightings([]);
+    setPetPhoto([]);
+    setMissingPetContact('');
   };
 
   return (

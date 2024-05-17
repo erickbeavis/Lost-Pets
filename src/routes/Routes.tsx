@@ -2,9 +2,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { CreateLostPetPost } from '../pages/createLostPetPost/index';
 import { CreateUser } from '../pages/createUser';
-import { Feed } from '../pages/feed/index';
 import { Login } from '../pages/login';
 
+import { BottomMenu } from '~/components/BottomMenu';
 import { SearchSighting } from '~/pages/searchSighting';
 import { SightingModal } from '~/pages/sightingModal';
 
@@ -29,19 +29,12 @@ const Routes = () => {
       />
       <Stack.Screen
         name="feed"
-        component={Feed}
+        component={BottomMenu}
         options={{
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="createLostPetPost"
-        component={CreateLostPetPost}
-        options={{
-          headerShown: true,
-          headerTitle: 'Voltar',
-        }}
-      />
+      <Stack.Screen name="createLostPetPost" component={CreateLostPetPost} />
       <Stack.Screen
         name="sightingModal"
         component={SightingModal}

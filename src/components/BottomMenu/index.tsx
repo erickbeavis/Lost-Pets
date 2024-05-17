@@ -1,16 +1,35 @@
-import { View, TouchableOpacity, Image } from 'react-native';
+import { useState } from 'react';
+import { BottomNavigation } from 'react-native-paper';
 
-import { styles } from './styles';
+import { CreateLostPetPost } from '~/pages/createLostPetPost';
+import { Feed } from '~/pages/feed';
+
+const HomeRoute = () => <Feed />;
+const AddPostRoute = () => <CreateLostPetPost />;
+const SearchRoute = () => <CreateLostPetPost />;
 
 export const BottomMenu = () => {
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'home', focusedIcon: 'home' },
+    { key: 'addPost', focusedIcon: 'plus' },
+    { key: 'search', focusedIcon: 'magnify' },
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    home: HomeRoute,
+    addPost: AddPostRoute,
+    search: SearchRoute,
+  });
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.menuItem}>
-        <Image style={styles.menuItemImage} source={require('../../../assets/home-icon.png')} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem}>
-        <Image style={styles.menuItemImage} source={require('../../../assets/search-icon.png')} />
-      </TouchableOpacity>
-    </View>
+    <BottomNavigation
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+      barStyle={{ backgroundColor: '#228c80', height: 50 }}
+      activeIndicatorStyle={{ backgroundColor: '#fff' }}
+      inactiveColor="#fff"
+    />
   );
 };
