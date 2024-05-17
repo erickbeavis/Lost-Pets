@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '10%',
+    height: '9%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -22,14 +22,14 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   menuLogoImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 100,
     backgroundColor: '#FFF',
   },
   menuConfigContainer: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     backgroundColor: '#FFF',
     borderRadius: 10,
     display: 'flex',
@@ -37,8 +37,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   menuBarImage: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
   },
   modalContainer: {
     backgroundColor: '#FFF',

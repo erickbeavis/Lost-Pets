@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BottomNavigation } from 'react-native-paper';
 
+import { usePetsContext } from '~/context/petsContext';
 import { CreateLostPetPost } from '~/pages/createLostPetPost';
 import { Feed } from '~/pages/feed';
 
@@ -9,6 +10,7 @@ const AddPostRoute = () => <CreateLostPetPost />;
 const SearchRoute = () => <CreateLostPetPost />;
 
 export const BottomMenu = () => {
+  const { missingPetPost } = usePetsContext();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'home', focusedIcon: 'home' },
@@ -21,6 +23,12 @@ export const BottomMenu = () => {
     addPost: AddPostRoute,
     search: SearchRoute,
   });
+
+  useEffect(() => {
+    if (missingPetPost.length === 0) return;
+
+    setIndex(0);
+  }, [missingPetPost]);
 
   return (
     <BottomNavigation

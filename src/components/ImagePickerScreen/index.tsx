@@ -1,10 +1,12 @@
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { TouchableOpacity, View, Image, Platform, Text } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 import { styles } from './styles';
 
 import { usePetsContext } from '~/context/petsContext';
+import { ImageType } from '~/types/photoTypes';
 
 export const ImagePickerScreen = () => {
   const { petPhoto, setPetPhoto } = usePetsContext();
@@ -31,6 +33,10 @@ export const ImagePickerScreen = () => {
     setPetPhoto((img: any) => [...img, result.assets[0]]);
   };
 
+  const removeImage = (indexToRemove: number) => {
+    setPetPhoto((images: ImageType[]) => images.filter((_, index) => index !== indexToRemove));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -42,11 +48,15 @@ export const ImagePickerScreen = () => {
         )}
       </View>
       {petPhoto && (
-        <View style={styles.imageContainer}>
+        <>
           {petPhoto.map((img: any, index: number) => {
-            return <Image source={{ uri: img.uri }} style={styles.image} key={index} />;
+            return (
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: img.uri }} style={styles.image} key={index} />
+              </View>
+            );
           })}
-        </View>
+        </>
       )}
     </View>
   );

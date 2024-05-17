@@ -151,13 +151,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       status: 0,
     };
 
-    setMissingPetPost([postData]);
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'feed' }],
-      })
-    );
+    setMissingPetPost((prevPost) => [...prevPost, postData]);
 
     setPetName('');
     setPetSpecies('');
