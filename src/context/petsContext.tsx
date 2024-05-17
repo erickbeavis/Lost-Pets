@@ -34,6 +34,7 @@ type MyContextType = {
   setPetPhoto: (petPhoto: any) => void;
   missingPetContact: string;
   setMissingPetContact: (missingPetContact: string) => void;
+  handleRemoveSighting: (index: number) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -90,6 +91,14 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setAddSightingVisible(false);
 
     navigation.goBack();
+  };
+
+  const handleRemoveSighting = (index: number) => {
+    setSightings((prevSightings: any) => {
+      const newSightings = [...prevSightings];
+      newSightings.splice(index, 1);
+      return newSightings;
+    });
   };
 
   const handleSubmitMissingPet = () => {
@@ -183,6 +192,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setPetPhoto,
         missingPetContact,
         setMissingPetContact,
+        handleRemoveSighting,
       }}>
       {children}
     </PetsContext.Provider>

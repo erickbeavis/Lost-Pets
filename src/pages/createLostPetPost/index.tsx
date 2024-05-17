@@ -21,12 +21,12 @@ export const CreateLostPetPost = () => {
     petDescription,
     setPetDescription,
     sightings,
-    setSightings,
     showSightings,
     setShowSightings,
     handleSubmitMissingPet,
     missingPetContact,
     setMissingPetContact,
+    handleRemoveSighting,
   } = usePetsContext();
 
   const speciesInput = useRef(null);
@@ -39,14 +39,6 @@ export const CreateLostPetPost = () => {
 
   const handleNextInput = (nextInput: RefObject<HTMLInputElement>) => {
     nextInput.current.focus();
-  };
-
-  const handleRemoveSighting = (index: number) => {
-    setSightings((prevSightings: any) => {
-      const newSightings = [...prevSightings];
-      newSightings.splice(index, 1);
-      return newSightings;
-    });
   };
 
   return (

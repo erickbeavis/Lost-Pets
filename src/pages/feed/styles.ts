@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'column',
     maxHeight: '100%',
     height: '100%',
+    marginBottom: 20,
   },
   notFoundcontainer: {
     flex: 1,
@@ -25,5 +26,13 @@ export const styles = StyleSheet.create({
     zIndex: 999,
     top: '76%',
     right: '6%',
+    elevation: 20,
+    shadowColor: '#ccc',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.5,
+  },
+  feedPostContainer: {
+    paddingLeft: 12,
+    paddingRight: 12,
   },
 });

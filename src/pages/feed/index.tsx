@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { View, Text } from 'react-native';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,13 +19,16 @@ export const Feed = () => {
     <SafeAreaView style={styles.container}>
       <TopMenu />
       {missingPetPost.length > 0 ? (
-        <FeedPost />
+        <FlatList
+          data={missingPetPost}
+          renderItem={() => <FeedPost />}
+          style={styles.feedPostContainer}
+        />
       ) : (
         <View style={styles.notFoundcontainer}>
           <Text style={styles.notFoundText}>Não há publicações no momento</Text>
         </View>
       )}
-
       <IconButton
         icon="plus"
         iconColor="#fff"
