@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#228c80',
     paddingLeft: 15,
     paddingRight: 15,
-    marginBottom: 12,
   },
   menuTitle: {
     color: '#FFF',

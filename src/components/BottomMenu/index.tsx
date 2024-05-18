@@ -4,10 +4,11 @@ import { BottomNavigation } from 'react-native-paper';
 import { usePetsContext } from '~/context/petsContext';
 import { CreateLostPetPost } from '~/pages/createLostPetPost';
 import { Feed } from '~/pages/feed';
+import { SearchSighting } from '~/pages/searchSighting';
 
 const HomeRoute = () => <Feed />;
 const AddPostRoute = () => <CreateLostPetPost />;
-const SearchRoute = () => <CreateLostPetPost />;
+const SearchMapRoute = () => <SearchSighting />;
 
 export const BottomMenu = () => {
   const { missingPetPost } = usePetsContext();
@@ -15,13 +16,13 @@ export const BottomMenu = () => {
   const [routes] = useState([
     { key: 'home', focusedIcon: 'home' },
     { key: 'addPost', focusedIcon: 'plus' },
-    { key: 'search', focusedIcon: 'magnify' },
+    { key: 'search', focusedIcon: 'map-marker' },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     addPost: AddPostRoute,
-    search: SearchRoute,
+    search: SearchMapRoute,
   });
 
   useEffect(() => {
