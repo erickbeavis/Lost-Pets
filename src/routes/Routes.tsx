@@ -1,4 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
+import Constants from 'expo-constants';
+import { StatusBar } from 'expo-status-bar';
 
 import { CreateLostPetPost } from '../pages/createLostPetPost/index';
 import { CreateUser } from '../pages/createUser';

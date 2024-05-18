@@ -11,8 +11,7 @@ const AddPostRoute = () => <CreateLostPetPost />;
 const SearchMapRoute = () => <SearchSighting />;
 
 export const BottomMenu = () => {
-  const { missingPetPost } = usePetsContext();
-  const [index, setIndex] = useState(0);
+  const { missingPetPost, tabIndex, setTabIndex } = usePetsContext();
   const [routes] = useState([
     { key: 'home', focusedIcon: 'home' },
     { key: 'addPost', focusedIcon: 'plus' },
@@ -28,13 +27,13 @@ export const BottomMenu = () => {
   useEffect(() => {
     if (missingPetPost.length === 0) return;
 
-    setIndex(0);
+    setTabIndex(0);
   }, [missingPetPost]);
 
   return (
     <BottomNavigation
-      navigationState={{ index, routes }}
-      onIndexChange={setIndex}
+      navigationState={{ index: tabIndex, routes }}
+      onIndexChange={setTabIndex}
       renderScene={renderScene}
       barStyle={{ backgroundColor: '#228c80', height: 50 }}
       activeIndicatorStyle={{ backgroundColor: '#fff' }}

@@ -1,9 +1,15 @@
-import { CommonActions, useNavigation } from '@react-navigation/native';
-import React, { createContext, useContext, ReactNode, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
 import { LocationType } from '~/types/locationTypes';
 import { ImageType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
+
+type FeedLocationType = {
+  address: string;
+  lat: number;
+  lng: number;
+};
 
 type MyContextType = {
   petName: string;
@@ -35,6 +41,12 @@ type MyContextType = {
   missingPetContact: string;
   setMissingPetContact: (missingPetContact: string) => void;
   handleRemoveSighting: (index: number) => void;
+  tabIndex: number;
+  setTabIndex: (tabIndex: number) => void;
+  isFeedLocation: boolean;
+  setIsFeedLocation: (isFeedLocation: boolean) => void;
+  feedLocation: FeedLocationType;
+  setFeedLocation: (feedLocation: FeedLocationType) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -44,6 +56,13 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [petSpecies, setPetSpecies] = useState('');
   const [petAge, setPetAge] = useState('');
   const [petDescription, setPetDescription] = useState('');
+  const [tabIndex, setTabIndex] = useState(0);
+  const [isFeedLocation, setIsFeedLocation] = useState(false);
+  const [feedLocation, setFeedLocation] = useState<FeedLocationType>({
+    address: '',
+    lat: 0,
+    lng: 0,
+  });
 
   const [sightingDate, setSightingDate] = useState('');
   const [sightingDescription, setSightingDescription] = useState('');
@@ -65,6 +84,12 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const { latitude, longitude, address } = sightingLocation;
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (tabIndex !== 2) setIsFeedLocation(false);
+
+    if (tabIndex === 2) setIsFeedLocation(true);
+  }, [tabIndex]);
 
   const handleAddSighting = () => {
     if (!sightingDate || !sightingLocation || !sightingDescription) {
@@ -116,6 +141,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         location: {
           latitude: sighting.location.latitude,
           longitude: sighting.location.longitude,
+          address: sighting.location.address,
         },
         userId: '',
         description: sighting.description,
@@ -194,6 +220,12 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         missingPetContact,
         setMissingPetContact,
         handleRemoveSighting,
+        tabIndex,
+        setTabIndex,
+        isFeedLocation,
+        setIsFeedLocation,
+        feedLocation,
+        setFeedLocation,
       }}>
       {children}
     </PetsContext.Provider>

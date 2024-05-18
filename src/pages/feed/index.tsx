@@ -10,13 +10,15 @@ import { FeedPost } from '~/components/FeedPost';
 import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
-  const { missingPetPost } = usePetsContext();
+  const { missingPetPost, setTabIndex, feedLocation } = usePetsContext();
+  console.log('TCL  Feed  missingPetPost:', missingPetPost);
 
+  console.log('TCL  Feed  feedLocation.address:', feedLocation.address);
   return (
     <SafeAreaView style={styles.container}>
       <TopMenu />
-      <Chip icon="map-marker" style={styles.feedMapLocation}>
-        Localização...
+      <Chip icon="map-marker" style={styles.feedMapLocation} onPress={() => setTabIndex(2)}>
+        {feedLocation.address !== '' ? feedLocation.address : 'Filtrar por localização...'}
       </Chip>
       {missingPetPost.length > 0 ? (
         <FlatList
