@@ -7,6 +7,7 @@ import { Login } from '../pages/login';
 
 import { SearchSighting } from '~/pages/searchSighting';
 import { SightingModal } from '~/pages/sightingModal';
+import MyProfile from '~/pages/myProfile';
 
 const Stack = createStackNavigator();
 
@@ -60,9 +61,9 @@ const Routes = () => {
         />
         <Stack.Screen
         name="MyProfile"
-        component={SearchSighting}
+        component={MyProfile}
         options={{
-          headerShown: true,
+          headerShown: false,
           headerTitle: 'Voltar',
         }}
       />
