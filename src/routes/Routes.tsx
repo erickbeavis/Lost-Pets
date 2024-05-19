@@ -57,6 +57,14 @@ const Routes = () => {
           headerShown: true,
           headerTitle: 'Voltar',
         }}
+        />
+        <Stack.Screen
+        name="MyProfile"
+        component={SearchSighting}
+        options={{
+          headerShown: true,
+          headerTitle: 'Voltar',
+        }}
       />
     </Stack.Navigator>
   );
