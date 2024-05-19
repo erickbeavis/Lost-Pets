@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef, RefObject } from 'react';
+import React, { useRef, RefObject, useState } from 'react';
 import { View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { Card, IconButton, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import { ImagePickerScreen } from '~/components/ImagePickerScreen';
 import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
 import { SighthingType } from '~/types/sighthingTypes';
+import { formatDate } from '~/utils/formatDate';
 
 export const CreateLostPetPost = () => {
   const {
@@ -22,12 +23,14 @@ export const CreateLostPetPost = () => {
     petDescription,
     setPetDescription,
     sightings,
+    setSightings,
     showSightings,
     setShowSightings,
     handleSubmitMissingPet,
     missingPetContact,
     setMissingPetContact,
     handleRemoveSighting,
+    setSightingDate,
   } = usePetsContext();
 
   const speciesInput = useRef(null);
@@ -36,10 +39,54 @@ export const CreateLostPetPost = () => {
   const sightingDateInput = useRef(null);
   const contactInput = useRef(null);
 
+  const [editingIndex, setEditingIndex] = useState<any>(null);
+  const [tempData, setTempData] = useState({
+    description: '',
+    sightingDate: '',
+    address: '',
+  });
+
   const navigation = useNavigation();
 
   const handleNextInput = (nextInput: RefObject<HTMLInputElement>) => {
     nextInput.current.focus();
+  };
+
+  const handleEditToggle = (index: number | null, item: any) => {
+    setEditingIndex(index);
+    setTempData({
+      description: item.description,
+      sightingDate: item.sightingDate,
+      address: item.location.address,
+    });
+  };
+
+  const handleInputChange = (field: any, value: string) => {
+    console.log('TCL  handleInputChange  field:', field);
+    setTempData({
+      ...tempData,
+      [field]: field === 'sightingDate' ? formatDate(value) : value,
+    });
+  };
+
+  const handleSave = (index: number, item: any) => {
+    const updatedSighting = {
+      ...item,
+      description: tempData.description,
+      sightingDate: tempData.sightingDate,
+      location: {
+        ...item.location,
+        address: tempData.address,
+      },
+    };
+
+    setSightings((prevSightings: SighthingType[]) => {
+      const newSightings = [...prevSightings];
+      newSightings[index] = updatedSighting;
+      return newSightings;
+    });
+
+    setEditingIndex(null);
   };
 
   return (
@@ -55,7 +102,7 @@ export const CreateLostPetPost = () => {
             returnKeyType="next"
             placeholder="Nome..."
           />
-          <Text style={styles.label}>Espécie</Text>
+          <Text style={styles.label}>Espécie/Raça</Text>
           <TextInput
             ref={speciesInput}
             style={styles.input}
@@ -121,23 +168,60 @@ export const CreateLostPetPost = () => {
                 return (
                   <Card style={styles.sightingCard} key={index}>
                     <Card.Title
-                      title={item.sightingDate}
+                      title={editingIndex === index ? <></> : item.sightingDate}
                       titleVariant="titleMedium"
                       right={(props) => (
-                        <IconButton
-                          {...props}
-                          icon="trash-can-outline"
-                          onPress={() => handleRemoveSighting(index)}
-                          style={{ paddingRight: 10 }}
-                          size={20}
-                        />
+                        <View style={{ flexDirection: 'row' }}>
+                          {editingIndex === index ? (
+                            <IconButton
+                              {...props}
+                              icon="check"
+                              onPress={() => handleSave(index, item)}
+                              style={{ paddingLeft: 10 }}
+                              size={20}
+                            />
+                          ) : (
+                            <IconButton
+                              {...props}
+                              icon="pencil"
+                              onPress={() => handleEditToggle(index, item)}
+                              style={{ paddingLeft: 10 }}
+                              size={20}
+                            />
+                          )}
+                          <IconButton
+                            {...props}
+                            icon="trash-can-outline"
+                            onPress={() => handleRemoveSighting(index)}
+                            style={{ paddingRight: 10 }}
+                            size={20}
+                          />
+                        </View>
                       )}
                     />
                     <Card.Content>
-                      <Text style={styles.sightingDescription} variant="bodyMedium">
-                        {item.description}
-                      </Text>
-                      <Text variant="bodyMedium">{item.location.address}</Text>
+                      {editingIndex === index ? (
+                        <TextInput
+                          value={tempData.sightingDate}
+                          onChangeText={(text) => handleInputChange('sightingDate', text)}
+                          style={[styles.input, { marginBottom: 10 }]}
+                          placeholder="DD/MM/AAAA"
+                          keyboardType="numeric"
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {editingIndex === index ? (
+                        <TextInput
+                          value={tempData.description}
+                          onChangeText={(text) => handleInputChange('description', text)}
+                          style={[styles.input, styles.sightingDescription]}
+                        />
+                      ) : (
+                        <Text style={styles.sightingDescription} variant="bodyMedium">
+                          {item.description}
+                        </Text>
+                      )}
                       <View style={styles.sightingLocation}>
                         <SightingMap isModal location={item.location} />
                       </View>

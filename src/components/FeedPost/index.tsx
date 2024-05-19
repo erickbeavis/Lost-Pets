@@ -13,13 +13,11 @@ import { PhotoType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
 
 type FeedPostProps = {
-  post: {
-    item: MissingPetType;
-    index: number;
-  };
+  item: MissingPetType;
+  index: number;
 };
 
-export const FeedPost = ({ post }: FeedPostProps) => {
+export const FeedPost = ({ item, index }: FeedPostProps) => {
   const { handleRemoveSighting } = usePetsContext();
   const [visible, setVisible] = useState(false);
   const [renderPostSightings, setRenderPostSightings] = useState(false);
@@ -28,13 +26,17 @@ export const FeedPost = ({ post }: FeedPostProps) => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  console.log('TCL  post:', post.index);
+  const handleAddPostSighting = () => {
+    setRenderPostSightings(false);
+    navigation.navigate('sightingModal');
+  };
+
   return (
-    <View style={styles.cardContainer} key={post.index}>
+    <View style={styles.cardContainer}>
       <Card>
         <Card.Title
           title="Bruno Tavares"
-          subtitle={post.item.createdAt}
+          subtitle={item.createdAt}
           titleVariant="titleMedium"
           left={(props) => (
             <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
@@ -46,7 +48,7 @@ export const FeedPost = ({ post }: FeedPostProps) => {
             <View style={{ flexDirection: 'row' }}>
               <List.Item
                 title="Nome Pet"
-                description={post.item.pet.name}
+                description={item.pet.name}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0, marginRight: 10 }}
                 left={(props) => (
@@ -59,8 +61,8 @@ export const FeedPost = ({ post }: FeedPostProps) => {
                 )}
               />
               <List.Item
-                title="Especie Pet"
-                description={post.item.pet.species}
+                title="Especie/Raça"
+                description={item.pet.species}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0, flexWrap: 'wrap' }}
                 left={(props) => (
@@ -76,7 +78,7 @@ export const FeedPost = ({ post }: FeedPostProps) => {
             <View style={{ flexDirection: 'row' }}>
               <List.Item
                 title="Idade Pet"
-                description={post.item.pet.age}
+                description={item.pet.age}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0, marginRight: 10 }}
                 left={(props) => (
@@ -90,7 +92,7 @@ export const FeedPost = ({ post }: FeedPostProps) => {
               />
               <List.Item
                 title="Contato"
-                description={post.item.user.contacts[0].content}
+                description={item.user.contacts[0].content}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0 }}
                 left={(props) => (
@@ -104,10 +106,10 @@ export const FeedPost = ({ post }: FeedPostProps) => {
               />
             </View>
           </View>
-          <Text style={styles.petDescription}>{post.item.pet.description}</Text>
+          <Text style={styles.petDescription}>{item.pet.description}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.cardImgContinainer}>
-              {post.item.pet.photos.map((photo: PhotoType, index: number) => {
+              {item.pet.photos.map((photo: PhotoType, index: number) => {
                 return (
                   <Card.Cover key={index} source={{ uri: photo.location }} style={styles.cardImg} />
                 );
@@ -138,15 +140,12 @@ export const FeedPost = ({ post }: FeedPostProps) => {
                   <IconButton
                     icon="plus"
                     size={28}
-                    onPress={() => {
-                      navigation.navigate('sightingModal');
-                      setRenderPostSightings(false);
-                    }}
+                    onPress={() => handleAddPostSighting()}
                     iconColor="#fff"
                     style={{ backgroundColor: '#228c80' }}
                   />
                 </View>
-                {post.item.sightings.map((item: SighthingType, index: number) => {
+                {item.sightings.map((item: SighthingType, index: number) => {
                   console.log('TCL  item:', item);
                   return (
                     <Card style={styles.sightingCard} key={index}>

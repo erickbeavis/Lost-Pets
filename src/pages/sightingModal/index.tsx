@@ -17,7 +17,6 @@ export const SightingModal = () => {
     setSightingDate,
     setSightingDescription,
     sightingLocation,
-    setTabIndex,
   } = usePetsContext();
 
   const navigation = useNavigation();

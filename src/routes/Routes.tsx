@@ -27,6 +27,7 @@ const Routes = () => {
         component={CreateUser}
         options={{
           headerShown: true,
+          headerTitle: 'Login',
         }}
       />
       <Stack.Screen

@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   cardContainer: {
     margin: 8,
+    marginTop: 20,
   },
   cardImgContinainer: {
     marginTop: 20,
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
   },
   postSightingsModalContent: {
     width: '90%',
-    maxHeight: '90%',
+    maxHeight: '100%',
     backgroundColor: '#fff',
     borderRadius: 10,
   },

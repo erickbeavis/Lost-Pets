@@ -51,8 +51,14 @@ export const ImagePickerScreen = () => {
         <>
           {petPhoto.map((img: any, index: number) => {
             return (
-              <View style={styles.imageContainer}>
-                <Image source={{ uri: img.uri }} style={styles.image} key={index} />
+              <View style={styles.imageContainer} key={index}>
+                <Image source={{ uri: img.uri }} style={styles.image} />
+                <IconButton
+                  icon="trash-can"
+                  size={20}
+                  style={styles.trashIcon}
+                  onPress={() => removeImage(index)}
+                />
               </View>
             );
           })}

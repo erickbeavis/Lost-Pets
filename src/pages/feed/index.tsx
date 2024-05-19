@@ -11,25 +11,32 @@ import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
   const { missingPetPost, setTabIndex, feedLocation } = usePetsContext();
-  console.log('TCL  Feed  missingPetPost:', missingPetPost);
 
-  console.log('TCL  Feed  feedLocation.address:', feedLocation.address);
   return (
     <SafeAreaView style={styles.container}>
       <TopMenu />
       <Chip icon="map-marker" style={styles.feedMapLocation} onPress={() => setTabIndex(2)}>
         {feedLocation.address !== '' ? feedLocation.address : 'Filtrar por localização...'}
       </Chip>
-      {missingPetPost.length > 0 ? (
-        <FlatList
-          data={missingPetPost}
-          renderItem={(item) => <FeedPost post={item} />}
-          style={styles.feedPostContainer}
-        />
-      ) : (
+      {feedLocation.address === '' ? (
         <View style={styles.notFoundcontainer}>
-          <Text style={styles.notFoundText}>Não há publicações no momento</Text>
+          <Text style={styles.notFoundText}>Selecione uma localização...</Text>
         </View>
+      ) : (
+        <>
+          {missingPetPost.length > 0 ? (
+            <FlatList
+              data={missingPetPost}
+              renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
+              style={styles.feedPostContainer}
+              keyExtractor={(item) => item.index}
+            />
+          ) : (
+            <View style={styles.notFoundcontainer}>
+              <Text style={styles.notFoundText}>Não há publicações no momento</Text>
+            </View>
+          )}
+        </>
       )}
     </SafeAreaView>
   );
