@@ -1,10 +1,14 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import styles from './styles';
-import { ScrollView } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { usePetsContext } from '~/context/petsContext';
+import { FeedPost } from '~/components/FeedPost';
 
 
 export const MyProfile = () => {
+  const { missingPetPost } = usePetsContext()
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -32,7 +36,16 @@ export const MyProfile = () => {
           </View>
           <View style={styles.userInfoContent}>
             <Text style={styles.userInfoLabel}>Minhas publicações</Text>
-            <Text style={styles.userInfoValue}>Aqui!</Text>
+            <Text style={styles.userInfoValue}>
+              {missingPetPost.length > 0 ? (
+                <FlatList 
+                  data={missingPetPost}
+                  renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
+                  style={styles.feedPostContainer}
+                  keyExtractor={(item) => item.index}
+                />
+              ) : "Não há nenhuma publicação ainda."}
+            </Text>
           </View>
         </View>
       </View>

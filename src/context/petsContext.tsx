@@ -88,7 +88,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [missingPetContact, setMissingPetContact] = useState('');
 
   const [sightings, setSightings] = useState<SighthingType[]>([]);
-  const [missingPetPost, setMissingPetPost] = useState<any[]>([]);
+  const [missingPetPost, setMissingPetPost] = useState([]);
   const [loggedUser, setLoggedUser] = useState<any>({});
 
   const { latitude, longitude, address } = sightingLocation;
@@ -201,7 +201,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
     console.log('TCL  postData:', postData);
 
-    setMissingPetPost((prevPost) => [...prevPost, postData]);
+    setMissingPetPost(postData);
 
     setPetName('');
     setPetSpecies('');

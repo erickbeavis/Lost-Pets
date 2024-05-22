@@ -53,7 +53,7 @@ export const Login = () => {
             />
             <TouchableOpacity
               style={styles.buttonForm}
-              onPress={() => handleSubmitLogin(userEmail, userPassword)}>
+              onPress={() => navigation.navigate('feed')}>
               <Text style={styles.textButton}>Entrar</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('createUser')}>
