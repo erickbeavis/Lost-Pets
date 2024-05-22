@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 
-import { UserRequestBody } from '~/types/userTypes';
+import { usePetsContext } from '~/context/petsContext';
+import { LoginResponse, UserLoginBody, UserRequestBody } from '~/types/userTypes';
 
 type RequestConfig = {
   method: string;
   url: string;
   data?: object;
 };
+
+const URL = process.env.URL;
 
 export const createUser = async (body: UserRequestBody) => {
   try {
@@ -22,15 +26,22 @@ export const createUser = async (body: UserRequestBody) => {
   }
 };
 
-export const loginUser = async (username: string, password: string) => {
+export const loginUser = async (body: UserLoginBody) => {
   try {
-    const { data } = await axios.get(`/user/login/${username}/${password}`);
+    const { data } = await axios.post<LoginResponse>(`${URL}/api/User/login`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    if (!data) return;
+    const { token, user } = data;
 
-    return data;
+    return {
+      token,
+      user,
+    };
   } catch (err) {
-    throw new Error(`Error ${err}`);
+    throw new Error(`Error ${err.response.data}`);
   }
 };
 

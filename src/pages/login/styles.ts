@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     width: 250,
     height: 35,
     borderRadius: 5,
-    padding: 5,       
+    padding: 5,
   },
   inputPassword: {
     backgroundColor: '#FFF',
@@ -59,5 +59,13 @@ export const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: 'bold',
     marginTop: 18,
-  }
-})
+  },
+  loadingButton: {
+    zIndex: 9999,
+    position: 'absolute',
+    backgroundColor: '#000',
+    height: '100%',
+    width: '100%',
+    opacity: 0.5,
+  },
+});

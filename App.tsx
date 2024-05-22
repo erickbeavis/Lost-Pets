@@ -9,15 +9,15 @@ import { PetsProvider } from '~/context/petsContext';
 
 export default function App() {
   return (
-    <PaperProvider>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar style="dark" translucent />
-        <NavigationContainer>
-          <PetsProvider>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style="dark" translucent />
+      <NavigationContainer>
+        <PetsProvider>
+          <PaperProvider>
             <Routes />
-          </PetsProvider>
-        </NavigationContainer>
-      </SafeAreaView>
-    </PaperProvider>
+          </PaperProvider>
+        </PetsProvider>
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }

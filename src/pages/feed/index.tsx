@@ -1,32 +1,46 @@
-import { useNavigation } from '@react-navigation/native';
-import { IconButton } from 'react-native-paper';
+import axios from 'axios';
+import Constants from 'expo-constants';
+import { useEffect } from 'react';
+import { View, Text } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { Chip } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './styles';
-import { BottomMenu } from '../../components/BottomMenu';
 import { TopMenu } from '../../components/TopMenu';
 
 import { FeedPost } from '~/components/FeedPost';
+import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
-  const navigation = useNavigation();
+  const { missingPetPost, setTabIndex, feedLocation } = usePetsContext();
 
   return (
     <SafeAreaView style={styles.container}>
       <TopMenu />
-      <FeedPost />
-      {/* <View style={styles.notFoundcontainer}>
-        <Text style={styles.notFoundText}>Não há publicações no momento</Text>
-      </View> */}
-
-      <IconButton
-        icon="plus"
-        iconColor="#fff"
-        size={40}
-        style={styles.addPublicationButton}
-        onPress={() => navigation.navigate('createLostPetPost')}
-      />
-      <BottomMenu />
+      <Chip icon="map-marker" style={styles.feedMapLocation} onPress={() => setTabIndex(2)}>
+        {feedLocation.address !== '' ? feedLocation.address : 'Filtrar por localização...'}
+      </Chip>
+      {feedLocation.address === '' ? (
+        <View style={styles.notFoundcontainer}>
+          <Text style={styles.notFoundText}>Selecione uma localização...</Text>
+        </View>
+      ) : (
+        <>
+          {missingPetPost.length > 0 ? (
+            <FlatList
+              data={missingPetPost}
+              renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
+              style={styles.feedPostContainer}
+              keyExtractor={(item) => item.index}
+            />
+          ) : (
+            <View style={styles.notFoundcontainer}>
+              <Text style={styles.notFoundText}>Não há publicações no momento</Text>
+            </View>
+          )}
+        </>
+      )}
     </SafeAreaView>
   );
 };

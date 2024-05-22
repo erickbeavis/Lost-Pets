@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    marginTop: 10,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -28,9 +29,15 @@ export const styles = StyleSheet.create({
     marginRight: 8,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: '88%',
+    height: 230,
     marginTop: 20,
     marginRight: 20,
+    borderRadius: 10,
+  },
+  trashIcon: {
+    position: 'absolute',
+    right: 0,
+    paddingLeft: 15,
   },
 });

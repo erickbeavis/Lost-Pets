@@ -12,14 +12,14 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 5,
-    marginTop: 12,
+    marginTop: 20,
     fontWeight: 'bold',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
+    fontSize: 16,
   },
   descriptionInput: {
     height: 100,
@@ -35,34 +35,24 @@ export const styles = StyleSheet.create({
   addButtonLabel: {
     color: '#FFF',
     fontSize: 16,
-  },
-  sightingItem: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  sightingDate: {
     fontWeight: 'bold',
-    marginBottom: 5,
+  },
+  sightingCard: {
+    backgroundColor: '#fff',
+    borderWidth: 0.5,
+    borderColor: '#ccc',
+    marginBottom: 16,
   },
   sightingLocation: {
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  sightingAddress: {
+    marginBottom: 10,
+    fontSize: 14,
   },
   sightingDescription: {
-    marginBottom: 5,
-  },
-  sightingButton: {
-    backgroundColor: '#228c80',
-    borderRadius: 5,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  sightingButtonText: {
-    color: '#FFF',
-    fontSize: 16,
+    marginBottom: 12,
   },
   submitButton: {
     backgroundColor: '#228c80',
@@ -74,5 +64,20 @@ export const styles = StyleSheet.create({
   submitButtonText: {
     color: '#FFF',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  showSightingButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#228c80',
+    alignItems: 'center',
+    borderRadius: 5,
+    paddingVertical: 12,
+    marginBottom: 20,
+  },
+  showSightingButtonLabel: {
+    color: '#228c80',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

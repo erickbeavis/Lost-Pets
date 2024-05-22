@@ -1,16 +1,43 @@
-import { View, TouchableOpacity, Image } from 'react-native';
+import { useEffect, useState } from 'react';
+import { BottomNavigation } from 'react-native-paper';
 
-import { styles } from './styles';
+import { usePetsContext } from '~/context/petsContext';
+import { CreateLostPetPost } from '~/pages/createLostPetPost';
+import { Feed } from '~/pages/feed';
+import { SearchSighting } from '~/pages/searchSighting';
+
+const HomeRoute = () => <Feed />;
+const AddPostRoute = () => <CreateLostPetPost />;
+const SearchMapRoute = () => <SearchSighting />;
 
 export const BottomMenu = () => {
+  const { missingPetPost, tabIndex, setTabIndex } = usePetsContext();
+  const [routes] = useState([
+    { key: 'home', focusedIcon: 'home' },
+    { key: 'addPost', focusedIcon: 'plus' },
+    { key: 'search', focusedIcon: 'map-marker' },
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    home: HomeRoute,
+    addPost: AddPostRoute,
+    search: SearchMapRoute,
+  });
+
+  useEffect(() => {
+    if (missingPetPost.length === 0) return;
+
+    setTabIndex(0);
+  }, [missingPetPost]);
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.menuItem}>
-        <Image style={styles.menuItemImage} source={require('../../../assets/home-icon.png')} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.menuItem}>
-        <Image style={styles.menuItemImage} source={require('../../../assets/search-icon.png')} />
-      </TouchableOpacity>
-    </View>
+    <BottomNavigation
+      navigationState={{ index: tabIndex, routes }}
+      onIndexChange={setTabIndex}
+      renderScene={renderScene}
+      barStyle={{ backgroundColor: '#228c80', height: 50 }}
+      activeIndicatorStyle={{ backgroundColor: '#fff' }}
+      inactiveColor="#fff"
+    />
   );
 };
