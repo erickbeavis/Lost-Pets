@@ -1,9 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
+import { loginUser } from '~/services/Users/users';
 import { LocationType } from '~/types/locationTypes';
 import { ImageType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
+import { LoggedUser, LoginResponse } from '~/types/userTypes';
+import { saveUserToken } from '~/utils/saveUserToken';
 
 type FeedLocationType = {
   address: string;
@@ -47,11 +50,17 @@ type MyContextType = {
   setIsFeedLocation: (isFeedLocation: boolean) => void;
   feedLocation: FeedLocationType;
   setFeedLocation: (feedLocation: FeedLocationType) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+  handleSubmitLogin: (user: string, password: string) => void;
+  loggedUser: LoggedUser;
+  setLoggedUser: (loggedUser: LoggedUser) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
 
 export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [loading, setLoading] = useState(false);
   const [petName, setPetName] = useState('');
   const [petSpecies, setPetSpecies] = useState('');
   const [petAge, setPetAge] = useState('');
@@ -76,10 +85,11 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     address: '',
   });
   const [petPhoto, setPetPhoto] = useState<any>([]);
-  const [sightings, setSightings] = useState<SighthingType[]>([]);
   const [missingPetContact, setMissingPetContact] = useState('');
 
+  const [sightings, setSightings] = useState<SighthingType[]>([]);
   const [missingPetPost, setMissingPetPost] = useState<any[]>([]);
+  const [loggedUser, setLoggedUser] = useState<any>({});
 
   const { latitude, longitude, address } = sightingLocation;
 
@@ -90,6 +100,32 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (tabIndex === 2) setIsFeedLocation(true);
   }, [tabIndex]);
+
+  const handleSubmitLogin = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+
+      const data: LoginResponse = await loginUser({
+        email: 'bruno@gmail.com',
+        password: '123456',
+      });
+
+      const { token, user } = data;
+
+      saveUserToken(token);
+      setLoggedUser(user);
+
+      return navigation.reset({
+        index: 0,
+        routes: [{ name: 'feed' }],
+      });
+    } catch {
+      alert('Usúario ou senha incorreta');
+      return;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddSighting = () => {
     if (!sightingDate || !sightingLocation || !sightingDescription) {
@@ -122,6 +158,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setSightings((prevSightings: any) => {
       const newSightings = [...prevSightings];
       newSightings.splice(index, 1);
+
       return newSightings;
     });
   };
@@ -146,21 +183,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         userId: '',
         description: sighting.description,
       })),
-      user: {
-        id: '',
-        createdAt: '2024-05-16T13:35:43.174Z',
-        updatedAt: '2024-05-16T13:35:43.174Z',
-        email: 'user@example.com',
-        contacts: [
-          {
-            id: '',
-            createdAt: '2024-05-16T13:35:43.174Z',
-            updatedAt: '2024-05-16T13:35:43.174Z',
-            content: missingPetContact,
-            type: 0,
-          },
-        ],
-      },
+      user: loggedUser,
       pet: {
         id: '',
         name: petName,
@@ -176,6 +199,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       comments: [],
       status: 0,
     };
+    console.log('TCL  postData:', postData);
 
     setMissingPetPost((prevPost) => [...prevPost, postData]);
 
@@ -211,6 +235,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setAddSightingVisible,
         handleAddSighting,
         handleSubmitMissingPet,
+        handleSubmitLogin,
         sightingLocation,
         setSightingLocation,
         missingPetPost,
@@ -226,6 +251,10 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsFeedLocation,
         feedLocation,
         setFeedLocation,
+        loading,
+        setLoading,
+        loggedUser,
+        setLoggedUser,
       }}>
       {children}
     </PetsContext.Provider>
