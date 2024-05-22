@@ -63,7 +63,7 @@ const Routes = () => {
         name="MyProfile"
         component={MyProfile}
         options={{
-          headerShown: false,
+          headerShown: true,
           headerTitle: 'Voltar',
         }}
       />

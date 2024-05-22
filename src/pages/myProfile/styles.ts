@@ -3,17 +3,20 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#228c80',
+    backgroundColor: '#fff',
     padding: 25,
   },
   welcomeText: {
-    color: '#FFF',
+    marginTop: 40,
+    color: '#228c80',
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 40,
   },
   userInfo: {
+    borderWidth: 3,
+    borderColor: "#228c80",
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
@@ -22,6 +25,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
     fontSize: 18,
+  },
+  userInfoContent: {
+    marginTop: 16,
   },
   userInfoValue: {
     marginBottom: 10,
@@ -32,7 +38,7 @@ const styles = StyleSheet.create({
     height: 150,
     resizeMode: 'contain',
     alignSelf: 'center',
-    marginTop: 80,
+    marginTop: 40,
     borderWidth: 10,
     borderColor: '#f79307',
     borderRadius: 75,
