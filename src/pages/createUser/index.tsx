@@ -1,65 +1,81 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 
 import { styles } from './styles';
 
+import { usePetsContext } from '~/context/petsContext';
+
 export const CreateUser = () => {
-  const [name, setName] = useState('');
+  const { handleRegisterUser } = usePetsContext();
+
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [contacts, setContacts] = useState([
+    {
+      type: 0,
+      content: '',
+      createdAt: new Date(),
+      updatedAt: null,
+    },
+  ]);
 
-  const navigation = useNavigation();
+  const userData = {
+    userName,
+    email,
+    password,
+    contacts,
+  };
 
-  function handleCreateUser() {
-    if (name && email && password !== '' && password === passwordConfirm) {
-      alert('Cadastro criado com sucesso');
-      navigation.navigate('login');
-    } else {
-      alert('Ops! algo errado');
-    }
-  }
   return (
     <View style={styles.Container}>
       <View style={styles.form}>
         <TextInput
           style={styles.inputUserName}
           placeholder="Nome"
-          autoCompleteType="username"
+          autoComplete="username"
           autoCapitalize="none"
           placeholderTextColor="#000"
           autoCorrect={false}
-          onChangeText={(event: HTMLInputElement) => setName(event)}
+          onChangeText={(text) => setUserName(text)}
         />
         <TextInput
           style={styles.inputForm}
           placeholder="Email"
-          autoCompleteType="email"
+          autoComplete="email"
           autoCapitalize="none"
           autoCorrect={false}
           placeholderTextColor="#000"
-          onChangeText={(event: HTMLInputElement) => setEmail(event)}
+          onChangeText={(text) => setEmail(text)}
         />
         <TextInput
           style={styles.inputForm}
           placeholder="Senha"
-          autoCompleteType="password"
+          autoComplete="password"
           autoCapitalize="none"
           placeholderTextColor="#000"
           autoCorrect={false}
-          onChangeText={(event: HTMLInputElement) => setPassword(event)}
+          onChangeText={(text) => setPassword(text)}
         />
         <TextInput
           style={styles.inputForm}
-          placeholder="Confirmar senha"
-          autoCompleteType="password"
+          placeholder="Numero Telefone"
+          autoComplete="contacts"
           autoCapitalize="none"
-          autoCorrect={false}
           placeholderTextColor="#000"
-          onChangeText={(event: HTMLInputElement) => setPasswordConfirm(event)}
+          autoCorrect={false}
+          onChangeText={(text) =>
+            setContacts([
+              {
+                type: 0,
+                content: text,
+                createdAt: new Date(),
+                updatedAt: null,
+              },
+            ])
+          }
         />
-        <TouchableOpacity style={styles.buttonForm} onPress={handleCreateUser}>
+        <TouchableOpacity style={styles.buttonForm} onPress={() => handleRegisterUser(userData)}>
           <Text style={styles.textButton}>Cadastrar</Text>
         </TouchableOpacity>
       </View>

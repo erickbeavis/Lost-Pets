@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 
-import { usePetsContext } from '~/context/petsContext';
 import { LoginResponse, UserLoginBody, UserRequestBody } from '~/types/userTypes';
 
 type RequestConfig = {
@@ -12,15 +10,9 @@ type RequestConfig = {
 
 const URL = process.env.URL;
 
-export const createUser = async (body: UserRequestBody) => {
+export const registerUser = async (body: UserRequestBody) => {
   try {
-    const { data } = await axios.post('/user', {
-      body,
-    });
-
-    if (!data) return;
-
-    return data;
+    return await axios.post(`${URL}/api/User/register`, body);
   } catch (err) {
     throw new Error(`Error ${err}`);
   }
@@ -42,14 +34,6 @@ export const loginUser = async (body: UserLoginBody) => {
     };
   } catch (err) {
     throw new Error(`Error ${err.response.data}`);
-  }
-};
-
-export const logoutUser = async () => {
-  try {
-    return await axios.get('/user/logout');
-  } catch (err) {
-    throw new Error(`Error ${err}`);
   }
 };
 

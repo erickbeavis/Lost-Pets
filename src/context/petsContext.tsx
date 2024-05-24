@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
-import { loginUser } from '~/services/Users/users';
+import { loginUser, registerUser } from '~/services/Users/users';
 import { LocationType } from '~/types/locationTypes';
 import { ImageType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
-import { LoggedUser, LoginResponse } from '~/types/userTypes';
+import { LoggedUser, LoginResponse, UserRequestBody } from '~/types/userTypes';
 import { saveUserToken } from '~/utils/saveUserToken';
 
 type FeedLocationType = {
@@ -55,6 +55,7 @@ type MyContextType = {
   handleSubmitLogin: (user: string, password: string) => void;
   loggedUser: LoggedUser;
   setLoggedUser: (loggedUser: LoggedUser) => void;
+  handleRegisterUser: (data: UserRequestBody) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -101,12 +102,33 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (tabIndex === 2) setIsFeedLocation(true);
   }, [tabIndex]);
 
+  const handleRegisterUser = async (data: UserRequestBody) => {
+    try {
+      if (
+        data.email === '' ||
+        data.password === '' ||
+        data.userName === '' ||
+        data.contacts[0].content === ''
+      ) {
+        alert('Preencha todos os campos');
+        return;
+      }
+
+      await registerUser(data);
+
+      alert('Usuario cadastrado com sucesso!');
+      navigation.navigate('login');
+    } catch (err) {
+      throw new Error(`Error ${err}`);
+    }
+  };
+
   const handleSubmitLogin = async (email: string, password: string) => {
     try {
       setLoading(true);
 
       const data: LoginResponse = await loginUser({
-        email: 'bruno@gmail.com',
+        email: 'teste@gmail.com',
         password: '123456',
       });
 
@@ -255,6 +277,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setLoading,
         loggedUser,
         setLoggedUser,
+        handleRegisterUser,
       }}>
       {children}
     </PetsContext.Provider>

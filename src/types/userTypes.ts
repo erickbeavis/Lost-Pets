@@ -4,9 +4,7 @@ import { MissingPetType } from './missingPetTypes';
 import { SighthingType } from './sighthingTypes';
 
 export interface UserRequestBody {
-  id: string;
-  firstName: string;
-  lastName: string;
+  userName: string;
   email: string;
   password: string;
   contacts: ContactType[];
