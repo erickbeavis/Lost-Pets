@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
+import { addMissingPet, getMissingPet } from '~/services/MissingPets/missingPets';
 import { loginUser, registerUser } from '~/services/Users/users';
 import { LocationType } from '~/types/locationTypes';
 import { ImageType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
 import { LoggedUser, LoginResponse, UserRequestBody } from '~/types/userTypes';
+import { getUserToken } from '~/utils/getUserToken';
 import { saveUserToken } from '~/utils/saveUserToken';
 
 type FeedLocationType = {
@@ -56,6 +58,7 @@ type MyContextType = {
   loggedUser: LoggedUser;
   setLoggedUser: (loggedUser: LoggedUser) => void;
   handleRegisterUser: (data: UserRequestBody) => void;
+  handleSearchMissingPet: () => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -89,7 +92,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [missingPetContact, setMissingPetContact] = useState('');
 
   const [sightings, setSightings] = useState<SighthingType[]>([]);
-  const [missingPetPost, setMissingPetPost] = useState<any[]>([]);
+  const [missingPetPost, setMissingPetPost] = useState([]);
   const [loggedUser, setLoggedUser] = useState<any>({});
 
   const { latitude, longitude, address } = sightingLocation;
@@ -97,7 +100,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (tabIndex !== 2) setIsFeedLocation(false);
+    setIsFeedLocation(false);
 
     if (tabIndex === 2) setIsFeedLocation(true);
   }, [tabIndex]);
@@ -185,29 +188,23 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const handleSubmitMissingPet = () => {
+  const handleSubmitMissingPet = async () => {
     // if (!petName || !petSpecies || !petAge || !petDescription || sightings.length === 0) {
     //   alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
     //   return;
     // }
 
     const postData = {
-      id: '',
-      createdAt: new Date().toLocaleDateString('pt-br'),
       sightings: sightings.map((sighting, index) => ({
-        id: index.toString(),
         sightingDate: sighting.sightingDate,
         location: {
           latitude: sighting.location.latitude,
           longitude: sighting.location.longitude,
           address: sighting.location.address,
         },
-        userId: '',
         description: sighting.description,
       })),
-      user: loggedUser,
       pet: {
-        id: '',
         name: petName,
         species: petSpecies,
         age: Number(petAge),
@@ -218,12 +215,14 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         })),
         description: petDescription,
       },
-      comments: [],
       status: 0,
     };
-    console.log('TCL  postData:', postData);
 
-    setMissingPetPost((prevPost) => [...prevPost, postData]);
+    const token = await getUserToken();
+
+    if (!token) return;
+
+    await addMissingPet(postData, token);
 
     setPetName('');
     setPetSpecies('');
@@ -232,6 +231,14 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setSightings([]);
     setPetPhoto([]);
     setMissingPetContact('');
+  };
+
+  const handleSearchMissingPet = async () => {
+    const data = (await getMissingPet(feedLocation.lat, feedLocation.lng, 10000000)) as any;
+    if (!data) return;
+    console.log('TCL  handleSearchMissingPet 2 data:', data);
+
+    setMissingPetPost(data);
   };
 
   return (
@@ -278,6 +285,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         loggedUser,
         setLoggedUser,
         handleRegisterUser,
+        handleSearchMissingPet,
       }}>
       {children}
     </PetsContext.Provider>

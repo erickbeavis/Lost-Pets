@@ -35,7 +35,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
     <View style={styles.cardContainer}>
       <Card>
         <Card.Title
-          title="Bruno Tavares"
+          title={item.user.email}
           subtitle={item.createdAt}
           titleVariant="titleMedium"
           left={(props) => (
@@ -92,7 +92,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               />
               <List.Item
                 title="Contato"
-                description={item.user.contacts[0].content}
+                description="asd"
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0 }}
                 left={(props) => (
@@ -109,7 +109,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
           <Text style={styles.petDescription}>{item.pet.description}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.cardImgContinainer}>
-              {item.pet.photos.map((photo: PhotoType, index: number) => {
+              {item.pet.photos?.map((photo: PhotoType, index: number) => {
                 return (
                   <Card.Cover key={index} source={{ uri: photo.location }} style={styles.cardImg} />
                 );

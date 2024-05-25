@@ -7,3 +7,9 @@ export interface SighthingType {
   userId: string;
   description: string;
 }
+
+export interface SighthingTypeRequest {
+  sightingDate: string;
+  location: LocationType;
+  description: string;
+}

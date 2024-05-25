@@ -14,6 +14,7 @@ import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
   const { missingPetPost, setTabIndex, feedLocation } = usePetsContext();
+  console.log('TCL  Feed  missingPetPost:', missingPetPost);
 
   return (
     <SafeAreaView style={styles.container}>

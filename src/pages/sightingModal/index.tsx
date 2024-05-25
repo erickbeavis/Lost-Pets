@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 import { TouchableOpacity, TextInput, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { IconButton, Text } from 'react-native-paper';
@@ -11,18 +12,27 @@ import { formatDate } from '~/utils/formatDate';
 
 export const SightingModal = () => {
   const {
-    sightingDate,
     sightingDescription,
     handleAddSighting,
     setSightingDate,
     setSightingDescription,
     sightingLocation,
   } = usePetsContext();
+  const [modalSightingDate, setModalSightingDate] = useState('');
 
   const navigation = useNavigation();
 
   const handleSightingDate = (e: string) => {
-    setSightingDate(formatDate(e));
+    if (e.length < 8) return setSightingDate(e);
+
+    const date = formatDate(e).split('/');
+    const day = parseInt(date[0], 10);
+    const month = parseInt(date[1], 10) - 1;
+    const year = parseInt(date[2], 10);
+
+    const teste = new Date(year, month, day);
+
+    setSightingDate(teste.toISOString());
   };
 
   return (
@@ -30,8 +40,11 @@ export const SightingModal = () => {
       <Text style={styles.label}>Data do Avistamento</Text>
       <TextInput
         style={styles.input}
-        value={sightingDate}
-        onChangeText={handleSightingDate}
+        value={formatDate(modalSightingDate)}
+        onChangeText={(e) => {
+          handleSightingDate(e);
+          setModalSightingDate(e);
+        }}
         placeholder="DD/MM/AAAA"
         keyboardType="numeric"
         returnKeyType="next"
