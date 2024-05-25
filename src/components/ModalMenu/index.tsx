@@ -3,6 +3,9 @@ import { View, Text, TouchableOpacity, Modal, Image, Alert } from 'react-native'
 
 import { styles } from './styles';
 
+import { usePetsContext } from '~/context/petsContext';
+import { deleteUserToken } from '~/utils/deleteUserToken';
+
 type ModalMenuProps = {
   visible: boolean;
   closeModal: () => boolean;
@@ -23,7 +26,11 @@ export const ModalMenu = ({ visible, closeModal }: ModalMenuProps) => {
         {
           text: 'Sair',
           onPress: () => {
-            navigation.navigate('login');
+            deleteUserToken();
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'login' }],
+            });
             closeModal();
           },
         },
