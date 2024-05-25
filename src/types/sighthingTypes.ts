@@ -12,4 +12,5 @@ export interface SighthingTypeRequest {
   sightingDate: string;
   location: LocationType;
   description: string;
+  missingPetId?: string;
 }

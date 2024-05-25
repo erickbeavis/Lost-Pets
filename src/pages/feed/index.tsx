@@ -1,6 +1,3 @@
-import axios from 'axios';
-import Constants from 'expo-constants';
-import { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Chip } from 'react-native-paper';
@@ -13,8 +10,7 @@ import { FeedPost } from '~/components/FeedPost';
 import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
-  const { missingPetPost, setTabIndex, feedLocation } = usePetsContext();
-  console.log('TCL  Feed  missingPetPost:', missingPetPost);
+  const { missingPetPost, tabIndex, setTabIndex, feedLocation } = usePetsContext();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,13 +24,15 @@ export const Feed = () => {
         </View>
       ) : (
         <>
-          {missingPetPost.length > 0 ? (
-            <FlatList
-              data={missingPetPost}
-              renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
-              style={styles.feedPostContainer}
-              keyExtractor={(item) => item.index}
-            />
+          {missingPetPost.length > 0 && tabIndex === 0 ? (
+            <>
+              {console.log('entrou aqui')}
+              <FlatList
+                data={missingPetPost}
+                renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
+                style={styles.feedPostContainer}
+              />
+            </>
           ) : (
             <View style={styles.notFoundcontainer}>
               <Text style={styles.notFoundText}>Não há publicações no momento</Text>

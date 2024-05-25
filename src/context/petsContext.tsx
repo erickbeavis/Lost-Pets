@@ -2,10 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
 import { addMissingPet, getMissingPet } from '~/services/MissingPets/missingPets';
+import { createSighthing, deleteSighthing } from '~/services/MissingPets/sighthings';
 import { loginUser, registerUser } from '~/services/Users/users';
 import { LocationType } from '~/types/locationTypes';
 import { ImageType } from '~/types/photoTypes';
-import { SighthingType } from '~/types/sighthingTypes';
+import { SighthingType, SighthingTypeRequest } from '~/types/sighthingTypes';
 import { LoggedUser, LoginResponse, UserRequestBody } from '~/types/userTypes';
 import { getUserToken } from '~/utils/getUserToken';
 import { saveUserToken } from '~/utils/saveUserToken';
@@ -35,12 +36,12 @@ type MyContextType = {
   setShowSightings: (showSightings: boolean) => void;
   addSightingVisible: boolean;
   setAddSightingVisible: (addSightingVisible: boolean) => void;
-  handleAddSighting: () => void;
+  handleAddSighting: (isPost: boolean, missingPetId: string) => void;
   handleSubmitMissingPet: () => void;
   sightingLocation: LocationType;
   setSightingLocation: (sightingLocation: LocationType) => void;
   missingPetPost: any[];
-  setMissingPetPost: (missingPetPost: any[]) => void;
+  setMissingPetPost: (missingPetPost: never[]) => void;
   petPhoto: any[];
   setPetPhoto: (petPhoto: any) => void;
   missingPetContact: string;
@@ -91,7 +92,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [petPhoto, setPetPhoto] = useState<any>([]);
   const [missingPetContact, setMissingPetContact] = useState('');
 
-  const [sightings, setSightings] = useState<SighthingType[]>([]);
+  const [sightings, setSightings] = useState<SighthingTypeRequest[]>([]);
   const [missingPetPost, setMissingPetPost] = useState([]);
   const [loggedUser, setLoggedUser] = useState<any>({});
 
@@ -100,7 +101,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const navigation = useNavigation();
 
   useEffect(() => {
-    setIsFeedLocation(false);
+    if (tabIndex !== 2) setIsFeedLocation(false);
 
     if (tabIndex === 2) setIsFeedLocation(true);
   }, [tabIndex]);
@@ -131,7 +132,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
 
       const data: LoginResponse = await loginUser({
-        email: 'teste@gmail.com',
+        email: 'bruno@gmail.com',
         password: '123456',
       });
 
@@ -152,14 +153,17 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const handleAddSighting = () => {
+  const handleAddSighting = async (isPost: boolean, missingPetId: string) => {
     if (!sightingDate || !sightingLocation || !sightingDescription) {
       alert('É necessário preencher todos os campos informados');
       return;
     }
 
+    const autCookie = await getUserToken();
+
+    if (!autCookie) return;
+
     const newSighting = {
-      id: '',
       userId: '',
       sightingDate,
       location: {
@@ -168,6 +172,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         address,
       },
       description: sightingDescription,
+      missingPetId,
     };
 
     setSightings([...sightings, newSighting]);
@@ -176,16 +181,19 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setShowSightings(true);
     setAddSightingVisible(false);
 
+    if (isPost) {
+      await createSighthing(newSighting, autCookie);
+    }
+
     navigation.goBack();
   };
 
-  const handleRemoveSighting = (index: number) => {
-    setSightings((prevSightings: any) => {
-      const newSightings = [...prevSightings];
-      newSightings.splice(index, 1);
+  const handleRemoveSighting = async (sightingId: string) => {
+    const autCookie = await getUserToken();
 
-      return newSightings;
-    });
+    if (!autCookie) return;
+
+    await deleteSighthing(sightingId, autCookie);
   };
 
   const handleSubmitMissingPet = async () => {

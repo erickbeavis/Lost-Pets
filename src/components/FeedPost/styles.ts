@@ -36,6 +36,8 @@ export const styles = StyleSheet.create({
   postSightingsModalContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    height: '80%',
+    marginTop: '15%',
   },
   postSightingsModalHeader: {
     flexDirection: 'row',

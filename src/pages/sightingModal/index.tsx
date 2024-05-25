@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
 import { TouchableOpacity, TextInput, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -8,6 +8,7 @@ import { styles } from './styles';
 
 import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
+import { SearchSightingNavigationProp } from '~/types/navigationTypes';
 import { formatDate } from '~/utils/formatDate';
 
 export const SightingModal = () => {
@@ -20,7 +21,12 @@ export const SightingModal = () => {
   } = usePetsContext();
   const [modalSightingDate, setModalSightingDate] = useState('');
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<SearchSightingNavigationProp>();
+  const routes = useRoute();
+
+  const isPost = routes.params?.isPost;
+  const missingPetId = routes.params?.missingPetId;
+  console.log('TCL  SightingModal  routes:', routes.params);
 
   const handleSightingDate = (e: string) => {
     if (e.length < 8) return setSightingDate(e);
@@ -63,7 +69,17 @@ export const SightingModal = () => {
       />
       <TouchableOpacity
         style={styles.sightingPlaceContainer}
-        onPress={() => navigation.navigate('searchSighting')}>
+        onPress={() =>
+          navigation.navigate(
+            'searchSighting',
+            isPost && missingPetId
+              ? {
+                  isPost,
+                  missingPetId,
+                }
+              : {}
+          )
+        }>
         <Text style={[styles.label, styles.sightingPlaceLabel]}>Local do avistamento</Text>
         <IconButton icon="arrow-right" />
       </TouchableOpacity>
@@ -75,7 +91,9 @@ export const SightingModal = () => {
           <SightingMap isModal location={sightingLocation} />
         </View>
       )}
-      <TouchableOpacity style={styles.submitButton} onPress={handleAddSighting}>
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={() => handleAddSighting(isPost, missingPetId || '')}>
         <Text style={styles.submitButtonText}>Salvar</Text>
       </TouchableOpacity>
     </ScrollView>

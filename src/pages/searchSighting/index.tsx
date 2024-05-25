@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { View } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { IconButton } from 'react-native-paper';
@@ -24,6 +24,10 @@ export const SearchSighting = () => {
   } = usePetsContext();
 
   const navigation = useNavigation();
+  const routes = useRoute();
+
+  const isPost = routes.params?.isPost;
+  const missingPetId = routes.params?.missingPetId;
 
   return (
     <SafeAreaView>
@@ -116,7 +120,15 @@ export const SearchSighting = () => {
                   feedLocation.lng
                 );
               } else {
-                navigation.navigate('sightingModal');
+                navigation.navigate(
+                  'sightingModal',
+                  isPost && missingPetId
+                    ? {
+                        isPost,
+                        missingPetId,
+                      }
+                    : {}
+                );
               }
             }}
             style={styles.confirmButton}

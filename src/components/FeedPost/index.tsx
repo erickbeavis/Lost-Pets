@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Avatar, Card, IconButton, Text, Chip, Portal, Modal, List } from 'react-native-paper';
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
 
 import { styles } from './styles';
 import { Comments } from '../Comments';
@@ -9,6 +10,7 @@ import { SightingMap } from '../SightingMap';
 
 import { usePetsContext } from '~/context/petsContext';
 import { MissingPetType } from '~/types/missingPetTypes';
+import { SightingModalNavigationProp } from '~/types/navigationTypes';
 import { PhotoType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
 
@@ -21,22 +23,22 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
   const { handleRemoveSighting } = usePetsContext();
   const [visible, setVisible] = useState(false);
   const [renderPostSightings, setRenderPostSightings] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<SightingModalNavigationProp>();
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
   const handleAddPostSighting = () => {
     setRenderPostSightings(false);
-    navigation.navigate('sightingModal');
+    navigation.navigate('sightingModal', { isPost: true, missingPetId: item.id });
   };
 
   return (
-    <View style={styles.cardContainer}>
+    <View style={styles.cardContainer} key={index}>
       <Card>
         <Card.Title
           title={item.user.email}
-          subtitle={item.createdAt}
+          subtitle={new Date(item.createdAt).toLocaleDateString()}
           titleVariant="titleMedium"
           left={(props) => (
             <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
@@ -45,12 +47,13 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
         />
         <Card.Content>
           <View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
               <List.Item
                 title="Nome Pet"
                 description={item.pet.name}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0, marginRight: 10 }}
+                style={{ width: '50%' }}
                 left={(props) => (
                   <IconButton
                     {...props}
@@ -64,7 +67,8 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                 title="Especie/Raça"
                 description={item.pet.species}
                 titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0, flexWrap: 'wrap' }}
+                contentStyle={{ paddingLeft: 0 }}
+                style={{ width: '50%' }}
                 left={(props) => (
                   <IconButton
                     {...props}
@@ -78,7 +82,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
             <View style={{ flexDirection: 'row' }}>
               <List.Item
                 title="Idade Pet"
-                description={item.pet.age}
+                description={`${item.pet.age} ${item.pet.age.toString().includes('0') ? 'meses' : 'anos'}`}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0, marginRight: 10 }}
                 left={(props) => (
@@ -92,7 +96,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               />
               <List.Item
                 title="Contato"
-                description="asd"
+                description={item.user.contacts[0]?.content}
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0 }}
                 left={(props) => (
@@ -146,17 +150,16 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   />
                 </View>
                 {item.sightings.map((item: SighthingType, index: number) => {
-                  console.log('TCL  item:', item);
                   return (
                     <Card style={styles.sightingCard} key={index}>
                       <Card.Title
-                        title={item.sightingDate}
+                        title={new Date(item.sightingDate).toLocaleDateString()}
                         titleVariant="titleMedium"
                         right={(props) => (
                           <IconButton
                             {...props}
                             icon="trash-can-outline"
-                            onPress={() => handleRemoveSighting(index)}
+                            onPress={() => handleRemoveSighting(item.id)}
                             style={{ paddingRight: 10 }}
                             size={20}
                           />
@@ -166,7 +169,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                         <Text style={styles.sightingDescription} variant="bodyMedium">
                           {item.description}
                         </Text>
-                        <Text variant="bodyMedium">{item.location.address}</Text>
+                        <Text variant="bodyMedium">{item.location?.address}</Text>
                         <View style={styles.sightingLocation}>
                           <SightingMap isModal location={item.location} />
                         </View>

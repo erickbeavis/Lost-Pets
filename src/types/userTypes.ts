@@ -25,7 +25,7 @@ export interface LoggedUser {
   sightings: SighthingType;
   comments: CommentsType;
   missingPets: MissingPetType;
-  contacts: ContactType;
+  contacts: ContactType[];
   id: string;
   createdAt: string;
   updatedAt: null | string;
