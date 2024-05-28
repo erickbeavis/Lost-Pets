@@ -1,5 +1,5 @@
 import { CommentsType } from './commentTypes';
-import { PetTypeRequest } from './petTypes';
+import { PetTypeRequest, PetType } from './petTypes';
 import { SighthingTypeRequest } from './sighthingTypes';
 import { LoggedUser } from './userTypes';
 
@@ -15,7 +15,7 @@ export interface MissingPetType {
   updatedAt: string;
   id: string;
   sightings: SighthingTypeRequest[];
-  pet: PetTypeRequest;
+  pet: PetType;
   user: LoggedUser;
   status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
 }

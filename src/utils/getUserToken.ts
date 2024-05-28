@@ -6,7 +6,6 @@ export const getUserToken = async () => {
 
     if (!token) return;
 
-    console.log('Token recuperado:', token);
     return token;
   } catch (e) {
     throw new Error(`Error ${e}`);

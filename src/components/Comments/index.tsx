@@ -1,44 +1,64 @@
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
 import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text } from 'react-native-paper';
 
 import { styles } from './styles';
 
+import { createComment, deleteComment, updateComment } from '~/services/MissingPets/comments';
+import { MissingPetType } from '~/types/missingPetTypes';
+import { getUserToken } from '~/utils/getUserToken';
+
 type CommentsProps = {
   visible: boolean;
   hideModal: () => void;
+  item: MissingPetType;
 };
 
-export const Comments = ({ visible, hideModal }: CommentsProps) => {
+export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
   const [textInput, setTextInput] = useState('');
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [comments, setComments] = useState<any[]>([]);
 
   const formattedDate = format(new Date(), 'dd/MM/yyyy');
 
-  const handleAddComment = (createdAt: string, content: string) => {
+  useEffect(() => {
+    setComments(item.comments);
+  }, []);
+
+  const handleAddComment = async (content: string) => {
     if (content === '') return;
 
-    const newComment = {
-      id: comments.length + 1,
-      userId: '',
-      createdAt,
-      awnsersTo: '',
-      answers: '',
-      content,
-    };
+    const autCookie = await getUserToken();
+
+    if (!autCookie) return;
+
+    const newComment = await createComment(
+      {
+        missingPetId: item.id,
+        content,
+      },
+      autCookie
+    );
 
     setComments([...comments, newComment]);
     setTextInput('');
   };
 
-  const handleDeleteComment = (id: number) => {
+  const handleDeleteComment = async (id: string) => {
+    const autCookie = await getUserToken();
+
+    console.log(item.comments);
+
+    if (!autCookie) return;
+
+    await deleteComment(id, autCookie);
+
     setComments(comments.filter((comment) => comment.id !== id));
   };
 
-  const handleEditComment = (id: number) => {
+  const handleEditComment = (id: string) => {
     setEditingCommentId(id);
 
     const commentToEdit = comments.find((comment) => comment.id === id);
@@ -46,8 +66,12 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
     if (commentToEdit) setEditingText(commentToEdit.content);
   };
 
-  const handleSaveEditComment = () => {
+  const handleSaveEditComment = async () => {
     if (!editingCommentId) return;
+
+    const autCookie = await getUserToken();
+
+    if (!autCookie) return;
 
     const updatedComments = comments.map((comment) => {
       if (comment.id === editingCommentId) {
@@ -59,6 +83,14 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
 
     setComments(updatedComments);
     setEditingCommentId(null);
+
+    await updateComment(
+      editingCommentId,
+      {
+        content: editingText,
+      },
+      autCookie
+    );
   };
 
   return (
@@ -140,7 +172,7 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
               maxLength={100}
               value={textInput}
               onChangeText={(text) => setTextInput(text)}
-              onBlur={() => handleAddComment(formattedDate, textInput)}
+              onBlur={() => handleAddComment(textInput)}
             />
           </View>
         ) : (
@@ -151,7 +183,7 @@ export const Comments = ({ visible, hideModal }: CommentsProps) => {
                 maxLength={100}
                 value={textInput}
                 onChangeText={(text) => setTextInput(text)}
-                onBlur={() => handleAddComment(formattedDate, textInput)}
+                onBlur={() => handleAddComment(textInput)}
               />
             </View>
           </KeyboardAvoidingView>

@@ -184,7 +184,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
         <Chip icon="comment" style={styles.cardComment} onPress={showModal}>
           Comentarios...
         </Chip>
-        <Comments visible={visible} hideModal={hideModal} />
+        <Comments visible={visible} hideModal={hideModal} item={item} key={index} />
       </Card>
     </View>
   );
