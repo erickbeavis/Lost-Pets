@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { Avatar, Card, IconButton, Text, Chip, Portal, Modal, List } from 'react-native-paper';
-import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
 
 import { styles } from './styles';
 import { Comments } from '../Comments';
@@ -12,7 +11,6 @@ import { usePetsContext } from '~/context/petsContext';
 import { MissingPetType } from '~/types/missingPetTypes';
 import { SightingModalNavigationProp } from '~/types/navigationTypes';
 import { PhotoType } from '~/types/photoTypes';
-import { SighthingType } from '~/types/sighthingTypes';
 
 type FeedPostProps = {
   item: MissingPetType;
@@ -20,7 +18,7 @@ type FeedPostProps = {
 };
 
 export const FeedPost = ({ item, index }: FeedPostProps) => {
-  const { handleRemoveSighting } = usePetsContext();
+  const { handleRemoveSighting, loggedUser } = usePetsContext();
   const [visible, setVisible] = useState(false);
   const [renderPostSightings, setRenderPostSightings] = useState(false);
   const navigation = useNavigation<SightingModalNavigationProp>();
@@ -30,6 +28,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
 
   const handleAddPostSighting = () => {
     setRenderPostSightings(false);
+
     navigation.navigate('sightingModal', { isPost: true, missingPetId: item.id });
   };
 
@@ -149,29 +148,38 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                     style={{ backgroundColor: '#228c80' }}
                   />
                 </View>
-                {item.sightings.map((item: SighthingType, index: number) => {
+                {item.sightings.map(({ sightingDate, description, location, id, user }) => {
+                  const isUserSighting = user.id === loggedUser.id;
+
                   return (
-                    <Card style={styles.sightingCard} key={index}>
+                    <Card style={styles.sightingCard} key={id}>
                       <Card.Title
-                        title={new Date(item.sightingDate).toLocaleDateString()}
+                        title={new Date(sightingDate).toLocaleDateString()}
                         titleVariant="titleMedium"
                         right={(props) => (
-                          <IconButton
-                            {...props}
-                            icon="trash-can-outline"
-                            onPress={() => handleRemoveSighting(item.id)}
-                            style={{ paddingRight: 10 }}
-                            size={20}
-                          />
+                          <>
+                            {isUserSighting && (
+                              <IconButton
+                                {...props}
+                                icon="trash-can-outline"
+                                onPress={() => {
+                                  handleRemoveSighting(`${id}`);
+                                  setRenderPostSightings(false);
+                                }}
+                                style={{ paddingRight: 10 }}
+                                size={20}
+                              />
+                            )}
+                          </>
                         )}
                       />
                       <Card.Content>
                         <Text style={styles.sightingDescription} variant="bodyMedium">
-                          {item.description}
+                          {description}
                         </Text>
-                        <Text variant="bodyMedium">{item.location?.address}</Text>
+                        <Text variant="bodyMedium">{location?.address}</Text>
                         <View style={styles.sightingLocation}>
-                          <SightingMap isModal location={item.location} />
+                          <SightingMap isModal location={location} />
                         </View>
                       </Card.Content>
                     </Card>

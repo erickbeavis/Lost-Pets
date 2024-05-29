@@ -17,7 +17,6 @@ export const SearchSighting = () => {
     setSightingLocation,
     setIsFeedLocation,
     isFeedLocation,
-    feedLocation,
     setFeedLocation,
     setTabIndex,
     handleSearchMissingPet,
@@ -114,11 +113,6 @@ export const SearchSighting = () => {
                 setTabIndex(0);
                 setIsFeedLocation(false);
                 handleSearchMissingPet();
-                console.log(
-                  'TCL  SearchSighting  feedLocation.lat, feedLocation.lng:',
-                  feedLocation.lat,
-                  feedLocation.lng
-                );
               } else {
                 navigation.navigate(
                   'sightingModal',

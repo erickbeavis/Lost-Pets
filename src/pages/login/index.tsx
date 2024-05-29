@@ -9,14 +9,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
 
 import { styles } from './styles';
 
+import { Loading } from '~/components/Loading';
 import { usePetsContext } from '~/context/petsContext';
 
 export const Login = () => {
-  const { handleSubmitLogin, loading } = usePetsContext();
+  const { handleSubmitLogin } = usePetsContext();
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -25,9 +25,7 @@ export const Login = () => {
 
   return (
     <>
-      {loading && (
-        <ActivityIndicator animating color="#fff" size={50} style={styles.loadingButton} />
-      )}
+      <Loading />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.Container}>
           <View style={styles.UserImage}>

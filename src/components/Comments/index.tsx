@@ -5,6 +5,7 @@ import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text } from 'react-
 
 import { styles } from './styles';
 
+import { usePetsContext } from '~/context/petsContext';
 import { createComment, deleteComment, updateComment } from '~/services/MissingPets/comments';
 import { MissingPetType } from '~/types/missingPetTypes';
 import { getUserToken } from '~/utils/getUserToken';
@@ -16,10 +17,11 @@ type CommentsProps = {
 };
 
 export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
+  const { loggedUser } = usePetsContext();
   const [textInput, setTextInput] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<any[]>(item.comments);
 
   const formattedDate = format(new Date(), 'dd/MM/yyyy');
 
@@ -42,14 +44,14 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
       autCookie
     );
 
+    newComment.user = loggedUser;
+
     setComments([...comments, newComment]);
     setTextInput('');
   };
 
   const handleDeleteComment = async (id: string) => {
     const autCookie = await getUserToken();
-
-    console.log(item.comments);
 
     if (!autCookie) return;
 
@@ -110,54 +112,62 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
         <View style={styles.modalCardContainer}>
           <ScrollView>
             {comments.length > 0 ? (
-              comments.map((comment) => (
-                <Card key={comment.id} style={styles.modalCard}>
-                  <Card.Title
-                    title="Bruno Tavares"
-                    subtitle={formattedDate}
-                    titleVariant="titleSmall"
-                    subtitleVariant="labelSmall"
-                    left={(props) => (
-                      <Avatar.Icon
-                        {...props}
-                        icon="account"
-                        style={{ backgroundColor: '#ededed' }}
-                      />
-                    )}
-                    right={(props) => (
-                      <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-                        <IconButton
+              comments.map((comment) => {
+                const isUserComment = comment.user.id === loggedUser.id;
+
+                return (
+                  <Card key={comment.id} style={styles.modalCard}>
+                    <Card.Title
+                      title="Bruno"
+                      subtitle={formattedDate}
+                      titleVariant="titleSmall"
+                      subtitleVariant="labelSmall"
+                      left={(props) => (
+                        <Avatar.Icon
                           {...props}
-                          icon="pencil"
-                          size={15}
-                          style={{ paddingLeft: 10 }}
-                          onPress={() => handleEditComment(comment.id)}
+                          icon="account"
+                          style={{ backgroundColor: '#ededed' }}
                         />
-                        <IconButton
-                          {...props}
-                          icon="trash-can-outline"
-                          size={15}
-                          style={{ paddingRight: 10 }}
-                          onPress={() => handleDeleteComment(comment.id)}
+                      )}
+                      right={(props) => (
+                        <>
+                          {isUserComment && (
+                            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                              <IconButton
+                                {...props}
+                                icon="pencil"
+                                size={15}
+                                style={{ paddingLeft: 10 }}
+                                onPress={() => handleEditComment(comment.id)}
+                              />
+                              <IconButton
+                                {...props}
+                                icon="trash-can-outline"
+                                size={15}
+                                style={{ paddingRight: 10 }}
+                                onPress={() => handleDeleteComment(comment.id)}
+                              />
+                            </View>
+                          )}
+                        </>
+                      )}
+                    />
+                    <Card.Content>
+                      {editingCommentId === comment.id ? (
+                        <TextInput
+                          value={editingText}
+                          maxLength={100}
+                          onChangeText={setEditingText}
+                          onBlur={handleSaveEditComment}
+                          autoFocus
                         />
-                      </View>
-                    )}
-                  />
-                  <Card.Content>
-                    {editingCommentId === comment.id ? (
-                      <TextInput
-                        value={editingText}
-                        maxLength={100}
-                        onChangeText={setEditingText}
-                        onBlur={handleSaveEditComment}
-                        autoFocus
-                      />
-                    ) : (
-                      <Text>{comment.content}</Text>
-                    )}
-                  </Card.Content>
-                </Card>
-              ))
+                      ) : (
+                        <Text>{comment.content}</Text>
+                      )}
+                    </Card.Content>
+                  </Card>
+                );
+              })
             ) : (
               <Text variant="titleMedium" style={styles.modalNoComments}>
                 Não ha comentarios

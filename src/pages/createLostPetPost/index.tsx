@@ -29,8 +29,6 @@ export const CreateLostPetPost = () => {
     handleSubmitMissingPet,
     missingPetContact,
     setMissingPetContact,
-    handleRemoveSighting,
-    setSightingDate,
   } = usePetsContext();
 
   const speciesInput = useRef(null);
@@ -62,7 +60,6 @@ export const CreateLostPetPost = () => {
   };
 
   const handleInputChange = (field: any, value: string) => {
-    console.log('TCL  handleInputChange  field:', field);
     setTempData({
       ...tempData,
       [field]: field === 'sightingDate' ? formatDate(value) : value,
@@ -87,6 +84,10 @@ export const CreateLostPetPost = () => {
     });
 
     setEditingIndex(null);
+  };
+
+  const handleRemoveSighting = async (sightingId: string) => {
+    setSightings(sightings.filter((sighting) => sighting.id !== sightingId));
   };
 
   return (
@@ -192,7 +193,7 @@ export const CreateLostPetPost = () => {
                           <IconButton
                             {...props}
                             icon="trash-can-outline"
-                            onPress={() => handleRemoveSighting(index)}
+                            onPress={() => handleRemoveSighting(index.toString())}
                             style={{ paddingRight: 10 }}
                             size={20}
                           />

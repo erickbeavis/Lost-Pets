@@ -6,6 +6,7 @@ import { IconButton, Text } from 'react-native-paper';
 
 import { styles } from './styles';
 
+import { Loading } from '~/components/Loading';
 import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
 import { SearchSightingNavigationProp } from '~/types/navigationTypes';
@@ -26,7 +27,6 @@ export const SightingModal = () => {
 
   const isPost = routes.params?.isPost;
   const missingPetId = routes.params?.missingPetId;
-  console.log('TCL  SightingModal  routes:', routes.params);
 
   const handleSightingDate = (e: string) => {
     if (e.length < 8) return setSightingDate(e);
@@ -42,60 +42,63 @@ export const SightingModal = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.label}>Data do Avistamento</Text>
-      <TextInput
-        style={styles.input}
-        value={formatDate(modalSightingDate)}
-        onChangeText={(e) => {
-          handleSightingDate(e);
-          setModalSightingDate(e);
-        }}
-        placeholder="DD/MM/AAAA"
-        keyboardType="numeric"
-        returnKeyType="next"
-        mode="outlined"
-      />
-      <Text style={styles.label}>Descrição do Avistamento</Text>
-      <TextInput
-        style={[styles.input, styles.descriptionInput]}
-        multiline
-        numberOfLines={4}
-        value={sightingDescription}
-        placeholder="Descrição..."
-        onChangeText={setSightingDescription}
-        returnKeyType="done"
-        mode="outlined"
-      />
-      <TouchableOpacity
-        style={styles.sightingPlaceContainer}
-        onPress={() =>
-          navigation.navigate(
-            'searchSighting',
-            isPost && missingPetId
-              ? {
-                  isPost,
-                  missingPetId,
-                }
-              : {}
-          )
-        }>
-        <Text style={[styles.label, styles.sightingPlaceLabel]}>Local do avistamento</Text>
-        <IconButton icon="arrow-right" />
-      </TouchableOpacity>
-      <Text variant="titleMedium" style={styles.sightingAddres}>
-        {sightingLocation.address}
-      </Text>
-      {sightingLocation.latitude !== 0 && sightingLocation.longitude !== 0 && (
-        <View style={{ marginBottom: 20, marginTop: 20 }}>
-          <SightingMap isModal location={sightingLocation} />
-        </View>
-      )}
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={() => handleAddSighting(isPost, missingPetId || '')}>
-        <Text style={styles.submitButtonText}>Salvar</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    <>
+      <Loading />
+      <ScrollView style={styles.container}>
+        <Text style={styles.label}>Data do Avistamento</Text>
+        <TextInput
+          style={styles.input}
+          value={formatDate(modalSightingDate)}
+          onChangeText={(e) => {
+            handleSightingDate(e);
+            setModalSightingDate(e);
+          }}
+          placeholder="DD/MM/AAAA"
+          keyboardType="numeric"
+          returnKeyType="next"
+          mode="outlined"
+        />
+        <Text style={styles.label}>Descrição do Avistamento</Text>
+        <TextInput
+          style={[styles.input, styles.descriptionInput]}
+          multiline
+          numberOfLines={4}
+          value={sightingDescription}
+          placeholder="Descrição..."
+          onChangeText={setSightingDescription}
+          returnKeyType="done"
+          mode="outlined"
+        />
+        <TouchableOpacity
+          style={styles.sightingPlaceContainer}
+          onPress={() =>
+            navigation.navigate(
+              'searchSighting',
+              isPost && missingPetId
+                ? {
+                    isPost,
+                    missingPetId,
+                  }
+                : {}
+            )
+          }>
+          <Text style={[styles.label, styles.sightingPlaceLabel]}>Local do avistamento</Text>
+          <IconButton icon="arrow-right" />
+        </TouchableOpacity>
+        <Text variant="titleMedium" style={styles.sightingAddres}>
+          {sightingLocation.address}
+        </Text>
+        {sightingLocation.latitude !== 0 && sightingLocation.longitude !== 0 && (
+          <View style={{ marginBottom: 20, marginTop: 20 }}>
+            <SightingMap isModal location={sightingLocation} />
+          </View>
+        )}
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => handleAddSighting(isPost, missingPetId || '')}>
+          <Text style={styles.submitButtonText}>Salvar</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </>
   );
 };

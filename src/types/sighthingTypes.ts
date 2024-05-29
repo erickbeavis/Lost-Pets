@@ -1,11 +1,12 @@
 import { LocationType } from './locationTypes';
+import { LoggedUser } from './userTypes';
 
 export interface SighthingType {
-  id: string;
+  id?: string;
   sightingDate: string;
   location: LocationType;
-  userId: string;
   description: string;
+  user: LoggedUser;
 }
 
 export interface SighthingTypeRequest {

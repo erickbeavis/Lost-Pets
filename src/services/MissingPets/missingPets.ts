@@ -3,7 +3,6 @@ import axios from 'axios';
 import { MissingPetTypeRequest } from '~/types/missingPetTypes';
 
 const URL = process.env.URL;
-console.log('TCL  URL:', URL);
 
 export const addMissingPet = async (body: MissingPetTypeRequest, autCookie: string) => {
   try {
@@ -30,6 +29,18 @@ export const getMissingPet = async (lat: number, lng: number, radius: number) =>
     const { data } = await axios.get<Promise<MissingPetTypeRequest>>(
       `${URL}/api/MissingPet?latitude=${lat}&longitude=${lng}&radius=${radius}`
     );
+
+    if (!data) return;
+
+    return data;
+  } catch (err) {
+    throw new Error(`Error ${err}`);
+  }
+};
+
+export const getMissingPetId = async (id: string) => {
+  try {
+    const { data } = await axios.get<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet/${id}`);
 
     if (!data) return;
 

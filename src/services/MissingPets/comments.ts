@@ -5,9 +5,11 @@ type CommentsType = {
   content: string;
 };
 
+const URL = process.env.URL;
+
 export const createComment = async (body: CommentsType, autCookie: string) => {
   try {
-    const { data } = await axios.post('${URL}/api/Comment', body, {
+    const { data } = await axios.post(`${URL}/api/Comment`, body, {
       headers: {
         Authorization: `Bearer ${autCookie}`,
       },
