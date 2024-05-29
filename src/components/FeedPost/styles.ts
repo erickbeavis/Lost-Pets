@@ -32,6 +32,7 @@ export const styles = StyleSheet.create({
   petDescription: {
     marginTop: 8,
     fontSize: 16,
+    width: '100%',
   },
   postSightingsModalContainer: {
     justifyContent: 'center',
@@ -68,5 +69,15 @@ export const styles = StyleSheet.create({
   },
   sightingDescription: {
     marginBottom: 12,
+  },
+  editInput: {
+    fontSize: 16,
+    marginTop: 10,
+    backgroundColor: '#fffafa',
+    height: 50,
+  },
+  editTextarea: {
+    height: 100,
+    width: 280,
   },
 });

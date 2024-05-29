@@ -19,3 +19,8 @@ export interface MissingPetType {
   user: LoggedUser;
   status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
 }
+
+export interface EditMissingPetType {
+  pet: PetTypeRequest;
+  status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
+}

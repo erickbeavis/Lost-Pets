@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { MissingPetTypeRequest } from '~/types/missingPetTypes';
+import { EditMissingPetType, MissingPetTypeRequest } from '~/types/missingPetTypes';
 
 const URL = process.env.URL;
 
@@ -50,13 +50,21 @@ export const getMissingPetId = async (id: string) => {
   }
 };
 
-export const editMissingPet = async (petId: string, body: MissingPetTypeRequest) => {
+export const editMissingPet = async (
+  petId: string,
+  body: EditMissingPetType,
+  autCookie: string
+) => {
   try {
-    const { data } = await axios.put<Promise<MissingPetTypeRequest>>(`/missing-pet/${petId}`, {
+    const { data } = await axios.put<Promise<MissingPetTypeRequest>>(
+      `${URL}/api/MissingPet/${petId}`,
       body,
-    });
-
-    if (!data) return;
+      {
+        headers: {
+          Authorization: `Bearer ${autCookie}`,
+        },
+      }
+    );
 
     return data;
   } catch (err) {
@@ -64,9 +72,13 @@ export const editMissingPet = async (petId: string, body: MissingPetTypeRequest)
   }
 };
 
-export const deleteMissingPet = async (petId: string) => {
+export const deleteMissingPet = async (petId: string, autCookie: string) => {
   try {
-    await axios.delete<Promise<MissingPetTypeRequest>>(`/missing-pet/${petId}`);
+    return await axios.delete<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet/${petId}`, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
+    });
   } catch (err) {
     throw new Error(`Error ${err}`);
   }

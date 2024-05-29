@@ -13,6 +13,6 @@ export interface PetTypeRequest {
   name: string;
   species: string;
   age: number;
-  photos: PhotoType[];
+  photos?: PhotoType[];
   description: string;
 }

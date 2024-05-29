@@ -118,7 +118,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
                 return (
                   <Card key={comment.id} style={styles.modalCard}>
                     <Card.Title
-                      title="Bruno"
+                      title={comment.user.email}
                       subtitle={formattedDate}
                       titleVariant="titleSmall"
                       subtitleVariant="labelSmall"
@@ -183,6 +183,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
               value={textInput}
               onChangeText={(text) => setTextInput(text)}
               onBlur={() => handleAddComment(textInput)}
+              mode="outlined"
             />
           </View>
         ) : (
@@ -194,6 +195,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
                 value={textInput}
                 onChangeText={(text) => setTextInput(text)}
                 onBlur={() => handleAddComment(textInput)}
+                mode="outlined"
               />
             </View>
           </KeyboardAvoidingView>

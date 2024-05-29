@@ -1,16 +1,28 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import { Avatar, Card, IconButton, Text, Chip, Portal, Modal, List } from 'react-native-paper';
+import {
+  Avatar,
+  Card,
+  IconButton,
+  Text,
+  Chip,
+  Portal,
+  Modal,
+  List,
+  TextInput,
+} from 'react-native-paper';
 
 import { styles } from './styles';
 import { Comments } from '../Comments';
 import { SightingMap } from '../SightingMap';
 
 import { usePetsContext } from '~/context/petsContext';
+import { deleteMissingPet, editMissingPet } from '~/services/MissingPets/missingPets';
 import { MissingPetType } from '~/types/missingPetTypes';
 import { SightingModalNavigationProp } from '~/types/navigationTypes';
 import { PhotoType } from '~/types/photoTypes';
+import { getUserToken } from '~/utils/getUserToken';
 
 type FeedPostProps = {
   item: MissingPetType;
@@ -18,10 +30,20 @@ type FeedPostProps = {
 };
 
 export const FeedPost = ({ item, index }: FeedPostProps) => {
-  const { handleRemoveSighting, loggedUser } = usePetsContext();
+  const { handleRemoveSighting, loggedUser, handleSearchMissingPet } = usePetsContext();
+  const [isEditing, setIsEditing] = useState(false);
+  const [petName, setPetName] = useState(item.pet.name);
+  const [petSpecies, setPetSpecies] = useState(item.pet.species);
+  const [petAge, setPetAge] = useState(item.pet.age.toString());
+  const [userContact, setUserContact] = useState(item.user.contacts[0]?.content);
+  const [petDescription, setPetDescription] = useState(item.pet.description);
+
   const [visible, setVisible] = useState(false);
   const [renderPostSightings, setRenderPostSightings] = useState(false);
+
   const navigation = useNavigation<SightingModalNavigationProp>();
+
+  const isUserPost = item.user.id === loggedUser.id;
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -32,9 +54,46 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
     navigation.navigate('sightingModal', { isPost: true, missingPetId: item.id });
   };
 
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleConfirmEdit = async (id: string) => {
+    setIsEditing(false);
+
+    const autCookie = await getUserToken();
+
+    if (!autCookie) return;
+
+    const body = {
+      pet: {
+        id,
+        name: petName,
+        species: petSpecies,
+        age: Number(petAge),
+        description: petDescription,
+      },
+      status: 0,
+    };
+
+    await editMissingPet(id, body, autCookie);
+
+    handleSearchMissingPet();
+  };
+
+  const handleDelete = async (id: string) => {
+    const autCookie = await getUserToken();
+
+    if (!autCookie) return;
+
+    await deleteMissingPet(id, autCookie);
+
+    handleSearchMissingPet();
+  };
+
   return (
     <View style={styles.cardContainer} key={index}>
-      <Card>
+      <Card style={{ backgroundColor: '#fffafa' }}>
         <Card.Title
           title={item.user.email}
           subtitle={new Date(item.createdAt).toLocaleDateString()}
@@ -42,17 +101,52 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
           left={(props) => (
             <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
           )}
-          right={(props) => <IconButton {...props} icon="dots-vertical" onPress={() => {}} />}
+          right={(props) => (
+            <>
+              {isUserPost && (
+                <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                  <IconButton
+                    {...props}
+                    icon={isEditing ? 'check' : 'pencil'}
+                    size={15}
+                    style={{ paddingLeft: 10 }}
+                    onPress={() =>
+                      isEditing ? handleConfirmEdit(item.pet.id) : handleEditToggle()
+                    }
+                  />
+                  {!isEditing && (
+                    <IconButton
+                      {...props}
+                      icon="trash-can-outline"
+                      size={15}
+                      style={{ paddingRight: 10 }}
+                      onPress={() => handleDelete(item.id)}
+                    />
+                  )}
+                </View>
+              )}
+            </>
+          )}
         />
         <Card.Content>
           <View>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ flexWrap: 'wrap' }}>
               <List.Item
                 title="Nome Pet"
-                description={item.pet.name}
+                description={
+                  isEditing
+                    ? () => (
+                        <TextInput
+                          value={petName}
+                          mode="outlined"
+                          style={styles.editInput}
+                          onChangeText={setPetName}
+                        />
+                      )
+                    : petName
+                }
                 titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0, marginRight: 10 }}
-                style={{ width: '50%' }}
+                contentStyle={{ paddingLeft: 0 }}
                 left={(props) => (
                   <IconButton
                     {...props}
@@ -64,10 +158,20 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               />
               <List.Item
                 title="Especie/Raça"
-                description={item.pet.species}
+                description={
+                  isEditing
+                    ? () => (
+                        <TextInput
+                          value={petSpecies}
+                          mode="outlined"
+                          style={styles.editInput}
+                          onChangeText={setPetSpecies}
+                        />
+                      )
+                    : petSpecies
+                }
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0 }}
-                style={{ width: '50%' }}
                 left={(props) => (
                   <IconButton
                     {...props}
@@ -77,13 +181,23 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   />
                 )}
               />
-            </View>
-            <View style={{ flexDirection: 'row' }}>
               <List.Item
                 title="Idade Pet"
-                description={`${item.pet.age} ${item.pet.age.toString().includes('0') ? 'meses' : 'anos'}`}
+                description={
+                  isEditing
+                    ? () => (
+                        <TextInput
+                          value={petAge}
+                          mode="outlined"
+                          style={styles.editInput}
+                          onChangeText={setPetAge}
+                          keyboardType="numeric"
+                        />
+                      )
+                    : `${petAge} ${petAge.includes('0') ? 'meses' : 'anos'}`
+                }
                 titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0, marginRight: 10 }}
+                contentStyle={{ paddingLeft: 0 }}
                 left={(props) => (
                   <IconButton
                     {...props}
@@ -95,7 +209,19 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               />
               <List.Item
                 title="Contato"
-                description={item.user.contacts[0]?.content}
+                description={
+                  isEditing
+                    ? () => (
+                        <TextInput
+                          value={userContact}
+                          mode="outlined"
+                          style={styles.editInput}
+                          keyboardType="numeric"
+                          onChangeText={setUserContact}
+                        />
+                      )
+                    : userContact
+                }
                 titleStyle={{ fontWeight: 'bold' }}
                 contentStyle={{ paddingLeft: 0 }}
                 left={(props) => (
@@ -109,7 +235,21 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               />
             </View>
           </View>
-          <Text style={styles.petDescription}>{item.pet.description}</Text>
+          <Text style={styles.petDescription}>
+            {isEditing ? (
+              <TextInput
+                value={petDescription}
+                mode="outlined"
+                style={[styles.editInput, styles.editTextarea]}
+                keyboardType="numeric"
+                multiline
+                numberOfLines={4}
+                onChangeText={setPetDescription}
+              />
+            ) : (
+              petDescription
+            )}
+          </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.cardImgContinainer}>
               {item.pet.photos?.map((photo: PhotoType, index: number) => {
