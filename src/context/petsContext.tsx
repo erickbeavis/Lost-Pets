@@ -162,7 +162,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!autCookie) return;
 
     let newSighting = {
-      user: loggedUser,
+      user: loggedUser.user,
       sightingDate,
       location: {
         latitude,
@@ -253,7 +253,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const data = (await getMissingPet(feedLocation.lat, feedLocation.lng, 10000000)) as any;
 
-    setMissingPetPost(data);
+    setMissingPetPost(data ?? []);
     setLoading(false);
   };
 

@@ -158,7 +158,13 @@ export const CreateLostPetPost = () => {
                   return (
                     <Card style={styles.sightingCard} key={index}>
                       <Card.Title
-                        title={editingIndex === index ? <></> : item.sightingDate}
+                        title={
+                          editingIndex === index ? (
+                            <></>
+                          ) : (
+                            new Date(item.sightingDate).toLocaleDateString()
+                          )
+                        }
                         titleVariant="titleMedium"
                         right={(props) => (
                           <View style={{ flexDirection: 'row' }}>
@@ -192,7 +198,7 @@ export const CreateLostPetPost = () => {
                       <Card.Content>
                         {editingIndex === index ? (
                           <TextInput
-                            value={tempData.sightingDate}
+                            value={new Date(tempData.sightingDate).toLocaleDateString()}
                             onChangeText={(text) => handleInputChange('sightingDate', text)}
                             style={[styles.input, { marginBottom: 10 }]}
                             placeholder="DD/MM/AAAA"

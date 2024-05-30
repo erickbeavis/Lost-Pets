@@ -12,6 +12,7 @@ import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
   const { missingPetPost, tabIndex, setTabIndex, feedLocation, loading } = usePetsContext();
+  console.log('TCL  missingPetPost:', missingPetPost);
 
   return (
     <>

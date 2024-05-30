@@ -288,43 +288,52 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                     style={{ backgroundColor: '#228c80' }}
                   />
                 </View>
-                {item.sightings.map(({ sightingDate, description, location, id, user }) => {
-                  const isUserSighting = user.id === loggedUser.id;
+                {item.sightings.map(
+                  ({ sightingDate, description, location, id, user }, index: number) => {
+                    const isUserSighting = user.id === loggedUser.id;
 
-                  return (
-                    <Card style={styles.sightingCard} key={id}>
-                      <Card.Title
-                        title={new Date(sightingDate).toLocaleDateString()}
-                        titleVariant="titleMedium"
-                        right={(props) => (
-                          <>
-                            {isUserSighting && (
-                              <IconButton
-                                {...props}
-                                icon="trash-can-outline"
-                                onPress={() => {
-                                  handleRemoveSighting(`${id}`);
-                                  setRenderPostSightings(false);
-                                }}
-                                style={{ paddingRight: 10 }}
-                                size={20}
-                              />
-                            )}
-                          </>
-                        )}
-                      />
-                      <Card.Content>
-                        <Text style={styles.sightingDescription} variant="bodyMedium">
-                          {description}
-                        </Text>
-                        <Text variant="bodyMedium">{location?.address}</Text>
-                        <View style={styles.sightingLocation}>
-                          <SightingMap isModal location={location} />
-                        </View>
-                      </Card.Content>
-                    </Card>
-                  );
-                })}
+                    return (
+                      <Card style={styles.sightingCard} key={id}>
+                        <Card.Title
+                          title={new Date(sightingDate).toLocaleDateString()}
+                          titleVariant="titleMedium"
+                          right={(props) => (
+                            <>
+                              {isUserSighting && (
+                                <IconButton
+                                  {...props}
+                                  icon="trash-can-outline"
+                                  onPress={() => {
+                                    if (item.sightings.length === 1) {
+                                      alert(
+                                        'Não foi possível remover. \n\nÉ necessário pelo menos um avistamento por publicação.'
+                                      );
+                                      return;
+                                    }
+
+                                    handleRemoveSighting(`${id}`);
+                                    setRenderPostSightings(false);
+                                  }}
+                                  style={{ paddingRight: 10 }}
+                                  size={20}
+                                />
+                              )}
+                            </>
+                          )}
+                        />
+                        <Card.Content>
+                          <Text style={styles.sightingDescription} variant="bodyMedium">
+                            {description}
+                          </Text>
+                          <Text variant="bodyMedium">{location?.address}</Text>
+                          <View style={styles.sightingLocation}>
+                            <SightingMap isModal location={location} />
+                          </View>
+                        </Card.Content>
+                      </Card>
+                    );
+                  }
+                )}
               </ScrollView>
             </Modal>
           </Portal>
