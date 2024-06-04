@@ -6,12 +6,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './styles';
 
-import { ImagePickerScreen } from '~/components/ImagePickerScreen';
+// import { ImagePickerScreen } from '~/components/ImagePickerScreen';
 import { Loading } from '~/components/Loading';
 import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
 import { SighthingType } from '~/types/sighthingTypes';
-import { formatDate } from '~/utils/formatDate';
 
 export const CreateLostPetPost = () => {
   const {
@@ -39,7 +38,6 @@ export const CreateLostPetPost = () => {
   const [editingIndex, setEditingIndex] = useState<any>(null);
   const [tempData, setTempData] = useState({
     description: '',
-    sightingDate: '',
     address: '',
   });
 
@@ -53,7 +51,6 @@ export const CreateLostPetPost = () => {
     setEditingIndex(index);
     setTempData({
       description: item.description,
-      sightingDate: item.sightingDate,
       address: item.location.address,
     });
   };
@@ -61,7 +58,7 @@ export const CreateLostPetPost = () => {
   const handleInputChange = (field: any, value: string) => {
     setTempData({
       ...tempData,
-      [field]: field === 'sightingDate' ? formatDate(value) : value,
+      [field]: value,
     });
   };
 
@@ -69,7 +66,6 @@ export const CreateLostPetPost = () => {
     const updatedSighting = {
       ...item,
       description: tempData.description,
-      sightingDate: tempData.sightingDate,
       location: {
         ...item.location,
         address: tempData.address,
@@ -85,8 +81,8 @@ export const CreateLostPetPost = () => {
     setEditingIndex(null);
   };
 
-  const handleRemoveSighting = async (sightingId: string) => {
-    setSightings(sightings.filter((sighting) => sighting.id !== sightingId));
+  const handleRemoveSighting = async (index: number) => {
+    setSightings(sightings.filter((_, i) => i !== index));
   };
 
   return (
@@ -158,13 +154,7 @@ export const CreateLostPetPost = () => {
                   return (
                     <Card style={styles.sightingCard} key={index}>
                       <Card.Title
-                        title={
-                          editingIndex === index ? (
-                            <></>
-                          ) : (
-                            new Date(item.sightingDate).toLocaleDateString()
-                          )
-                        }
+                        title={new Date(item.sightingDate).toLocaleDateString()}
                         titleVariant="titleMedium"
                         right={(props) => (
                           <View style={{ flexDirection: 'row' }}>
@@ -188,7 +178,7 @@ export const CreateLostPetPost = () => {
                             <IconButton
                               {...props}
                               icon="trash-can-outline"
-                              onPress={() => handleRemoveSighting(index.toString())}
+                              onPress={() => handleRemoveSighting(index)}
                               style={{ paddingRight: 10 }}
                               size={20}
                             />
@@ -196,17 +186,6 @@ export const CreateLostPetPost = () => {
                         )}
                       />
                       <Card.Content>
-                        {editingIndex === index ? (
-                          <TextInput
-                            value={new Date(tempData.sightingDate).toLocaleDateString()}
-                            onChangeText={(text) => handleInputChange('sightingDate', text)}
-                            style={[styles.input, { marginBottom: 10 }]}
-                            placeholder="DD/MM/AAAA"
-                            keyboardType="numeric"
-                          />
-                        ) : (
-                          <></>
-                        )}
                         {editingIndex === index ? (
                           <TextInput
                             value={tempData.description}
@@ -227,7 +206,7 @@ export const CreateLostPetPost = () => {
                 })}
               </>
             )}
-            <ImagePickerScreen />
+            {/* <ImagePickerScreen /> */}
             <TouchableOpacity style={styles.submitButton} onPress={handleSubmitMissingPet}>
               <Text style={styles.submitButtonText}>Enviar Publicação</Text>
             </TouchableOpacity>

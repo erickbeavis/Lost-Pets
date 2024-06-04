@@ -66,6 +66,8 @@ export const editMissingPet = async (
       }
     );
 
+    if (!data) return;
+
     return data;
   } catch (err) {
     throw new Error(`Error ${err}`);

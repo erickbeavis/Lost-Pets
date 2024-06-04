@@ -110,9 +110,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                     icon={isEditing ? 'check' : 'pencil'}
                     size={15}
                     style={{ paddingLeft: 10 }}
-                    onPress={() =>
-                      isEditing ? handleConfirmEdit(item.pet.id) : handleEditToggle()
-                    }
+                    onPress={() => (isEditing ? handleConfirmEdit(item.id) : handleEditToggle())}
                   />
                   {!isEditing && (
                     <IconButton
@@ -233,23 +231,26 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   />
                 )}
               />
+              <List.Item
+                title=""
+                description={
+                  isEditing
+                    ? () => (
+                        <TextInput
+                          value={petDescription}
+                          mode="outlined"
+                          style={[styles.editInput, styles.editTextarea]}
+                          multiline
+                          numberOfLines={4}
+                          onChangeText={setPetDescription}
+                        />
+                      )
+                    : petDescription
+                }
+                descriptionStyle={{ fontSize: 16 }}
+              />
             </View>
           </View>
-          <Text style={styles.petDescription}>
-            {isEditing ? (
-              <TextInput
-                value={petDescription}
-                mode="outlined"
-                style={[styles.editInput, styles.editTextarea]}
-                keyboardType="numeric"
-                multiline
-                numberOfLines={4}
-                onChangeText={setPetDescription}
-              />
-            ) : (
-              petDescription
-            )}
-          </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.cardImgContinainer}>
               {item.pet.photos?.map((photo: PhotoType, index: number) => {

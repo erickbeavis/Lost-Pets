@@ -36,9 +36,9 @@ export const SightingModal = () => {
     const month = parseInt(date[1], 10) - 1;
     const year = parseInt(date[2], 10);
 
-    const teste = new Date(year, month, day);
+    const formattedDate = new Date(year, month, day);
 
-    setSightingDate(teste.toISOString());
+    setSightingDate(formattedDate.toISOString());
   };
 
   return (

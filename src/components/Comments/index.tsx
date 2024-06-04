@@ -160,6 +160,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
                           onChangeText={setEditingText}
                           onBlur={handleSaveEditComment}
                           autoFocus
+                          mode="outlined"
                         />
                       ) : (
                         <Text>{comment.content}</Text>

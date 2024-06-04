@@ -1,6 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
 
 import { CreateLostPetPost } from '../pages/createLostPetPost/index';
 import { CreateUser } from '../pages/createUser';
@@ -27,7 +26,8 @@ const Routes = () => {
         component={CreateUser}
         options={{
           headerShown: true,
-          headerTitle: 'Login',
+          headerTitle: Platform.OS === 'android' ? 'Voltar' : '',
+          headerBackTitle: 'Voltar',
         }}
       />
       <Stack.Screen

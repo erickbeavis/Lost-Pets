@@ -5,10 +5,11 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
+import { TextInput } from 'react-native-paper';
 
 import { styles } from './styles';
 
@@ -26,40 +27,43 @@ export const Login = () => {
   return (
     <>
       <Loading />
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.Container}>
-          <View style={styles.UserImage}>
-            <Image source={require('../../../assets/paw-pet-login.png')} style={styles.Image} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.Container}>
+            <View style={styles.UserImage}>
+              <Image source={require('../../../assets/paw-pet-login.png')} style={styles.Image} />
+            </View>
+            <View style={styles.form}>
+              <TextInput
+                style={styles.inputEmail}
+                placeholder="Email"
+                autoCapitalize="none"
+                placeholderTextColor="#000"
+                onChangeText={(text) => setUserEmail(text)}
+              />
+              <TextInput
+                style={styles.inputPassword}
+                placeholder="Senha"
+                autoCapitalize="none"
+                autoCorrect
+                placeholderTextColor="#000"
+                onChangeText={(text) => setUserPassword(text)}
+                secureTextEntry
+              />
+              <TouchableOpacity
+                style={styles.buttonForm}
+                onPress={() => handleSubmitLogin(userEmail, userPassword)}>
+                <Text style={styles.textButton}>Entrar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('createUser')}>
+                <Text style={styles.ButtonCreate}>Ainda não possui uma conta?</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.form}>
-            <TextInput
-              style={styles.inputEmail}
-              placeholder="Email"
-              autoCompleteType="email"
-              autoCapitalize="none"
-              placeholderTextColor="#000"
-              onChangeText={(text) => setUserEmail(text)}
-            />
-            <TextInput
-              style={styles.inputPassword}
-              placeholder="Senha"
-              autoCompleteType="password"
-              autoCapitalize="none"
-              autoCorrect
-              placeholderTextColor="#000"
-              onChangeText={(text) => setUserPassword(text)}
-            />
-            <TouchableOpacity
-              style={styles.buttonForm}
-              onPress={() => handleSubmitLogin(userEmail, userPassword)}>
-              <Text style={styles.textButton}>Entrar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('createUser')}>
-              <Text style={styles.ButtonCreate}>Ainda não possui uma conta?</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 };
