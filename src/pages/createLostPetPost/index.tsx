@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './styles';
 
-// import { ImagePickerScreen } from '~/components/ImagePickerScreen';
+import { ImagePickerScreen } from '~/components/ImagePickerScreen';
 import { Loading } from '~/components/Loading';
 import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
@@ -206,7 +206,7 @@ export const CreateLostPetPost = () => {
                 })}
               </>
             )}
-            {/* <ImagePickerScreen /> */}
+            <ImagePickerScreen />
             <TouchableOpacity style={styles.submitButton} onPress={handleSubmitMissingPet}>
               <Text style={styles.submitButtonText}>Enviar Publicação</Text>
             </TouchableOpacity>

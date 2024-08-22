@@ -44,6 +44,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
   const navigation = useNavigation<SightingModalNavigationProp>();
 
   const isUserPost = item.user.id === loggedUser.id;
+  console.log('TCL  item:', item.pet);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -181,7 +182,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                     </Text>
                     <Text style={styles.postContent}>
                       {userContact
-                        .replace(/\D/g, '')
+                        ?.replace(/\D/g, '')
                         .replace(/(\d{2})(\d{5})(\d{4})/, ' ($1) $2-$3')}
                     </Text>
                   </View>

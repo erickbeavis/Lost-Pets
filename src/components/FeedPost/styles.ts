@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   },
   postSightingsModalContent: {
     width: '90%',
-    maxHeight: '100%',
+    height: '90%',
     backgroundColor: '#fff',
     borderRadius: 10,
   },
