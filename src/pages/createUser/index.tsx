@@ -7,6 +7,7 @@ import { styles } from './styles';
 
 import { Loading } from '~/components/Loading';
 import { usePetsContext } from '~/context/petsContext';
+import { UserErrorTypes } from '~/types/userTypes';
 
 export const CreateUser = () => {
   const { handleRegisterUser } = usePetsContext();
@@ -23,11 +24,58 @@ export const CreateUser = () => {
     },
   ]);
 
-  const userData = {
-    userName,
-    email,
-    password,
-    contacts,
+  const [errors, setErrors] = useState<UserErrorTypes>({
+    name: '',
+    email: '',
+    password: '',
+    phone: '',
+  });
+
+  const validateFields = () => {
+    let isValid = true;
+
+    const newErrors: UserErrorTypes = {};
+    const userNameRegex = /^[a-zA-Z]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+
+    if (userName === '' || !userNameRegex.test(userName)) {
+      newErrors.name =
+        userName === '' ? 'Nome inválido' : 'Não é permitido espaço e caracteres especiais';
+      isValid = false;
+    }
+
+    if (email === '' || !emailRegex.test(email)) {
+      newErrors.email = 'Email inválido';
+      isValid = false;
+    }
+
+    if (password === '' || password.length < 6) {
+      newErrors.password = 'A senha deve ter pelo menos 6 caracteres';
+      isValid = false;
+    }
+
+    if (contacts[0].content === '' || !phoneRegex.test(contacts[0].content)) {
+      newErrors.phone = 'Número de celular inválido';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+
+    return isValid;
+  };
+
+  const handleRegister = () => {
+    validateFields();
+
+    if (!validateFields()) return;
+
+    handleRegisterUser({
+      userName,
+      email,
+      password,
+      contacts,
+    });
   };
 
   return (
@@ -48,8 +96,12 @@ export const CreateUser = () => {
                 placeholderTextColor="#000"
                 autoCorrect={false}
                 onChangeText={(text) => setUserName(text)}
+                error={!!errors.name}
               />
+              {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
+
               <TextInput
+                value={email}
                 style={styles.inputForm}
                 placeholder="Email"
                 autoComplete="email"
@@ -57,8 +109,12 @@ export const CreateUser = () => {
                 autoCorrect={false}
                 placeholderTextColor="#000"
                 onChangeText={(text) => setEmail(text)}
+                error={!!errors.email}
               />
+              {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+
               <TextInput
+                value={password}
                 style={styles.inputForm}
                 placeholder="Senha"
                 autoComplete="password"
@@ -66,28 +122,38 @@ export const CreateUser = () => {
                 autoCorrect={false}
                 onChangeText={(text) => setPassword(text)}
                 secureTextEntry
+                error={!!errors.password}
               />
+              {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+
               <TextInput
+                value={contacts[0].content}
                 style={styles.inputForm}
-                placeholder="Numero Telefone"
+                placeholder="Celular"
                 placeholderTextColor="#000"
                 autoCorrect={false}
                 keyboardType="numeric"
                 returnKeyType="done"
-                onChangeText={(text) =>
+                maxLength={15}
+                onChangeText={(text) => {
+                  const formattedText = text
+                    .replace(/\D/g, '')
+                    .replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+
                   setContacts([
                     {
                       type: 0,
-                      content: text,
+                      content: formattedText,
                       createdAt: new Date(),
                       updatedAt: null,
                     },
-                  ])
-                }
+                  ]);
+                }}
+                error={!!errors.phone}
               />
-              <TouchableOpacity
-                style={styles.buttonForm}
-                onPress={() => handleRegisterUser(userData)}>
+              {errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
+
+              <TouchableOpacity style={styles.buttonForm} onPress={handleRegister}>
                 <Text style={styles.textButton}>Cadastrar</Text>
               </TouchableOpacity>
             </View>

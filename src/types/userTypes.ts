@@ -30,3 +30,10 @@ export interface LoggedUser {
   createdAt: string;
   updatedAt: null | string;
 }
+
+export interface UserErrorTypes {
+  name?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+}

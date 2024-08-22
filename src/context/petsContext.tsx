@@ -108,26 +108,17 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setLoading(true);
 
-      if (
-        data.email === '' ||
-        data.password === '' ||
-        data.userName === '' ||
-        data.contacts[0].content === ''
-      ) {
-        alert('Preencha todos os campos');
-        setLoading(false);
-
-        return;
-      }
-
       await registerUser(data);
+
+      await handleSubmitLogin(data.email, data.password);
 
       setLoading(false);
 
       alert('Usuario cadastrado com sucesso!');
-      navigation.navigate('login');
     } catch (err) {
       setLoading(false);
+
+      alert('Ocorreu um erro inesperado');
 
       throw new Error(`Error ${err}`);
     }
@@ -138,8 +129,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
 
       const data: LoginResponse = await loginUser({
-        email,
-        password,
+        email: 'bruno@gmail.com',
+        password: '123456',
       });
 
       const { token, user } = data;

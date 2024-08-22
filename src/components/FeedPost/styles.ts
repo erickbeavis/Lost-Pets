@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   cardImgContinainer: {
-    marginTop: 20,
+    marginTop: 15,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'center',
@@ -28,6 +28,9 @@ export const styles = StyleSheet.create({
   cardSightings: {
     marginTop: 16,
     marginBottom: 0,
+  },
+  postContent: {
+    fontSize: 16,
   },
   petDescription: {
     marginTop: 8,
@@ -74,10 +77,14 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     backgroundColor: '#fffafa',
-    height: 50,
+    height: 40,
+    width: '100%',
   },
   editTextarea: {
     height: 100,
-    width: 280,
+  },
+  postTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

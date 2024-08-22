@@ -26,8 +26,9 @@ const Routes = () => {
         component={CreateUser}
         options={{
           headerShown: true,
-          headerTitle: Platform.OS === 'android' ? 'Voltar' : '',
-          headerBackTitle: 'Voltar',
+          headerTitle: Platform.OS === 'android' ? 'Login' : '',
+          headerBackTitle: 'Login',
+          headerTintColor: '#000',
         }}
       />
       <Stack.Screen

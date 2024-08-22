@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputForm: {
+    borderWidth: 1,
     backgroundColor: '#FFF',
     marginTop: 16,
     width: 250,
@@ -42,5 +43,8 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     textTransform: 'uppercase',
+  },
+  errorText: {
+    color: '#FFD700',
   },
 });

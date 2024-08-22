@@ -127,129 +127,68 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
           )}
         />
         <Card.Content>
-          <View>
-            <View style={{ flexWrap: 'wrap' }}>
-              <List.Item
-                title="Nome Pet"
-                description={
-                  isEditing
-                    ? () => (
-                        <TextInput
-                          value={petName}
-                          mode="outlined"
-                          style={styles.editInput}
-                          onChangeText={setPetName}
-                        />
-                      )
-                    : petName
-                }
-                titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0 }}
-                left={(props) => (
-                  <IconButton
-                    {...props}
-                    icon="checkbox-blank-circle"
-                    size={8}
-                    style={{ justifyContent: 'flex-start' }}
-                  />
-                )}
-              />
-              <List.Item
-                title="Especie/Raça"
-                description={
-                  isEditing
-                    ? () => (
-                        <TextInput
-                          value={petSpecies}
-                          mode="outlined"
-                          style={styles.editInput}
-                          onChangeText={setPetSpecies}
-                        />
-                      )
-                    : petSpecies
-                }
-                titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0 }}
-                left={(props) => (
-                  <IconButton
-                    {...props}
-                    icon="checkbox-blank-circle"
-                    size={8}
-                    style={{ justifyContent: 'flex-start' }}
-                  />
-                )}
-              />
-              <List.Item
-                title="Idade Pet"
-                description={
-                  isEditing
-                    ? () => (
-                        <TextInput
-                          value={petAge}
-                          mode="outlined"
-                          style={styles.editInput}
-                          onChangeText={setPetAge}
-                          keyboardType="numeric"
-                        />
-                      )
-                    : `${petAge} ${petAge.includes('0') ? 'meses' : 'anos'}`
-                }
-                titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0 }}
-                left={(props) => (
-                  <IconButton
-                    {...props}
-                    icon="checkbox-blank-circle"
-                    size={8}
-                    style={{ justifyContent: 'flex-start' }}
-                  />
-                )}
-              />
-              <List.Item
-                title="Contato"
-                description={
-                  isEditing
-                    ? () => (
-                        <TextInput
-                          value={userContact}
-                          mode="outlined"
-                          style={styles.editInput}
-                          keyboardType="numeric"
-                          onChangeText={setUserContact}
-                        />
-                      )
-                    : userContact
-                }
-                titleStyle={{ fontWeight: 'bold' }}
-                contentStyle={{ paddingLeft: 0 }}
-                left={(props) => (
-                  <IconButton
-                    {...props}
-                    icon="checkbox-blank-circle"
-                    size={8}
-                    style={{ justifyContent: 'flex-start' }}
-                  />
-                )}
-              />
-              <List.Item
-                title=""
-                description={
-                  isEditing
-                    ? () => (
-                        <TextInput
-                          value={petDescription}
-                          mode="outlined"
-                          style={[styles.editInput, styles.editTextarea]}
-                          multiline
-                          numberOfLines={4}
-                          onChangeText={setPetDescription}
-                        />
-                      )
-                    : petDescription
-                }
-                descriptionStyle={{ fontSize: 16 }}
-              />
-            </View>
+          <View style={{ flexWrap: 'wrap' }}>
+            {isEditing ? (
+              <>
+                <TextInput
+                  value={petName}
+                  mode="outlined"
+                  style={styles.editInput}
+                  onChangeText={setPetName}
+                />
+                <TextInput
+                  value={petSpecies}
+                  mode="outlined"
+                  style={styles.editInput}
+                  onChangeText={setPetSpecies}
+                />
+                <TextInput
+                  value={petAge}
+                  mode="outlined"
+                  style={styles.editInput}
+                  onChangeText={setPetAge}
+                  keyboardType="numeric"
+                />
+                <TextInput
+                  value={userContact}
+                  mode="outlined"
+                  style={styles.editInput}
+                  keyboardType="numeric"
+                  onChangeText={setUserContact}
+                />
+                <TextInput
+                  value={petDescription}
+                  mode="outlined"
+                  style={[styles.editInput, styles.editTextarea]}
+                  multiline
+                  numberOfLines={4}
+                  onChangeText={setPetDescription}
+                />
+              </>
+            ) : (
+              <>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}>
+                  <Text style={styles.postTitle}>
+                    {petName} | {petSpecies}
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.postContent}>
+                      {petAge} {petAge.includes('0') ? 'meses' : 'anos'} |
+                    </Text>
+                    <Text style={styles.postContent}>
+                      {userContact
+                        .replace(/\D/g, '')
+                        .replace(/(\d{2})(\d{5})(\d{4})/, ' ($1) $2-$3')}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.petDescription}>{petDescription}</Text>
+              </>
+            )}
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.cardImgContinainer}>
