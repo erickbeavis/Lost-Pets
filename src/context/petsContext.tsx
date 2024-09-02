@@ -129,8 +129,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
 
       const data: LoginResponse = await loginUser({
-        email: 'bruno@gmail.com',
-        password: '123456',
+        email,
+        password,
       });
 
       const { token, user } = data;
