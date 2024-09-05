@@ -7,6 +7,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#000',
     height: '100%',
     width: '100%',
-    opacity: 0.5,
+    opacity: 0.8,
   },
 });

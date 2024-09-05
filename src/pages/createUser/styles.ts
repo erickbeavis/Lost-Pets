@@ -7,11 +7,19 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#228c80',
   },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 40,
+    backgroundColor: '#228c80',
+  },
   title: {
     fontSize: 30,
     marginBottom: 30,
     fontWeight: 'bold',
     color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
   },
   form: {
     alignItems: 'center',

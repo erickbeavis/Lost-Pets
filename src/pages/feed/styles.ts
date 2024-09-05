@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     paddingRight: 12,
   },
   feedMapLocation: {
-    height: '8%',
+    height: 40,
     justifyContent: 'center',
     backgroundColor: '#ededed',
   },

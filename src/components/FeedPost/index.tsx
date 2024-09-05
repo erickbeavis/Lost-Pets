@@ -11,6 +11,7 @@ import {
   Modal,
   List,
   TextInput,
+  Icon,
 } from 'react-native-paper';
 
 import { styles } from './styles';
@@ -44,7 +45,6 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
   const navigation = useNavigation<SightingModalNavigationProp>();
 
   const isUserPost = item.user.id === loggedUser.id;
-  console.log('TCL  item:', item.pet);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -60,11 +60,15 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
   };
 
   const handleConfirmEdit = async (id: string) => {
-    setIsEditing(false);
-
     const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+    if (!autCookie || petName === '' || petSpecies === '' || petAge === '') {
+      alert('Preencha todos os campos');
+
+      return;
+    }
+
+    setIsEditing(false);
 
     const body = {
       pet: {
@@ -134,18 +138,24 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                 <TextInput
                   value={petName}
                   mode="outlined"
+                  maxLength={25}
                   style={styles.editInput}
+                  placeholder="Nome"
                   onChangeText={setPetName}
                 />
                 <TextInput
                   value={petSpecies}
+                  maxLength={25}
                   mode="outlined"
+                  placeholder="Especie/Raça"
                   style={styles.editInput}
                   onChangeText={setPetSpecies}
                 />
                 <TextInput
                   value={petAge}
                   mode="outlined"
+                  maxLength={3}
+                  placeholder="Idade"
                   style={styles.editInput}
                   onChangeText={setPetAge}
                   keyboardType="numeric"
@@ -153,13 +163,35 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                 <TextInput
                   value={userContact}
                   mode="outlined"
+                  placeholder="Contato"
                   style={styles.editInput}
                   keyboardType="numeric"
-                  onChangeText={setUserContact}
+                  maxLength={15}
+                  onChangeText={(text) => {
+                    let formattedText = text.replace(/\D/g, '');
+
+                    if (formattedText.length >= 10) {
+                      if (formattedText.length <= 10) {
+                        formattedText = formattedText.replace(
+                          /(\d{2})(\d{4})(\d{0,4})/,
+                          '($1) $2-$3'
+                        );
+                      } else {
+                        formattedText = formattedText.replace(
+                          /(\d{2})(\d{5})(\d{0,4})/,
+                          '($1) $2-$3'
+                        );
+                      }
+                    }
+
+                    setUserContact(formattedText);
+                  }}
                 />
                 <TextInput
                   value={petDescription}
                   mode="outlined"
+                  placeholder="Descrição"
+                  maxLength={200}
                   style={[styles.editInput, styles.editTextarea]}
                   multiline
                   numberOfLines={4}
@@ -176,14 +208,14 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   <Text style={styles.postTitle}>
                     {petName} | {petSpecies}
                   </Text>
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={styles.contactContainer}>
+                    <Icon source="phone" size={18} />
+                    <Text style={styles.postContent}>{userContact}</Text>
+                  </View>
+                  <View style={styles.ageContainer}>
+                    <Icon source="calendar-month" size={18} />
                     <Text style={styles.postContent}>
-                      {petAge} {petAge.includes('0') ? 'meses' : 'anos'} |
-                    </Text>
-                    <Text style={styles.postContent}>
-                      {userContact
-                        ?.replace(/\D/g, '')
-                        .replace(/(\d{2})(\d{5})(\d{4})/, ' ($1) $2-$3')}
+                      {petAge} {petAge.includes('0') ? 'meses' : 'anos'}
                     </Text>
                   </View>
                 </View>

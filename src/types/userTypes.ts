@@ -36,4 +36,5 @@ export interface UserErrorTypes {
   email?: string;
   password?: string;
   phone?: string;
+  opPhone?: string;
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { SighthingType, SighthingTypeRequest } from '~/types/sighthingTypes';
+import { SighthingTypeRequest } from '~/types/sighthingTypes';
 
 const URL = process.env.URL;
 

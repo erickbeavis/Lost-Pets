@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
@@ -15,6 +15,8 @@ export const CreateUser = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [inputPhone, setInputPhone] = useState('');
+  const [opInputPhone, setOPInputPhone] = useState('');
   const [contacts, setContacts] = useState([
     {
       type: 0,
@@ -29,7 +31,25 @@ export const CreateUser = () => {
     email: '',
     password: '',
     phone: '',
+    opPhone: '',
   });
+
+  useEffect(() => {
+    setContacts([
+      {
+        type: 0,
+        content: inputPhone,
+        createdAt: new Date(),
+        updatedAt: null,
+      },
+      {
+        type: 0,
+        content: opInputPhone,
+        createdAt: new Date(),
+        updatedAt: null,
+      },
+    ]);
+  }, [inputPhone, opInputPhone]);
 
   const validateFields = () => {
     let isValid = true;
@@ -37,26 +57,36 @@ export const CreateUser = () => {
     const newErrors: UserErrorTypes = {};
     const userNameRegex = /^[a-zA-Z]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+    const phoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
 
     if (userName === '' || !userNameRegex.test(userName)) {
       newErrors.name =
         userName === '' ? 'Nome inválido' : 'Não é permitido espaço e caracteres especiais';
+
       isValid = false;
     }
 
     if (email === '' || !emailRegex.test(email)) {
       newErrors.email = 'Email inválido';
+
       isValid = false;
     }
 
     if (password === '' || password.length < 6) {
       newErrors.password = 'A senha deve ter pelo menos 6 caracteres';
+
       isValid = false;
     }
 
-    if (contacts[0].content === '' || !phoneRegex.test(contacts[0].content)) {
-      newErrors.phone = 'Número de celular inválido';
+    if (inputPhone === '' || !phoneRegex.test(inputPhone)) {
+      newErrors.phone = 'Número inválido';
+
+      isValid = false;
+    }
+
+    if (opInputPhone !== '' && !phoneRegex.test(opInputPhone)) {
+      newErrors.opPhone = 'Número inválido';
+
       isValid = false;
     }
 
@@ -84,9 +114,12 @@ export const CreateUser = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled>
           <View style={styles.Container}>
-            <Text style={styles.title}>Cadastre-se</Text>
+            <Text style={styles.title}>CADASTRE-SE</Text>
             <View style={styles.form}>
               <TextInput
                 style={styles.inputForm}
@@ -127,31 +160,66 @@ export const CreateUser = () => {
               {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
 
               <TextInput
-                value={contacts[0].content}
                 style={styles.inputForm}
-                placeholder="Celular"
+                value={inputPhone}
+                placeholder="Telefone"
+                placeholderTextColor="#000"
+                autoCorrect={false}
+                keyboardType="numeric"
+                maxLength={15}
+                onChangeText={(text) => {
+                  let formattedText = text.replace(/\D/g, '');
+
+                  if (formattedText.length >= 10) {
+                    if (formattedText.length <= 10) {
+                      formattedText = formattedText.replace(
+                        /(\d{2})(\d{4})(\d{0,4})/,
+                        '($1) $2-$3'
+                      );
+                    } else {
+                      formattedText = formattedText.replace(
+                        /(\d{2})(\d{5})(\d{0,4})/,
+                        '($1) $2-$3'
+                      );
+                    }
+                  }
+
+                  setInputPhone(formattedText);
+                }}
+                error={!!errors.phone}
+              />
+              {errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
+
+              <TextInput
+                value={opInputPhone}
+                style={styles.inputForm}
+                placeholder="Telefone (opcional)"
                 placeholderTextColor="#000"
                 autoCorrect={false}
                 keyboardType="numeric"
                 returnKeyType="done"
                 maxLength={15}
                 onChangeText={(text) => {
-                  const formattedText = text
-                    .replace(/\D/g, '')
-                    .replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                  let formattedText = text.replace(/\D/g, '');
 
-                  setContacts([
-                    {
-                      type: 0,
-                      content: formattedText,
-                      createdAt: new Date(),
-                      updatedAt: null,
-                    },
-                  ]);
+                  if (formattedText.length >= 10) {
+                    if (formattedText.length <= 10) {
+                      formattedText = formattedText.replace(
+                        /(\d{2})(\d{4})(\d{0,4})/,
+                        '($1) $2-$3'
+                      );
+                    } else {
+                      formattedText = formattedText.replace(
+                        /(\d{2})(\d{5})(\d{0,4})/,
+                        '($1) $2-$3'
+                      );
+                    }
+                  }
+
+                  setOPInputPhone(formattedText);
                 }}
-                error={!!errors.phone}
               />
-              {errors.phone ? <Text style={styles.errorText}>{errors.phone}</Text> : null}
+              {errors.opPhone ? <Text style={styles.errorText}>{errors.opPhone}</Text> : null}
 
               <TouchableOpacity style={styles.buttonForm} onPress={handleRegister}>
                 <Text style={styles.textButton}>Cadastrar</Text>

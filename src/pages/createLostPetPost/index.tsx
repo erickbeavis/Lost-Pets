@@ -27,7 +27,6 @@ export const CreateLostPetPost = () => {
     showSightings,
     setShowSightings,
     handleSubmitMissingPet,
-    loading,
   } = usePetsContext();
 
   const speciesInput = useRef(null);
@@ -87,7 +86,7 @@ export const CreateLostPetPost = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      <Loading />
       <SafeAreaView>
         <ScrollView>
           <View style={styles.container}>

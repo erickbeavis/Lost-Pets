@@ -35,6 +35,7 @@ export const Login = () => {
             <View style={styles.UserImage}>
               <Image source={require('../../../assets/paw-pet-login.png')} style={styles.Image} />
             </View>
+            <Text style={styles.title}>Lost Pets</Text>
             <View style={styles.form}>
               <TextInput
                 style={styles.inputEmail}

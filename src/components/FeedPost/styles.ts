@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   cardImgContinainer: {
-    marginTop: 15,
+    marginTop: 8,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'center',
@@ -22,15 +22,25 @@ export const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     marginBottom: 12,
-    padding: 8,
+    height: 35,
     backgroundColor: '#ededed',
   },
   cardSightings: {
     marginTop: 16,
     marginBottom: 0,
   },
+  contactContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  ageContainer: {
+    flexDirection: 'row',
+    marginTop: 8,
+    marginBottom: 8,
+  },
   postContent: {
-    fontSize: 16,
+    fontSize: 15,
+    paddingLeft: 5,
   },
   petDescription: {
     marginTop: 8,

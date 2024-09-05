@@ -11,12 +11,11 @@ import { Loading } from '~/components/Loading';
 import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
-  const { missingPetPost, tabIndex, setTabIndex, feedLocation, loading } = usePetsContext();
-  console.log('TCL  missingPetPost:', missingPetPost);
+  const { missingPetPost, tabIndex, setTabIndex, feedLocation } = usePetsContext();
 
   return (
     <>
-      {loading && <Loading />}
+      <Loading />
       <SafeAreaView style={styles.container}>
         <TopMenu />
         <Chip icon="map-marker" style={styles.feedMapLocation} onPress={() => setTabIndex(2)}>

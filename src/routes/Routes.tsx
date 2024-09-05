@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { Platform } from 'react-native';
+import { Platform, View, Image } from 'react-native';
 
+import { styles } from '../components/TopMenu/styles';
 import { CreateLostPetPost } from '../pages/createLostPetPost/index';
 import { CreateUser } from '../pages/createUser';
 import { Login } from '../pages/login';
@@ -29,6 +30,17 @@ const Routes = () => {
           headerTitle: Platform.OS === 'android' ? 'Login' : '',
           headerBackTitle: 'Login',
           headerTintColor: '#000',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerRight: () => (
+            <View style={styles.menuLogoContainer}>
+              <Image
+                style={styles.menuLogoImage}
+                source={require('../../assets/paw-pet-login.png')}
+              />
+            </View>
+          ),
         }}
       />
       <Stack.Screen

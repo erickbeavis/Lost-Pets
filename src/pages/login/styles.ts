@@ -27,12 +27,24 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  title: {
+    fontSize: 30,
+    marginBottom: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 5,
+    width: '100%',
+    textAlign: 'center',
+  },
   inputEmail: {
     backgroundColor: '#FFF',
     width: 250,
     height: 35,
     borderRadius: 5,
     padding: 5,
+    borderWidth: 1,
   },
   inputPassword: {
     backgroundColor: '#FFF',
@@ -41,6 +53,7 @@ export const styles = StyleSheet.create({
     height: 35,
     borderRadius: 5,
     padding: 5,
+    borderWidth: 1,
   },
   buttonForm: {
     backgroundColor: '#fff',
