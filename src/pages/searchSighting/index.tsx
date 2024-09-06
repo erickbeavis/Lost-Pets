@@ -20,6 +20,7 @@ export const SearchSighting = () => {
     setFeedLocation,
     setTabIndex,
     handleSearchMissingPet,
+    setLoading,
   } = usePetsContext();
 
   const navigation = useNavigation();
@@ -110,9 +111,13 @@ export const SearchSighting = () => {
             size={50}
             onPress={() => {
               if (isFeedLocation) {
+                setLoading(true);
+
                 setTabIndex(0);
                 setIsFeedLocation(false);
                 handleSearchMissingPet();
+
+                setLoading(false);
               } else {
                 navigation.navigate(
                   'sightingModal',

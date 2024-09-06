@@ -53,4 +53,16 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  dateInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  dateLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 5,
+    paddingBottom: 2,
+  },
 });

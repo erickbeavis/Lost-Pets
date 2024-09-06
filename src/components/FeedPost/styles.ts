@@ -48,29 +48,27 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   postSightingsModalContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '80%',
-    marginTop: '15%',
-  },
-  postSightingsModalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     margin: 20,
-  },
-  postSightingsModalContent: {
-    width: '90%',
-    height: '90%',
+    maxHeight: 600,
     backgroundColor: '#fff',
-    borderRadius: 10,
+    paddingBottom: 20,
+    borderRadius: 12,
   },
   sightingCard: {
     backgroundColor: '#fff',
     borderWidth: 0.5,
     borderColor: '#ccc',
-    marginBottom: 30,
-    marginRight: 20,
-    marginLeft: 20,
+    margin: 16,
+  },
+  postSightingsModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    margin: 8,
+    marginBottom: 0,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ededed',
   },
   sightingLocation: {
     marginTop: 10,
@@ -80,8 +78,9 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 14,
   },
-  sightingDescription: {
-    marginBottom: 12,
+  sightingTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   editInput: {
     fontSize: 16,

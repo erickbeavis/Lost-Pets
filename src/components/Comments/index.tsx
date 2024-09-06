@@ -97,17 +97,12 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
 
   return (
     <Portal>
-      <Modal visible={visible} style={styles.modalContainer}>
+      <Modal visible={visible} contentContainerStyle={styles.modalContainer}>
         <View style={styles.modalHeaderContainer}>
           <Text variant="titleLarge" style={styles.modalTitle}>
             Comentarios
           </Text>
-          <Avatar.Icon
-            icon="close"
-            style={styles.modalCloseIcon}
-            size={45}
-            onTouchStart={hideModal}
-          />
+          <IconButton icon="close" size={30} onTouchStart={hideModal} />
         </View>
         <View style={styles.modalCardContainer}>
           <ScrollView>
@@ -179,7 +174,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
         {Platform.OS === 'android' ? (
           <View style={styles.modalInputContainerAndroid}>
             <TextInput
-              placeholder="Digite o comentario..."
+              placeholder="Comentario..."
               maxLength={100}
               value={textInput}
               onChangeText={(text) => setTextInput(text)}
@@ -191,7 +186,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
           <KeyboardAvoidingView behavior="position">
             <View style={styles.modalInputContainerIOS}>
               <TextInput
-                placeholder="Digite o comentario..."
+                placeholder="Comentario..."
                 maxLength={100}
                 value={textInput}
                 onChangeText={(text) => setTextInput(text)}

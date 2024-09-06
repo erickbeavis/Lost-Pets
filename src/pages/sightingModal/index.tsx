@@ -1,8 +1,9 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, TextInput, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { IconButton, Text } from 'react-native-paper';
+import { Icon, IconButton, Text } from 'react-native-paper';
 
 import { styles } from './styles';
 
@@ -10,7 +11,6 @@ import { Loading } from '~/components/Loading';
 import { SightingMap } from '~/components/SightingMap';
 import { usePetsContext } from '~/context/petsContext';
 import { SearchSightingNavigationProp } from '~/types/navigationTypes';
-import { formatDate } from '~/utils/formatDate';
 
 export const SightingModal = () => {
   const {
@@ -20,7 +20,9 @@ export const SightingModal = () => {
     setSightingDescription,
     sightingLocation,
   } = usePetsContext();
-  const [modalSightingDate, setModalSightingDate] = useState('');
+
+  const [date, setDate] = useState(new Date());
+  const [showDate, setShowDate] = useState(false);
 
   const navigation = useNavigation<SearchSightingNavigationProp>();
   const routes = useRoute();
@@ -28,17 +30,12 @@ export const SightingModal = () => {
   const isPost = routes.params?.isPost;
   const missingPetId = routes.params?.missingPetId;
 
-  const handleSightingDate = (e: string) => {
-    if (e.length < 8) return setSightingDate(e);
+  const handleSightingDate = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate || date;
 
-    const date = formatDate(e).split('/');
-    const day = parseInt(date[0], 10);
-    const month = parseInt(date[1], 10) - 1;
-    const year = parseInt(date[2], 10);
-
-    const formattedDate = new Date(year, month, day);
-
-    setSightingDate(formattedDate.toISOString());
+    setShowDate(false);
+    setDate(currentDate);
+    setSightingDate(currentDate);
   };
 
   return (
@@ -46,18 +43,20 @@ export const SightingModal = () => {
       <Loading />
       <ScrollView style={styles.container}>
         <Text style={styles.label}>Data do Avistamento</Text>
-        <TextInput
-          style={styles.input}
-          value={formatDate(modalSightingDate)}
-          onChangeText={(e) => {
-            handleSightingDate(e);
-            setModalSightingDate(e);
-          }}
-          placeholder="DD/MM/AAAA"
-          keyboardType="numeric"
-          returnKeyType="next"
-          mode="outlined"
-        />
+        <TouchableOpacity
+          onPress={() => setShowDate(true)}
+          style={[styles.input, styles.dateInput]}>
+          <Text style={styles.dateLabel}>{date.toLocaleDateString('pt-br')}</Text>
+          <Icon source="calendar-month" size={18} />
+        </TouchableOpacity>
+        {showDate && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={handleSightingDate}
+          />
+        )}
         <Text style={styles.label}>Descrição do Avistamento</Text>
         <TextInput
           style={[styles.input, styles.descriptionInput]}

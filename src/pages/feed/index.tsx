@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native';
+import { useState } from 'react';
+import { View, Text, RefreshControl } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Chip } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +12,18 @@ import { Loading } from '~/components/Loading';
 import { usePetsContext } from '~/context/petsContext';
 
 export const Feed = () => {
-  const { missingPetPost, tabIndex, setTabIndex, feedLocation } = usePetsContext();
+  const { handleSearchMissingPet, missingPetPost, tabIndex, setTabIndex, feedLocation } =
+    usePetsContext();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    handleSearchMissingPet();
+
+    setRefreshing(false);
+  };
 
   return (
     <>
@@ -21,7 +33,7 @@ export const Feed = () => {
         <Chip icon="map-marker" style={styles.feedMapLocation} onPress={() => setTabIndex(2)}>
           {feedLocation.address !== '' ? feedLocation.address : 'Filtrar por localização...'}
         </Chip>
-        {feedLocation.address === '' ? (
+        {feedLocation.address !== '' ? (
           <View style={styles.notFoundcontainer}>
             <Text style={styles.notFoundText}>Selecione uma localização...</Text>
           </View>
@@ -33,6 +45,7 @@ export const Feed = () => {
                   data={missingPetPost}
                   renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
                   style={styles.feedPostContainer}
+                  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 />
               </>
             ) : (

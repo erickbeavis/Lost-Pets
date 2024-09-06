@@ -173,9 +173,13 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     if (isPost) {
+      setLoading(true);
+
       const { data } = await createSighthing(newSighting, autCookie);
 
       await handleSearchMissingPet();
+
+      setLoading(false);
 
       newSighting = data;
     }
@@ -194,9 +198,13 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (!autCookie) return;
 
+    setLoading(true);
+
     await deleteSighthing(sightingId, autCookie);
 
     await handleSearchMissingPet();
+
+    setLoading(false);
   };
 
   const handleSubmitMissingPet = async () => {
@@ -233,6 +241,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     if (!token) return;
 
+    setLoading(true);
+
     await addMissingPet(postData, token);
 
     setPetName('');
@@ -244,16 +254,15 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setMissingPetContact('');
 
     handleSearchMissingPet();
+
+    setLoading(false);
     setTabIndex(0);
   };
 
   const handleSearchMissingPet = async () => {
-    setLoading(true);
-
     const data = (await getMissingPet(feedLocation.lat, feedLocation.lng, 10000000)) as any;
 
     setMissingPetPost(data ?? []);
-    setLoading(false);
   };
 
   useEffect(() => {

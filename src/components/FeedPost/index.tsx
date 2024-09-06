@@ -9,7 +9,6 @@ import {
   Chip,
   Portal,
   Modal,
-  List,
   TextInput,
   Icon,
 } from 'react-native-paper';
@@ -31,7 +30,7 @@ type FeedPostProps = {
 };
 
 export const FeedPost = ({ item, index }: FeedPostProps) => {
-  const { handleRemoveSighting, loggedUser, handleSearchMissingPet } = usePetsContext();
+  const { handleRemoveSighting, loggedUser, handleSearchMissingPet, setLoading } = usePetsContext();
   const [isEditing, setIsEditing] = useState(false);
   const [petName, setPetName] = useState(item.pet.name);
   const [petSpecies, setPetSpecies] = useState(item.pet.species);
@@ -81,9 +80,13 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
       status: 0,
     };
 
+    setLoading(true);
+
     await editMissingPet(id, body, autCookie);
 
     handleSearchMissingPet();
+
+    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -91,9 +94,13 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
 
     if (!autCookie) return;
 
+    setLoading(true);
+
     await deleteMissingPet(id, autCookie);
 
     handleSearchMissingPet();
+
+    setLoading(false);
   };
 
   return (
@@ -101,7 +108,13 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
       <Card style={{ backgroundColor: '#fffafa' }}>
         <Card.Title
           title={item.user.email}
-          subtitle={new Date(item.createdAt).toLocaleDateString()}
+          subtitle={new Date(item.createdAt).toLocaleString('pt-br', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
           titleVariant="titleMedium"
           left={(props) => (
             <Avatar.Icon {...props} icon="account" style={{ backgroundColor: '#ededed' }} />
@@ -214,9 +227,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   </View>
                   <View style={styles.ageContainer}>
                     <Icon source="calendar-month" size={18} />
-                    <Text style={styles.postContent}>
-                      {petAge} {petAge.includes('0') ? 'meses' : 'anos'}
-                    </Text>
+                    <Text style={styles.postContent}>{petAge}</Text>
                   </View>
                 </View>
                 <Text style={styles.petDescription}>{petDescription}</Text>
@@ -244,23 +255,19 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
             <Modal
               visible={renderPostSightings}
               onDismiss={() => setRenderPostSightings(false)}
-              style={styles.postSightingsModalContainer}
-              contentContainerStyle={styles.postSightingsModalContent}>
+              contentContainerStyle={styles.postSightingsModalContainer}>
+              <View style={styles.postSightingsModalHeader}>
+                <IconButton
+                  icon="plus"
+                  size={28}
+                  onPress={() => handleAddPostSighting()}
+                  iconColor="#fff"
+                  style={{ backgroundColor: '#228c80' }}
+                />
+                <Text style={styles.sightingTitle}>Avistamentos</Text>
+                <IconButton icon="close" size={30} onPress={() => setRenderPostSightings(false)} />
+              </View>
               <ScrollView>
-                <View style={styles.postSightingsModalHeader}>
-                  <IconButton
-                    icon="close"
-                    size={30}
-                    onPress={() => setRenderPostSightings(false)}
-                  />
-                  <IconButton
-                    icon="plus"
-                    size={28}
-                    onPress={() => handleAddPostSighting()}
-                    iconColor="#fff"
-                    style={{ backgroundColor: '#228c80' }}
-                  />
-                </View>
                 {item.sightings.map(
                   ({ sightingDate, description, location, id, user }, index: number) => {
                     const isUserSighting = user.id === loggedUser.id;
@@ -295,9 +302,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                           )}
                         />
                         <Card.Content>
-                          <Text style={styles.sightingDescription} variant="bodyMedium">
-                            {description}
-                          </Text>
+                          <Text variant="bodyMedium">{description}</Text>
                           <Text variant="bodyMedium">{location?.address}</Text>
                           <View style={styles.sightingLocation}>
                             <SightingMap isModal location={location} />

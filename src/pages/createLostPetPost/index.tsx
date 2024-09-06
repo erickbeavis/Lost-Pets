@@ -27,13 +27,17 @@ export const CreateLostPetPost = () => {
     showSightings,
     setShowSightings,
     handleSubmitMissingPet,
+    loggedUser,
   } = usePetsContext();
 
   const speciesInput = useRef(null);
   const ageInput = useRef(null);
   const descriptionInput = useRef(null);
   const sightingDateInput = useRef(null);
+  const contactInput = useRef(null);
+  const opContactInput = useRef(null);
 
+  const [userContact, setUserContact] = useState(loggedUser.contacts);
   const [editingIndex, setEditingIndex] = useState<any>(null);
   const [tempData, setTempData] = useState({
     description: '',
@@ -94,32 +98,92 @@ export const CreateLostPetPost = () => {
             <TextInput
               style={styles.input}
               value={petName}
+              maxLength={25}
               onChangeText={(text: string) => setPetName(text.slice(0, 100))}
               onSubmitEditing={() => handleNextInput(speciesInput)}
               returnKeyType="next"
-              placeholder="Nome..."
+              placeholder="Nome"
             />
             <Text style={styles.label}>Espécie/Raça</Text>
             <TextInput
               ref={speciesInput}
               style={styles.input}
               value={petSpecies}
+              maxLength={25}
               onChangeText={(text: string) => setPetSpecies(text.slice(0, 100))}
               onSubmitEditing={() => handleNextInput(ageInput)}
               returnKeyType="next"
-              placeholder="Especie..."
+              placeholder="Especie"
             />
-            <Text style={styles.label}>Idade do Pet</Text>
+            <Text style={styles.label}>Idade Pet</Text>
             <TextInput
               ref={ageInput}
               style={styles.input}
               value={petAge}
               onChangeText={(text: string) => setPetAge(text)}
+              onSubmitEditing={() => handleNextInput(contactInput)}
+              keyboardType="numeric"
+              returnKeyType="next"
+              maxLength={2}
+              placeholder="Idade"
+            />
+            <Text style={styles.label}>Contato</Text>
+            <TextInput
+              ref={contactInput}
+              style={styles.input}
+              value={userContact[0].content ?? loggedUser.contacts[0].content}
+              onChangeText={(text) => {
+                let formattedText = text.replace(/\D/g, '');
+
+                if (formattedText.length >= 10) {
+                  if (formattedText.length <= 10) {
+                    formattedText = formattedText.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                  } else {
+                    formattedText = formattedText.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                  }
+                }
+
+                setUserContact((prevContacts) => {
+                  const updatedContacts = [...prevContacts];
+                  updatedContacts[0] = { ...updatedContacts[0], content: formattedText };
+
+                  return updatedContacts;
+                });
+              }}
+              onSubmitEditing={() => handleNextInput(opContactInput)}
+              keyboardType="numeric"
+              returnKeyType="next"
+              maxLength={15}
+              placeholder="Contato"
+            />
+            <Text style={styles.label}>Contato Opcional</Text>
+            <TextInput
+              ref={opContactInput}
+              style={styles.input}
+              value={userContact[1].content ?? loggedUser.contacts[0].content}
+              onChangeText={(text) => {
+                let formattedText = text.replace(/\D/g, '');
+
+                if (formattedText.length >= 10) {
+                  if (formattedText.length <= 10) {
+                    formattedText = formattedText.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                  } else {
+                    formattedText = formattedText.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                  }
+                }
+
+                setUserContact((prevContacts) => {
+                  const updatedContacts = [...prevContacts];
+                  updatedContacts[0] = { ...updatedContacts[1], content: formattedText };
+
+                  return updatedContacts;
+                });
+              }}
               onSubmitEditing={() => handleNextInput(descriptionInput)}
               keyboardType="numeric"
               returnKeyType="next"
-              maxLength={3}
-              placeholder="Idade... Ex(0.x meses ou 2 anos)"
+              maxLength={15}
+              placeholder="Contato opcional"
             />
             <Text style={styles.label}>Descrição</Text>
             <TextInput
