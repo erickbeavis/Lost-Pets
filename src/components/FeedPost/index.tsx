@@ -1,24 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import {
-  Avatar,
-  Card,
-  IconButton,
-  Text,
-  Chip,
-  Portal,
-  Modal,
-  TextInput,
-  Icon,
-} from 'react-native-paper';
+import { Avatar, Card, IconButton, Text, Chip, Portal, Modal, Icon } from 'react-native-paper';
 
 import { styles } from './styles';
 import { Comments } from '../Comments';
 import { SightingMap } from '../SightingMap';
 
 import { usePetsContext } from '~/context/petsContext';
-import { deleteMissingPet, editMissingPet } from '~/services/MissingPets/missingPets';
+import { deleteMissingPet } from '~/services/MissingPets/missingPets';
 import { MissingPetType } from '~/types/missingPetTypes';
 import { SightingModalNavigationProp } from '~/types/navigationTypes';
 import { PhotoType } from '~/types/photoTypes';
@@ -31,12 +21,12 @@ type FeedPostProps = {
 
 export const FeedPost = ({ item, index }: FeedPostProps) => {
   const { handleRemoveSighting, loggedUser, handleSearchMissingPet, setLoading } = usePetsContext();
-  const [isEditing, setIsEditing] = useState(false);
-  const [petName, setPetName] = useState(item.pet.name);
-  const [petSpecies, setPetSpecies] = useState(item.pet.species);
-  const [petAge, setPetAge] = useState(item.pet.age.toString());
-  const [userContact, setUserContact] = useState(item.user.contacts[0]?.content);
-  const [petDescription, setPetDescription] = useState(item.pet.description);
+
+  const petName = item.pet.name;
+  const petSpecies = item.pet.species;
+  const petAge = item.pet.age.toString();
+  const userContact = item.user.contacts[0]?.content;
+  const petDescription = item.pet.description;
 
   const [visible, setVisible] = useState(false);
   const [renderPostSightings, setRenderPostSightings] = useState(false);
@@ -52,41 +42,6 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
     setRenderPostSightings(false);
 
     navigation.navigate('sightingModal', { isPost: true, missingPetId: item.id });
-  };
-
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const handleConfirmEdit = async (id: string) => {
-    const autCookie = await getUserToken();
-
-    if (!autCookie || petName === '' || petSpecies === '' || petAge === '') {
-      alert('Preencha todos os campos');
-
-      return;
-    }
-
-    setIsEditing(false);
-
-    const body = {
-      pet: {
-        id,
-        name: petName,
-        species: petSpecies,
-        age: Number(petAge),
-        description: petDescription,
-      },
-      status: 0,
-    };
-
-    setLoading(true);
-
-    await editMissingPet(id, body, autCookie);
-
-    handleSearchMissingPet();
-
-    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
@@ -125,20 +80,27 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                 <View style={{ flexDirection: 'row', marginBottom: 20 }}>
                   <IconButton
                     {...props}
-                    icon={isEditing ? 'check' : 'pencil'}
+                    icon="pencil"
                     size={15}
                     style={{ paddingLeft: 10 }}
-                    onPress={() => (isEditing ? handleConfirmEdit(item.id) : handleEditToggle())}
+                    onPress={() =>
+                      navigation.navigate('createLostPetPost', {
+                        editingPost: {
+                          id: item.id,
+                          pet: item.pet,
+                          sightings: item.sightings,
+                        },
+                      })
+                    }
                   />
-                  {!isEditing && (
-                    <IconButton
-                      {...props}
-                      icon="trash-can-outline"
-                      size={15}
-                      style={{ paddingRight: 10 }}
-                      onPress={() => handleDelete(item.id)}
-                    />
-                  )}
+
+                  <IconButton
+                    {...props}
+                    icon="trash-can-outline"
+                    size={15}
+                    style={{ paddingRight: 10 }}
+                    onPress={() => handleDelete(item.id)}
+                  />
                 </View>
               )}
             </>
@@ -146,93 +108,24 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
         />
         <Card.Content>
           <View style={{ flexWrap: 'wrap' }}>
-            {isEditing ? (
-              <>
-                <TextInput
-                  value={petName}
-                  mode="outlined"
-                  maxLength={25}
-                  style={styles.editInput}
-                  placeholder="Nome"
-                  onChangeText={setPetName}
-                />
-                <TextInput
-                  value={petSpecies}
-                  maxLength={25}
-                  mode="outlined"
-                  placeholder="Especie/Raça"
-                  style={styles.editInput}
-                  onChangeText={setPetSpecies}
-                />
-                <TextInput
-                  value={petAge}
-                  mode="outlined"
-                  maxLength={3}
-                  placeholder="Idade"
-                  style={styles.editInput}
-                  onChangeText={setPetAge}
-                  keyboardType="numeric"
-                />
-                <TextInput
-                  value={userContact}
-                  mode="outlined"
-                  placeholder="Contato"
-                  style={styles.editInput}
-                  keyboardType="numeric"
-                  maxLength={15}
-                  onChangeText={(text) => {
-                    let formattedText = text.replace(/\D/g, '');
-
-                    if (formattedText.length >= 10) {
-                      if (formattedText.length <= 10) {
-                        formattedText = formattedText.replace(
-                          /(\d{2})(\d{4})(\d{0,4})/,
-                          '($1) $2-$3'
-                        );
-                      } else {
-                        formattedText = formattedText.replace(
-                          /(\d{2})(\d{5})(\d{0,4})/,
-                          '($1) $2-$3'
-                        );
-                      }
-                    }
-
-                    setUserContact(formattedText);
-                  }}
-                />
-                <TextInput
-                  value={petDescription}
-                  mode="outlined"
-                  placeholder="Descrição"
-                  maxLength={200}
-                  style={[styles.editInput, styles.editTextarea]}
-                  multiline
-                  numberOfLines={4}
-                  onChangeText={setPetDescription}
-                />
-              </>
-            ) : (
-              <>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}>
-                  <Text style={styles.postTitle}>
-                    {petName} | {petSpecies}
-                  </Text>
-                  <View style={styles.contactContainer}>
-                    <Icon source="phone" size={18} />
-                    <Text style={styles.postContent}>{userContact}</Text>
-                  </View>
-                  <View style={styles.ageContainer}>
-                    <Icon source="calendar-month" size={18} />
-                    <Text style={styles.postContent}>{petAge}</Text>
-                  </View>
-                </View>
-                <Text style={styles.petDescription}>{petDescription}</Text>
-              </>
-            )}
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+              }}>
+              <Text style={styles.postTitle}>
+                {petName} | {petSpecies}
+              </Text>
+              <View style={styles.contactContainer}>
+                <Icon source="phone" size={18} />
+                <Text style={styles.postContent}>{userContact}</Text>
+              </View>
+              <View style={styles.ageContainer}>
+                <Icon source="calendar-month" size={18} />
+                <Text style={styles.postContent}>{petAge}</Text>
+              </View>
+            </View>
+            <Text style={styles.petDescription}>{petDescription}</Text>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.cardImgContinainer}>
@@ -259,7 +152,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               <View style={styles.postSightingsModalHeader}>
                 <IconButton
                   icon="plus"
-                  size={28}
+                  size={20}
                   onPress={() => handleAddPostSighting()}
                   iconColor="#fff"
                   style={{ backgroundColor: '#228c80' }}

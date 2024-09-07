@@ -1,4 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useRef, RefObject, useState } from 'react';
 import { View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { Card, IconButton, Text } from 'react-native-paper';
@@ -14,28 +15,24 @@ import { SighthingType } from '~/types/sighthingTypes';
 
 export const CreateLostPetPost = () => {
   const {
-    petName,
-    setPetName,
-    petSpecies,
-    setPetSpecies,
-    petAge,
-    setPetAge,
-    petDescription,
-    setPetDescription,
     sightings,
     setSightings,
     showSightings,
     setShowSightings,
     handleSubmitMissingPet,
+    handleEditMissingPet,
     loggedUser,
   } = usePetsContext();
 
-  const speciesInput = useRef(null);
-  const ageInput = useRef(null);
-  const descriptionInput = useRef(null);
-  const sightingDateInput = useRef(null);
-  const contactInput = useRef(null);
-  const opContactInput = useRef(null);
+  const routes = useRoute();
+  const editingPost = routes.params?.editingPost;
+
+  const [petName, setPetName] = useState(editingPost?.pet.name ?? '');
+  const [petSpecies, setPetSpecies] = useState(editingPost?.pet.species ?? '');
+  const [petAge, setPetAge] = useState(editingPost?.pet.age ?? null);
+  const [ageUnit, setAgeUnit] = useState('Anos');
+  const [petDescription, setPetDescription] = useState(editingPost?.pet.description);
+  const [showPicker, setShowPicker] = useState(false);
 
   const [userContact, setUserContact] = useState(loggedUser.contacts);
   const [editingIndex, setEditingIndex] = useState<any>(null);
@@ -43,6 +40,13 @@ export const CreateLostPetPost = () => {
     description: '',
     address: '',
   });
+
+  const speciesInput = useRef(null);
+  const ageInput = useRef(null);
+  const descriptionInput = useRef(null);
+  const sightingDateInput = useRef(null);
+  const contactInput = useRef(null);
+  const opContactInput = useRef(null);
 
   const navigation = useNavigation();
 
@@ -94,6 +98,11 @@ export const CreateLostPetPost = () => {
       <SafeAreaView>
         <ScrollView>
           <View style={styles.container}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerTitle}>
+                {editingPost ? 'Editar Publicação' : 'Criar Publicação'}
+              </Text>
+            </View>
             <Text style={styles.label}>Nome do Pet</Text>
             <TextInput
               style={styles.input}
@@ -115,18 +124,34 @@ export const CreateLostPetPost = () => {
               returnKeyType="next"
               placeholder="Especie"
             />
+
             <Text style={styles.label}>Idade Pet</Text>
-            <TextInput
-              ref={ageInput}
-              style={styles.input}
-              value={petAge}
-              onChangeText={(text: string) => setPetAge(text)}
-              onSubmitEditing={() => handleNextInput(contactInput)}
-              keyboardType="numeric"
-              returnKeyType="next"
-              maxLength={2}
-              placeholder="Idade"
-            />
+            <View style={styles.ageContainer}>
+              <TextInput
+                ref={ageInput}
+                style={styles.input}
+                value={petAge}
+                onChangeText={(text: string) => setPetAge(text)}
+                onSubmitEditing={() => handleNextInput(contactInput)}
+                keyboardType="numeric"
+                returnKeyType="next"
+                maxLength={2}
+                placeholder="Idade"
+              />
+              <TouchableOpacity
+                style={styles.ageUnitContainer}
+                onPress={() => setShowPicker(showPicker)}>
+                <Text style={styles.ageUnitText}>{ageUnit}</Text>
+              </TouchableOpacity>
+              <Picker
+                selectedValue={ageUnit}
+                style={styles.agePicker}
+                onValueChange={(itemValue) => setAgeUnit(itemValue)}>
+                <Picker.Item label="Anos" value="Anos" />
+                <Picker.Item label="Meses" value="Meses" />
+              </Picker>
+            </View>
+
             <Text style={styles.label}>Contato</Text>
             <TextInput
               ref={contactInput}
@@ -202,76 +227,150 @@ export const CreateLostPetPost = () => {
               onPress={() => navigation.navigate('sightingModal')}>
               <Text style={styles.addButtonLabel}>Adicionar Avistamento</Text>
             </TouchableOpacity>
-            {sightings.length > 0 && (
-              <TouchableOpacity
-                style={styles.showSightingButton}
-                onPress={() => setShowSightings(!showSightings)}>
-                <Text style={styles.showSightingButtonLabel}>
-                  {showSightings ? 'Esconder Avistamentos' : 'Ver Avistamentos'}
-                </Text>
-              </TouchableOpacity>
-            )}
+            {sightings.length > 0 ||
+              (editingPost?.sightings.length > 0 && (
+                <TouchableOpacity
+                  style={styles.showSightingButton}
+                  onPress={() => setShowSightings(!showSightings)}>
+                  <Text style={styles.showSightingButtonLabel}>
+                    {showSightings ? 'Esconder Avistamentos' : 'Ver Avistamentos'}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             {showSightings && (
               <>
-                {sightings.map((item: SighthingType, index: number) => {
-                  return (
-                    <Card style={styles.sightingCard} key={index}>
-                      <Card.Title
-                        title={new Date(item.sightingDate).toLocaleDateString()}
-                        titleVariant="titleMedium"
-                        right={(props) => (
-                          <View style={{ flexDirection: 'row' }}>
+                {editingPost?.sightings.length > 0
+                  ? editingPost?.sightings.map((item: SighthingType, index: number) => {
+                      return (
+                        <Card style={styles.sightingCard} key={index}>
+                          <Card.Title
+                            title={new Date(item.sightingDate).toLocaleDateString('pt-br')}
+                            titleVariant="titleMedium"
+                            right={(props) => (
+                              <View style={{ flexDirection: 'row' }}>
+                                {editingIndex === index ? (
+                                  <IconButton
+                                    {...props}
+                                    icon="check"
+                                    onPress={() => handleSave(index, item)}
+                                    style={{ paddingLeft: 10 }}
+                                    size={20}
+                                  />
+                                ) : (
+                                  <IconButton
+                                    {...props}
+                                    icon="pencil"
+                                    onPress={() => handleEditToggle(index, item)}
+                                    style={{ paddingLeft: 10 }}
+                                    size={20}
+                                  />
+                                )}
+                                <IconButton
+                                  {...props}
+                                  icon="trash-can-outline"
+                                  onPress={() => handleRemoveSighting(index)}
+                                  style={{ paddingRight: 10 }}
+                                  size={20}
+                                />
+                              </View>
+                            )}
+                          />
+                          <Card.Content>
                             {editingIndex === index ? (
-                              <IconButton
-                                {...props}
-                                icon="check"
-                                onPress={() => handleSave(index, item)}
-                                style={{ paddingLeft: 10 }}
-                                size={20}
+                              <TextInput
+                                value={tempData.description}
+                                onChangeText={(text) => handleInputChange('description', text)}
+                                style={[styles.input, styles.sightingDescription]}
                               />
                             ) : (
-                              <IconButton
-                                {...props}
-                                icon="pencil"
-                                onPress={() => handleEditToggle(index, item)}
-                                style={{ paddingLeft: 10 }}
-                                size={20}
-                              />
+                              <Text style={styles.sightingDescription} variant="bodyMedium">
+                                {item.description}
+                              </Text>
                             )}
-                            <IconButton
-                              {...props}
-                              icon="trash-can-outline"
-                              onPress={() => handleRemoveSighting(index)}
-                              style={{ paddingRight: 10 }}
-                              size={20}
-                            />
-                          </View>
-                        )}
-                      />
-                      <Card.Content>
-                        {editingIndex === index ? (
-                          <TextInput
-                            value={tempData.description}
-                            onChangeText={(text) => handleInputChange('description', text)}
-                            style={[styles.input, styles.sightingDescription]}
+                            <View style={styles.sightingLocation}>
+                              <SightingMap isModal location={item.location} />
+                            </View>
+                          </Card.Content>
+                        </Card>
+                      );
+                    })
+                  : sightings.map((item: SighthingType, index: number) => {
+                      return (
+                        <Card style={styles.sightingCard} key={index}>
+                          <Card.Title
+                            title={new Date(item.sightingDate).toLocaleDateString('pt-br')}
+                            titleVariant="titleMedium"
+                            right={(props) => (
+                              <View style={{ flexDirection: 'row' }}>
+                                {editingIndex === index ? (
+                                  <IconButton
+                                    {...props}
+                                    icon="check"
+                                    onPress={() => handleSave(index, item)}
+                                    style={{ paddingLeft: 10 }}
+                                    size={20}
+                                  />
+                                ) : (
+                                  <IconButton
+                                    {...props}
+                                    icon="pencil"
+                                    onPress={() => handleEditToggle(index, item)}
+                                    style={{ paddingLeft: 10 }}
+                                    size={20}
+                                  />
+                                )}
+                                <IconButton
+                                  {...props}
+                                  icon="trash-can-outline"
+                                  onPress={() => handleRemoveSighting(index)}
+                                  style={{ paddingRight: 10 }}
+                                  size={20}
+                                />
+                              </View>
+                            )}
                           />
-                        ) : (
-                          <Text style={styles.sightingDescription} variant="bodyMedium">
-                            {item.description}
-                          </Text>
-                        )}
-                        <View style={styles.sightingLocation}>
-                          <SightingMap isModal location={item.location} />
-                        </View>
-                      </Card.Content>
-                    </Card>
-                  );
-                })}
+                          <Card.Content>
+                            {editingIndex === index ? (
+                              <TextInput
+                                value={tempData.description}
+                                onChangeText={(text) => handleInputChange('description', text)}
+                                style={[styles.input, styles.sightingDescription]}
+                              />
+                            ) : (
+                              <Text style={styles.sightingDescription} variant="bodyMedium">
+                                {item.description}
+                              </Text>
+                            )}
+                            <View style={styles.sightingLocation}>
+                              <SightingMap isModal location={item.location} />
+                            </View>
+                          </Card.Content>
+                        </Card>
+                      );
+                    })}
               </>
             )}
             <ImagePickerScreen />
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmitMissingPet}>
-              <Text style={styles.submitButtonText}>Enviar Publicação</Text>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => {
+                return editingPost
+                  ? handleEditMissingPet(editingPost?.id, {
+                      name: petName,
+                      species: petSpecies,
+                      age: petAge,
+                      description: petDescription,
+                    })
+                  : handleSubmitMissingPet({
+                      name: petName,
+                      species: petSpecies,
+                      age: petAge,
+                      description: petDescription,
+                    });
+              }}>
+              <Text style={styles.submitButtonText}>
+                {editingPost ? 'Salvar' : 'Enviar Publicação'}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

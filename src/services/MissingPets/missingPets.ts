@@ -20,6 +20,8 @@ export const addMissingPet = async (body: MissingPetTypeRequest, autCookie: stri
 
     return data;
   } catch (err) {
+    console.error('Response data:', err.response?.data.errors);
+
     throw new Error(`Error ${err}`);
   }
 };
@@ -70,7 +72,8 @@ export const editMissingPet = async (
 
     return data;
   } catch (err) {
-    throw new Error(`Error ${err}`);
+    console.error('Response data:', err.response?.data.errors);
+    throw new Error(`Error ${err.response?.data.errors}`);
   }
 };
 

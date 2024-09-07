@@ -27,8 +27,8 @@ export const SightingModal = () => {
   const navigation = useNavigation<SearchSightingNavigationProp>();
   const routes = useRoute();
 
-  const isPost = routes.params?.isPost;
-  const missingPetId = routes.params?.missingPetId;
+  const isPost = routes.params?.isPost as boolean;
+  const missingPetId = routes.params?.missingPetId as string;
 
   const handleSightingDate = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
@@ -66,7 +66,6 @@ export const SightingModal = () => {
           placeholder="Descrição..."
           onChangeText={setSightingDescription}
           returnKeyType="done"
-          mode="outlined"
         />
         <TouchableOpacity
           style={styles.sightingPlaceContainer}

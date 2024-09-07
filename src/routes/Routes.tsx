@@ -50,7 +50,13 @@ const Routes = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="createLostPetPost" component={CreateLostPetPost} />
+      <Stack.Screen
+        name="createLostPetPost"
+        component={CreateLostPetPost}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="sightingModal"
         component={SightingModal}

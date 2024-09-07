@@ -6,6 +6,36 @@ export const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: '#fff',
   },
+  headerContainer: {
+    height: 70,
+    padding: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    marginTop: 20,
+    fontSize: 20,
+    textTransform: 'uppercase',
+    fontWeight: 'bold',
+  },
+  ageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  ageUnitContainer: {
+    position: 'absolute',
+    right: 40,
+  },
+  agePicker: {
+    width: 50,
+    position: 'absolute',
+    top: -1,
+    right: 0,
+  },
+  ageUnitText: {
+    fontSize: 16,
+  },
   modalContainer: {
     paddingTop: 20,
   },
@@ -20,6 +50,7 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
+    width: '100%',
   },
   descriptionInput: {
     height: 100,
@@ -34,8 +65,9 @@ export const styles = StyleSheet.create({
   },
   addButtonLabel: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   sightingCard: {
     backgroundColor: '#fff',
@@ -63,8 +95,9 @@ export const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   showSightingButton: {
     backgroundColor: '#fff',

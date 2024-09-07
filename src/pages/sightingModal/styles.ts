@@ -50,8 +50,9 @@ export const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   dateInput: {
     flexDirection: 'row',
