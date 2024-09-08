@@ -99,10 +99,6 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const [sightings, setSightings] = useState<SighthingType[]>([]);
   const [missingPetPost, setMissingPetPost] = useState([]);
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/main
   const [loggedUser, setLoggedUser] = useState<any>({});
 
   const { latitude, longitude, address } = sightingLocation;
