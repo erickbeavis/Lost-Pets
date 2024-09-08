@@ -44,7 +44,7 @@ export const MyProfile = () => {
                   style={styles.feedPostContainer}
                   keyExtractor={(item) => item.index}
                 />
-              ) : "Não há nenhuma publicação ainda."}
+              ) : "Não há nenhuma publicação"}
             </Text>
           </View>
         </View>
