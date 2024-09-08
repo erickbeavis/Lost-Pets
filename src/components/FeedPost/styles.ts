@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   cardImgContinainer: {
-    marginTop: 20,
+    marginTop: 8,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'center',
@@ -22,39 +22,53 @@ export const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     marginBottom: 12,
-    padding: 8,
+    height: 35,
     backgroundColor: '#ededed',
   },
   cardSightings: {
     marginTop: 16,
     marginBottom: 0,
   },
+  contactContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  ageContainer: {
+    flexDirection: 'row',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  postContent: {
+    fontSize: 15,
+    paddingLeft: 5,
+  },
   petDescription: {
     marginTop: 8,
     fontSize: 16,
+    width: '100%',
   },
   postSightingsModalContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  postSightingsModalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     margin: 20,
-  },
-  postSightingsModalContent: {
-    width: '90%',
-    maxHeight: '100%',
+    maxHeight: 600,
     backgroundColor: '#fff',
-    borderRadius: 10,
+    paddingBottom: 20,
+    borderRadius: 12,
   },
   sightingCard: {
     backgroundColor: '#fff',
     borderWidth: 0.5,
     borderColor: '#ccc',
-    marginBottom: 30,
-    marginRight: 20,
-    marginLeft: 20,
+    margin: 16,
+  },
+  postSightingsModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    margin: 8,
+    marginBottom: 0,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ededed',
   },
   sightingLocation: {
     marginTop: 10,
@@ -64,7 +78,22 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 14,
   },
-  sightingDescription: {
-    marginBottom: 12,
+  sightingTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  editInput: {
+    fontSize: 16,
+    marginTop: 10,
+    backgroundColor: '#fffafa',
+    height: 40,
+    width: '100%',
+  },
+  editTextarea: {
+    height: 100,
+  },
+  postTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

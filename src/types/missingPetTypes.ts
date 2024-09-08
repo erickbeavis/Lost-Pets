@@ -1,14 +1,26 @@
 import { CommentsType } from './commentTypes';
-import { PetType } from './petTypes';
-import { SighthingType } from './sighthingTypes';
-import { UserRequestBody } from './userTypes';
+import { PetTypeRequest, PetType } from './petTypes';
+import { SighthingTypeRequest, SighthingType } from './sighthingTypes';
+import { LoggedUser } from './userTypes';
+
+export interface MissingPetTypeRequest {
+  sightings: SighthingTypeRequest[];
+  pet: PetTypeRequest;
+  status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
+}
 
 export interface MissingPetType {
-  id: string;
+  comments: CommentsType[];
   createdAt: string;
+  updatedAt: string;
+  id: string;
   sightings: SighthingType[];
-  user: UserRequestBody;
   pet: PetType;
-  comments: CommentsType;
+  user: LoggedUser;
+  status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
+}
+
+export interface EditMissingPetType {
+  pet: PetTypeRequest;
   status: number; // 0 - Lost | 1 - Found | 2 - Deactivated
 }

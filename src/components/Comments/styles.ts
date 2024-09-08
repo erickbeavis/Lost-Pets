@@ -4,21 +4,24 @@ export const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: '#fff',
     padding: 20,
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: '80%',
+    margin: 'auto',
     justifyContent: 'space-between',
+    maxHeight: 800,
+    borderRadius: 12,
   },
   modalHeaderContainer: {
-    height: '10%',
+    width: '100%',
+    height: '12%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    borderBottomWidth: 0.2,
+    borderBottomWidth: 1,
     borderBottomColor: '#ededed',
   },
   modalInputContainerAndroid: {
     marginBottom: 0,
-    paddingBottom: 20,
     justifyContent: 'flex-end',
     height: '10%',
   },
@@ -28,11 +31,12 @@ export const styles = StyleSheet.create({
   modalCardContainer: {
     height: '78%',
     paddingBottom: 10,
-    paddingTop: 10,
+    paddingTop: 20,
   },
   modalTitle: {
-    width: '80%',
     textAlign: 'center',
+    fontWeight: 'bold',
+    marginRight: 40,
   },
   modalCard: {
     marginBottom: 20,
@@ -42,12 +46,6 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     shadowColor: 'rgba(0,0,0, 0.0)',
-  },
-  modalCloseIcon: {
-    backgroundColor: '#fff',
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: '#228c80',
   },
   modalNoComments: {
     height: '100%',

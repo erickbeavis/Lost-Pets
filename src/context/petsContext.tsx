@@ -1,11 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 
-import { loginUser } from '~/services/Users/users';
+import { addMissingPet, editMissingPet, getMissingPet } from '~/services/MissingPets/missingPets';
+import { createSighthing, deleteSighthing } from '~/services/MissingPets/sighthings';
+import { loginUser, registerUser } from '~/services/Users/users';
 import { LocationType } from '~/types/locationTypes';
+import { PetTypeRequest } from '~/types/petTypes';
 import { ImageType } from '~/types/photoTypes';
 import { SighthingType } from '~/types/sighthingTypes';
-import { LoggedUser, LoginResponse } from '~/types/userTypes';
+import { LoggedUser, LoginResponse, UserRequestBody } from '~/types/userTypes';
+import { getUserToken } from '~/utils/getUserToken';
 import { saveUserToken } from '~/utils/saveUserToken';
 
 type FeedLocationType = {
@@ -33,17 +37,17 @@ type MyContextType = {
   setShowSightings: (showSightings: boolean) => void;
   addSightingVisible: boolean;
   setAddSightingVisible: (addSightingVisible: boolean) => void;
-  handleAddSighting: () => void;
-  handleSubmitMissingPet: () => void;
+  handleAddSighting: (isPost: boolean, missingPetId: string) => void;
+  handleSubmitMissingPet: (data: PetTypeRequest) => void;
   sightingLocation: LocationType;
   setSightingLocation: (sightingLocation: LocationType) => void;
   missingPetPost: any[];
-  setMissingPetPost: (missingPetPost: any[]) => void;
+  setMissingPetPost: (missingPetPost: never[]) => void;
   petPhoto: any[];
   setPetPhoto: (petPhoto: any) => void;
   missingPetContact: string;
   setMissingPetContact: (missingPetContact: string) => void;
-  handleRemoveSighting: (index: number) => void;
+  handleRemoveSighting: (index: string) => void;
   tabIndex: number;
   setTabIndex: (tabIndex: number) => void;
   isFeedLocation: boolean;
@@ -55,6 +59,11 @@ type MyContextType = {
   handleSubmitLogin: (user: string, password: string) => void;
   loggedUser: LoggedUser;
   setLoggedUser: (loggedUser: LoggedUser) => void;
+  handleRegisterUser: (data: UserRequestBody) => void;
+  handleEditMissingPet: (id: string, data: PetTypeRequest) => void;
+  handleSearchMissingPet: () => void;
+  postSightings: any;
+  setPostSightings: (postSightings: any) => void;
 };
 
 const PetsContext = createContext<MyContextType | undefined>(undefined);
@@ -86,28 +95,47 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
   const [petPhoto, setPetPhoto] = useState<any>([]);
   const [missingPetContact, setMissingPetContact] = useState('');
+  const [postSightings, setPostSightings] = useState<any>([]);
 
   const [sightings, setSightings] = useState<SighthingType[]>([]);
   const [missingPetPost, setMissingPetPost] = useState([]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main
   const [loggedUser, setLoggedUser] = useState<any>({});
 
   const { latitude, longitude, address } = sightingLocation;
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (tabIndex !== 2) setIsFeedLocation(false);
+  const handleRegisterUser = async (data: UserRequestBody) => {
+    try {
+      setLoading(true);
 
-    if (tabIndex === 2) setIsFeedLocation(true);
-  }, [tabIndex]);
+      await registerUser(data);
+
+      await handleSubmitLogin(data.email, data.password);
+
+      setLoading(false);
+
+      alert('Usuario cadastrado com sucesso!');
+    } catch (err) {
+      setLoading(false);
+
+      alert('Ocorreu um erro inesperado');
+
+      throw new Error(`Error ${err}`);
+    }
+  };
 
   const handleSubmitLogin = async (email: string, password: string) => {
     try {
       setLoading(true);
 
       const data: LoginResponse = await loginUser({
-        email: 'bruno@gmail.com',
-        password: '123456',
+        email,
+        password,
       });
 
       const { token, user } = data;
@@ -127,15 +155,18 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const handleAddSighting = () => {
+  const handleAddSighting = async (isPost: boolean, missingPetId: string) => {
     if (!sightingDate || !sightingLocation || !sightingDescription) {
       alert('É necessário preencher todos os campos informados');
       return;
     }
 
-    const newSighting = {
-      id: '',
-      userId: '',
+    const autCookie = await getUserToken();
+
+    if (!autCookie) return;
+
+    let newSighting = {
+      user: loggedUser.user,
       sightingDate,
       location: {
         latitude,
@@ -143,7 +174,20 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         address,
       },
       description: sightingDescription,
+      missingPetId,
     };
+
+    if (isPost) {
+      setLoading(true);
+
+      const { data } = await createSighthing(newSighting, autCookie);
+
+      await handleSearchMissingPet();
+
+      setLoading(false);
+
+      newSighting = data;
+    }
 
     setSightings([...sightings, newSighting]);
     setSightingDate('');
@@ -154,54 +198,67 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     navigation.goBack();
   };
 
-  const handleRemoveSighting = (index: number) => {
-    setSightings((prevSightings: any) => {
-      const newSightings = [...prevSightings];
-      newSightings.splice(index, 1);
+  const handleRemoveSighting = async (sightingId: string) => {
+    const autCookie = await getUserToken();
 
-      return newSightings;
-    });
+    if (!autCookie) return;
+
+    setLoading(true);
+
+    await deleteSighthing(sightingId, autCookie);
+
+    await handleSearchMissingPet();
+
+    setLoading(false);
   };
 
-  const handleSubmitMissingPet = () => {
-    // if (!petName || !petSpecies || !petAge || !petDescription || sightings.length === 0) {
-    //   alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
-    //   return;
-    // }
+  const handleSubmitMissingPet = async (data: PetTypeRequest) => {
+    if (
+      data.name === '' ||
+      data.species === '' ||
+      data.age === null ||
+      data.description === ''
+      // sightings.length === 0
+    ) {
+      alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
+      return;
+    }
 
     const postData = {
-      id: '',
-      createdAt: new Date().toLocaleDateString('pt-br'),
       sightings: sightings.map((sighting, index) => ({
-        id: index.toString(),
         sightingDate: sighting.sightingDate,
         location: {
           latitude: sighting.location.latitude,
           longitude: sighting.location.longitude,
           address: sighting.location.address,
         },
-        userId: '',
         description: sighting.description,
       })),
-      user: loggedUser,
       pet: {
-        id: '',
-        name: petName,
-        species: petSpecies,
-        age: Number(petAge),
+        name: data.name,
+        species: data.species,
+        age: Number(data.age),
         photos: petPhoto.map((photo: ImageType, index: number) => ({
           id: index.toString(),
           location: photo.uri,
           content: '',
         })),
-        description: petDescription,
+        description: data.description,
       },
-      comments: [],
       status: 0,
     };
-    console.log('TCL  postData:', postData);
 
+<<<<<<< HEAD
     setMissingPetPost(postData);
+=======
+    const token = await getUserToken();
+
+    if (!token) return;
+
+    setLoading(true);
+
+    await addMissingPet(postData, token);
+>>>>>>> upstream/main
 
     setPetName('');
     setPetSpecies('');
@@ -210,7 +267,61 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setSightings([]);
     setPetPhoto([]);
     setMissingPetContact('');
+
+    handleSearchMissingPet();
+
+    setLoading(false);
+    setTabIndex(0);
   };
+
+  const handleEditMissingPet = async (id: string, data: PetTypeRequest) => {
+    const autCookie = await getUserToken();
+
+    if (
+      !autCookie ||
+      data.name === '' ||
+      data.species === '' ||
+      data.age === null ||
+      data.description === ''
+    ) {
+      alert('Preencha todos os campos');
+
+      return;
+    }
+
+    const body = {
+      pet: {
+        id,
+        name: data.name,
+        species: data.species,
+        age: Number(data.age),
+        description: data.description,
+      },
+      status: 0,
+    };
+
+    setLoading(true);
+
+    await editMissingPet(id, body, autCookie);
+
+    handleSearchMissingPet();
+
+    setLoading(false);
+
+    navigation.navigate('feed');
+  };
+
+  const handleSearchMissingPet = async () => {
+    const data = (await getMissingPet(feedLocation.lat, feedLocation.lng, 10000000)) as any;
+
+    setMissingPetPost(data ?? []);
+  };
+
+  useEffect(() => {
+    setIsFeedLocation(false);
+
+    if (tabIndex === 2) setIsFeedLocation(true);
+  }, [tabIndex]);
 
   return (
     <PetsContext.Provider
@@ -255,6 +366,11 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setLoading,
         loggedUser,
         setLoggedUser,
+        handleRegisterUser,
+        handleEditMissingPet,
+        handleSearchMissingPet,
+        postSightings,
+        setPostSightings,
       }}>
       {children}
     </PetsContext.Provider>

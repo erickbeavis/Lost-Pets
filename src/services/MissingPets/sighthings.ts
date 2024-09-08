@@ -1,24 +1,28 @@
 import axios from 'axios';
 
-import { SighthingType } from '~/types/sighthingTypes';
+import { SighthingTypeRequest } from '~/types/sighthingTypes';
 
-export const createSighthing = async (petId: string, body: SighthingType) => {
+const URL = process.env.URL;
+
+export const createSighthing = async (body: SighthingTypeRequest, autCookie: string) => {
   try {
-    const { data } = await axios.post(`/missing-pet/${petId}/sighting`, {
-      body,
+    return await axios.post(`${URL}/api/Sighting`, body, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
     });
-
-    if (!data) return;
-
-    return data;
   } catch (err) {
     throw new Error(`Erro ${err}`);
   }
 };
 
-export const deleteSighthing = async (petId: string, sightingId: string, body: SighthingType) => {
+export const deleteSighthing = async (sightingId: string, autCookie: string) => {
   try {
-    await axios.delete(`/missing-pet/${petId}/sighting/${sightingId}`);
+    await axios.delete(`${URL}/api/Sighting/${sightingId}`, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
+    });
   } catch (err) {
     throw new Error(`Erro ${err}`);
   }

@@ -8,3 +8,11 @@ export interface PetType {
   photos: PhotoType[];
   description: string;
 }
+
+export interface PetTypeRequest {
+  name: string;
+  species: string;
+  age: number;
+  photos?: PhotoType[];
+  description: string;
+}

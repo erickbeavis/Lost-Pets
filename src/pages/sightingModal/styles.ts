@@ -50,7 +50,20 @@ export const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  dateInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  dateLabel: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 5,
+    paddingBottom: 2,
   },
 });

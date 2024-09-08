@@ -5,18 +5,19 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 
 import { styles } from './styles';
 
+import { Loading } from '~/components/Loading';
 import { usePetsContext } from '~/context/petsContext';
 
 export const Login = () => {
-  const { handleSubmitLogin, loading } = usePetsContext();
+  const { handleSubmitLogin } = usePetsContext();
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -53,7 +54,7 @@ export const Login = () => {
             />
             <TouchableOpacity
               style={styles.buttonForm}
-              onPress={() => navigation.navigate('feed')}>
+              onPress={() => handleSubmitLogin(userEmail, userPassword)}>
               <Text style={styles.textButton}>Entrar</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('createUser')}>

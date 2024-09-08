@@ -1,12 +1,36 @@
 import axios from 'axios';
 
-import { MissingPetType } from '~/types/missingPetTypes';
+import { EditMissingPetType, MissingPetTypeRequest } from '~/types/missingPetTypes';
 
-export const addMissingPet = async (body: MissingPetType) => {
+const URL = process.env.URL;
+
+export const addMissingPet = async (body: MissingPetTypeRequest, autCookie: string) => {
   try {
-    const { data } = await axios.post<Promise<MissingPetType>>('/missing-pet', {
+    const { data } = await axios.post<Promise<MissingPetTypeRequest>>(
+      `${URL}/api/MissingPet`,
       body,
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${autCookie}`,
+        },
+      }
+    );
+
+    if (!data) return;
+
+    return data;
+  } catch (err) {
+    console.error('Response data:', err.response?.data.errors);
+
+    throw new Error(`Error ${err}`);
+  }
+};
+
+export const getMissingPet = async (lat: number, lng: number, radius: number) => {
+  try {
+    const { data } = await axios.get<Promise<MissingPetTypeRequest>>(
+      `${URL}/api/MissingPet?latitude=${lat}&longitude=${lng}&radius=${radius}`
+    );
 
     if (!data) return;
 
@@ -16,9 +40,9 @@ export const addMissingPet = async (body: MissingPetType) => {
   }
 };
 
-export const getMissingPet = async () => {
+export const getMissingPetId = async (id: string) => {
   try {
-    const { data } = await axios.get<Promise<MissingPetType>>('/missing-pet');
+    const { data } = await axios.get<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet/${id}`);
 
     if (!data) return;
 
@@ -28,23 +52,38 @@ export const getMissingPet = async () => {
   }
 };
 
-export const editMissingPet = async (petId: string, body: MissingPetType) => {
+export const editMissingPet = async (
+  petId: string,
+  body: EditMissingPetType,
+  autCookie: string
+) => {
   try {
-    const { data } = await axios.put<Promise<MissingPetType>>(`/missing-pet/${petId}`, {
+    const { data } = await axios.put<Promise<MissingPetTypeRequest>>(
+      `${URL}/api/MissingPet/${petId}`,
       body,
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${autCookie}`,
+        },
+      }
+    );
 
     if (!data) return;
 
     return data;
   } catch (err) {
-    throw new Error(`Error ${err}`);
+    console.error('Response data:', err.response?.data.errors);
+    throw new Error(`Error ${err.response?.data.errors}`);
   }
 };
 
-export const deleteMissingPet = async (petId: string) => {
+export const deleteMissingPet = async (petId: string, autCookie: string) => {
   try {
-    await axios.delete<Promise<MissingPetType>>(`/missing-pet/${petId}`);
+    return await axios.delete<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet/${petId}`, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
+    });
   } catch (err) {
     throw new Error(`Error ${err}`);
   }
@@ -52,7 +91,7 @@ export const deleteMissingPet = async (petId: string) => {
 
 export const deactivateMissingPet = async (petId: string) => {
   try {
-    await axios.delete<Promise<MissingPetType>>(`/missing-pet/${petId}/deactivate`);
+    await axios.delete<Promise<MissingPetTypeRequest>>(`/missing-pet/${petId}/deactivate`);
   } catch (err) {
     throw new Error(`Error ${err}`);
   }

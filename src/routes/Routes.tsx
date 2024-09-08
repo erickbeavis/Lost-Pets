@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
+import { Platform, View, Image } from 'react-native';
 
+import { styles } from '../components/TopMenu/styles';
 import { CreateLostPetPost } from '../pages/createLostPetPost/index';
 import { CreateUser } from '../pages/createUser';
 import { Login } from '../pages/login';
@@ -28,7 +28,20 @@ const Routes = () => {
         component={CreateUser}
         options={{
           headerShown: true,
-          headerTitle: 'Login',
+          headerTitle: Platform.OS === 'android' ? 'Login' : '',
+          headerBackTitle: 'Login',
+          headerTintColor: '#000',
+          headerStyle: {
+            backgroundColor: '#fff',
+          },
+          headerRight: () => (
+            <View style={styles.menuLogoContainer}>
+              <Image
+                style={styles.menuLogoImage}
+                source={require('../../assets/paw-pet-login.png')}
+              />
+            </View>
+          ),
         }}
       />
       <Stack.Screen
@@ -38,7 +51,13 @@ const Routes = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="createLostPetPost" component={CreateLostPetPost} />
+      <Stack.Screen
+        name="createLostPetPost"
+        component={CreateLostPetPost}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="sightingModal"
         component={SightingModal}

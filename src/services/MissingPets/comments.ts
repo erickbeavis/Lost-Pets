@@ -1,11 +1,18 @@
 import axios from 'axios';
 
-import { CommentsType } from '~/types/missingPetTypes';
+type CommentsType = {
+  missingPetId?: string;
+  content: string;
+};
 
-export const createComment = async (body: CommentsType) => {
+const URL = process.env.URL;
+
+export const createComment = async (body: CommentsType, autCookie: string) => {
   try {
-    const { data } = await axios.post('/comment', {
-      body,
+    const { data } = await axios.post(`${URL}/api/Comment`, body, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
     });
 
     if (!data) return;
@@ -16,10 +23,12 @@ export const createComment = async (body: CommentsType) => {
   }
 };
 
-export const updateComment = async (petId: string, commentId: string, body: CommentsType) => {
+export const updateComment = async (commentId: string, body: CommentsType, autCookie: string) => {
   try {
-    const { data } = await axios.put(`/missing-pet/${petId}/comment/${commentId}`, {
-      body,
+    const { data } = await axios.put(`${URL}/api/Comment/${commentId}`, body, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
     });
 
     if (!data) return;
@@ -30,9 +39,13 @@ export const updateComment = async (petId: string, commentId: string, body: Comm
   }
 };
 
-export const deleteComment = async (petId: string, commentId: string) => {
+export const deleteComment = async (commentId: string, autCookie: string) => {
   try {
-    await axios.delete(`/missing-pet/${petId}/comment/${commentId}`);
+    return await axios.delete(`${URL}/api/Comment/${commentId}`, {
+      headers: {
+        Authorization: `Bearer ${autCookie}`,
+      },
+    });
   } catch (err) {
     throw new Error(`Erro ${err}`);
   }

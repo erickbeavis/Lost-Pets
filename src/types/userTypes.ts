@@ -4,9 +4,7 @@ import { MissingPetType } from './missingPetTypes';
 import { SighthingType } from './sighthingTypes';
 
 export interface UserRequestBody {
-  id: string;
-  firstName: string;
-  lastName: string;
+  userName: string;
   email: string;
   password: string;
   contacts: ContactType[];
@@ -27,8 +25,16 @@ export interface LoggedUser {
   sightings: SighthingType;
   comments: CommentsType;
   missingPets: MissingPetType;
-  contacts: ContactType;
+  contacts: ContactType[];
   id: string;
   createdAt: string;
   updatedAt: null | string;
+}
+
+export interface UserErrorTypes {
+  name?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+  opPhone?: string;
 }
