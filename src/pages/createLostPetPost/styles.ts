@@ -85,6 +85,7 @@ export const styles = StyleSheet.create({
   },
   sightingDescription: {
     marginBottom: 12,
+    fontSize: 16,
   },
   submitButton: {
     backgroundColor: '#228c80',

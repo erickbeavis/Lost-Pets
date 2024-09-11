@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, Platform, KeyboardAvoidingView, Alert } from 'react-native';
 import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text } from 'react-native-paper';
 
 import { styles } from './styles';
@@ -18,16 +18,13 @@ type CommentsProps = {
 
 export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
   const { loggedUser } = usePetsContext();
+
   const [textInput, setTextInput] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [comments, setComments] = useState<any[]>(item.comments);
 
   const formattedDate = format(new Date(), 'dd/MM/yyyy');
-
-  useEffect(() => {
-    setComments(item.comments);
-  }, []);
 
   const handleAddComment = async (content: string) => {
     if (content === '') return;
@@ -51,13 +48,25 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
   };
 
   const handleDeleteComment = async (id: string) => {
-    const autCookie = await getUserToken();
+    Alert.alert('', 'Tem certeza que deseja excluir?', [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+        onPress: () => {},
+      },
+      {
+        text: 'Excluir',
+        onPress: async () => {
+          const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+          if (!autCookie) return;
 
-    await deleteComment(id, autCookie);
+          await deleteComment(id, autCookie);
 
-    setComments(comments.filter((comment) => comment.id !== id));
+          setComments(comments.filter((comment) => comment.id !== id));
+        },
+      },
+    ]);
   };
 
   const handleEditComment = (id: string) => {

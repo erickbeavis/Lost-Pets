@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { Avatar, Card, IconButton, Text, Chip, Portal, Modal, Icon } from 'react-native-paper';
 
 import { styles } from './styles';
@@ -25,7 +25,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
   const petName = item.pet.name;
   const petSpecies = item.pet.species;
   const petAge = item.pet.age.toString();
-  const userContact = item.user.contacts[0]?.content;
+  const userContact = item.user.contacts;
   const petDescription = item.pet.description;
 
   const [visible, setVisible] = useState(false);
@@ -44,18 +44,29 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
     navigation.navigate('sightingModal', { isPost: true, missingPetId: item.id });
   };
 
-  const handleDelete = async (id: string) => {
-    const autCookie = await getUserToken();
+  const handleDelete = (id: string) => {
+    Alert.alert('', 'Tem certeza que deseja excluir?', [
+      {
+        text: 'Cancelar',
+        style: 'destructive',
+      },
+      {
+        text: 'Excluir',
+        onPress: async () => {
+          const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+          if (!autCookie) return;
 
-    setLoading(true);
+          setLoading(true);
 
-    await deleteMissingPet(id, autCookie);
+          await deleteMissingPet(id, autCookie);
 
-    handleSearchMissingPet();
+          handleSearchMissingPet();
 
-    setLoading(false);
+          setLoading(false);
+        },
+      },
+    ]);
   };
 
   return (
@@ -118,11 +129,15 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               </Text>
               <View style={styles.contactContainer}>
                 <Icon source="phone" size={18} />
-                <Text style={styles.postContent}>{userContact}</Text>
+                <Text style={styles.postContent}>
+                  {userContact.length > 1
+                    ? `${userContact[0]?.content} | ${userContact[1]?.content}`
+                    : `${userContact[0]?.content}`}
+                </Text>
               </View>
               <View style={styles.ageContainer}>
                 <Icon source="calendar-month" size={18} />
-                <Text style={styles.postContent}>{petAge}</Text>
+                <Text style={styles.postContent}>{petAge} Anos</Text>
               </View>
             </View>
             <Text style={styles.petDescription}>{petDescription}</Text>

@@ -69,6 +69,15 @@ export const CreateLostPetPost = () => {
     });
   };
 
+  const handleSubmit = async () => {
+    handleSubmitMissingPet({
+      name: petName,
+      species: petSpecies,
+      age: petAge,
+      description: petDescription,
+    });
+  };
+
   const handleSave = (index: number, item: any) => {
     const updatedSighting = {
       ...item,
@@ -361,12 +370,7 @@ export const CreateLostPetPost = () => {
                       age: petAge,
                       description: petDescription,
                     })
-                  : handleSubmitMissingPet({
-                      name: petName,
-                      species: petSpecies,
-                      age: petAge,
-                      description: petDescription,
-                    });
+                  : handleSubmit();
               }}>
               <Text style={styles.submitButtonText}>
                 {editingPost ? 'Salvar' : 'Enviar Publicação'}

@@ -5,25 +5,15 @@ import { EditMissingPetType, MissingPetTypeRequest } from '~/types/missingPetTyp
 const URL = process.env.URL;
 
 export const addMissingPet = async (body: MissingPetTypeRequest, autCookie: string) => {
-  try {
-    const { data } = await axios.post<Promise<MissingPetTypeRequest>>(
-      `${URL}/api/MissingPet`,
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${autCookie}`,
-        },
-      }
-    );
+  const { data } = await axios.post<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet`, body, {
+    headers: {
+      Authorization: `Bearer ${autCookie}`,
+    },
+  });
 
-    if (!data) return;
+  if (!data) return;
 
-    return data;
-  } catch (err) {
-    console.error('Response data:', err.response?.data.errors);
-
-    throw new Error(`Error ${err}`);
-  }
+  return data;
 };
 
 export const getMissingPet = async (lat: number, lng: number, radius: number) => {

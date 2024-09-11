@@ -82,7 +82,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     lng: 0,
   });
 
-  const [sightingDate, setSightingDate] = useState('');
+  const [sightingDate, setSightingDate] = useState(new Date());
   const [sightingDescription, setSightingDescription] = useState('');
   const [showSightings, setShowSightings] = useState(false);
   const [addSightingVisible, setAddSightingVisible] = useState(false);
@@ -214,8 +214,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       data.name === '' ||
       data.species === '' ||
       data.age === null ||
-      data.description === ''
-      // sightings.length === 0
+      data.description === '' ||
+      sightings.length === 0
     ) {
       alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
       return;
@@ -245,26 +245,32 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       status: 0,
     };
 
-    const token = await getUserToken();
+    try {
+      const token = await getUserToken();
 
-    if (!token) return;
+      if (!token) return;
 
-    setLoading(true);
+      setLoading(true);
 
-    await addMissingPet(postData, token);
+      await addMissingPet(postData, token);
 
-    setPetName('');
-    setPetSpecies('');
-    setPetAge('');
-    setPetDescription('');
-    setSightings([]);
-    setPetPhoto([]);
-    setMissingPetContact('');
+      setPetName('');
+      setPetSpecies('');
+      setPetAge('');
+      setPetDescription('');
+      setSightings([]);
+      setPetPhoto([]);
+      setMissingPetContact('');
 
-    handleSearchMissingPet();
+      console.log('passou');
 
-    setLoading(false);
-    setTabIndex(0);
+      handleSearchMissingPet();
+
+      setLoading(false);
+      setTabIndex(0);
+    } catch (err) {
+      console.error('Error:', err.response?.data.errors);
+    }
   };
 
   const handleEditMissingPet = async (id: string, data: PetTypeRequest) => {
