@@ -212,8 +212,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const handleSubmitMissingPet = async (data: PetTypeRequest) => {
     if (
       data.name === '' ||
-      data.species === '' ||
       data.age === null ||
+      data.species === '' ||
       data.description === '' ||
       sightings.length === 0
     ) {
@@ -234,7 +234,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       pet: {
         name: data.name,
         species: data.species,
-        age: Number(data.age),
+        age: data.age,
         photos: petPhoto.map((photo: ImageType, index: number) => ({
           id: index.toString(),
           location: photo.uri,
@@ -254,60 +254,65 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       await addMissingPet(postData, token);
 
-      setPetName('');
-      setPetSpecies('');
-      setPetAge('');
-      setPetDescription('');
-      setSightings([]);
       setPetPhoto([]);
       setMissingPetContact('');
-
-      console.log('passou');
 
       handleSearchMissingPet();
 
       setLoading(false);
       setTabIndex(0);
     } catch (err) {
-      console.error('Error:', err.response?.data.errors);
+      console.error('Error:', err);
+
+      setLoading(false);
+
+      return {
+        error: err,
+      };
     }
   };
 
   const handleEditMissingPet = async (id: string, data: PetTypeRequest) => {
-    const autCookie = await getUserToken();
+    try {
+      const autCookie = await getUserToken();
 
-    if (
-      !autCookie ||
-      data.name === '' ||
-      data.species === '' ||
-      data.age === null ||
-      data.description === ''
-    ) {
-      alert('Preencha todos os campos');
+      if (
+        !autCookie ||
+        data.name === '' ||
+        data.species === '' ||
+        data.age === null ||
+        data.description === ''
+      ) {
+        alert('Preencha todos os campos');
 
-      return;
+        return;
+      }
+
+      const body = {
+        pet: {
+          id,
+          name: data.name,
+          species: data.species,
+          age: data.age,
+          description: data.description,
+        },
+        status: 0,
+      };
+
+      setLoading(true);
+
+      await editMissingPet(id, body, autCookie);
+
+      handleSearchMissingPet();
+
+      setLoading(false);
+
+      navigation.navigate('feed');
+    } catch (err) {
+      setLoading(false);
+
+      console.error('Error:', err.response?.data.errors);
     }
-
-    const body = {
-      pet: {
-        id,
-        name: data.name,
-        species: data.species,
-        age: Number(data.age),
-        description: data.description,
-      },
-      status: 0,
-    };
-
-    setLoading(true);
-
-    await editMissingPet(id, body, autCookie);
-
-    handleSearchMissingPet();
-
-    setLoading(false);
-
-    navigation.navigate('feed');
   };
 
   const handleSearchMissingPet = async () => {

@@ -108,10 +108,10 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
     <Portal>
       <Modal visible={visible} contentContainerStyle={styles.modalContainer}>
         <View style={styles.modalHeaderContainer}>
+          <IconButton icon="close" size={30} onTouchStart={hideModal} />
           <Text variant="titleLarge" style={styles.modalTitle}>
             Comentarios
           </Text>
-          <IconButton icon="close" size={30} onTouchStart={hideModal} />
         </View>
         <View style={styles.modalCardContainer}>
           <ScrollView>
@@ -122,7 +122,7 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
                 return (
                   <Card key={comment.id} style={styles.modalCard}>
                     <Card.Title
-                      title={comment.user.email}
+                      title={comment.user.userName}
                       subtitle={formattedDate}
                       titleVariant="titleSmall"
                       subtitleVariant="labelSmall"

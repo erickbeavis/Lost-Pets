@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '12%',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ededed',
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   modalTitle: {
     textAlign: 'center',
     fontWeight: 'bold',
-    marginRight: 40,
+    marginLeft: 40,
   },
   modalCard: {
     marginBottom: 20,

@@ -24,7 +24,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
 
   const petName = item.pet.name;
   const petSpecies = item.pet.species;
-  const petAge = item.pet.age.toString();
+  const petAge = item.pet.age;
   const userContact = item.user.contacts;
   const petDescription = item.pet.description;
 
@@ -73,7 +73,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
     <View style={styles.cardContainer} key={index}>
       <Card style={{ backgroundColor: '#fffafa' }}>
         <Card.Title
-          title={item.user.email}
+          title={item.user.userName}
           subtitle={new Date(item.createdAt).toLocaleString('pt-br', {
             day: '2-digit',
             month: '2-digit',
@@ -137,7 +137,11 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               </View>
               <View style={styles.ageContainer}>
                 <Icon source="calendar-month" size={18} />
-                <Text style={styles.postContent}>{petAge} Anos</Text>
+                <Text style={styles.postContent}>
+                  {petAge.includes('00')
+                    ? `${petAge.replace('00', '')} ${petAge === '001' ? 'Mes' : 'Meses'}`
+                    : `${petAge.replace('11', '')} ${petAge === '111' ? 'Ano' : 'Anos'}`}
+                </Text>
               </View>
             </View>
             <Text style={styles.petDescription}>{petDescription}</Text>
@@ -165,6 +169,8 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               onDismiss={() => setRenderPostSightings(false)}
               contentContainerStyle={styles.postSightingsModalContainer}>
               <View style={styles.postSightingsModalHeader}>
+                <IconButton icon="close" size={30} onPress={() => setRenderPostSightings(false)} />
+                <Text style={styles.sightingTitle}>Avistamentos</Text>
                 <IconButton
                   icon="plus"
                   size={20}
@@ -172,8 +178,6 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   iconColor="#fff"
                   style={{ backgroundColor: '#228c80' }}
                 />
-                <Text style={styles.sightingTitle}>Avistamentos</Text>
-                <IconButton icon="close" size={30} onPress={() => setRenderPostSightings(false)} />
               </View>
               <ScrollView>
                 {item.sightings.map(
@@ -183,7 +187,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                     return (
                       <Card style={styles.sightingCard} key={id}>
                         <Card.Title
-                          title={new Date(sightingDate).toLocaleDateString()}
+                          title={new Date(sightingDate).toLocaleDateString('pt-br')}
                           titleVariant="titleMedium"
                           right={(props) => (
                             <>
@@ -199,8 +203,19 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                                       return;
                                     }
 
-                                    handleRemoveSighting(`${id}`);
-                                    setRenderPostSightings(false);
+                                    Alert.alert('', 'Tem certeza que deseja excluir?', [
+                                      {
+                                        text: 'Cancelar',
+                                        style: 'destructive',
+                                      },
+                                      {
+                                        text: 'Excluir',
+                                        onPress: async () => {
+                                          handleRemoveSighting(`${id}`);
+                                          setRenderPostSightings(false);
+                                        },
+                                      },
+                                    ]);
                                   }}
                                   style={{ paddingRight: 10 }}
                                   size={20}
@@ -210,7 +225,9 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                           )}
                         />
                         <Card.Content>
-                          <Text variant="bodyMedium">{description}</Text>
+                          <Text style={styles.sightingDescription} variant="bodyMedium">
+                            {description}
+                          </Text>
                           <Text variant="bodyMedium">{location?.address}</Text>
                           <View style={styles.sightingLocation}>
                             <SightingMap isModal location={location} />
