@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
-import { View, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
-import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text } from 'react-native-paper';
+import { useEffect, useRef, useState } from 'react';
+import { View, ScrollView, Platform, KeyboardAvoidingView, Alert } from 'react-native';
+import { Avatar, Card, IconButton, Modal, Portal, TextInput, Text, Chip } from 'react-native-paper';
 
 import { styles } from './styles';
 
@@ -17,151 +17,190 @@ type CommentsProps = {
 };
 
 export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
-  const { loggedUser } = usePetsContext();
+  const { loggedUser, comments, setComments } = usePetsContext();
+
   const [textInput, setTextInput] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-  const [editingText, setEditingText] = useState('');
-  const [comments, setComments] = useState<any[]>(item.comments);
+
+  const commentInput = useRef(null);
+
+  // ARRUMAR COMENTARIO NAO ATUALIZANDO
+
+  useEffect(() => {
+    if (item.comments.length === 0 || comments.length === 0) setComments(item.comments);
+    console.log('TCL  item.comments:', item.comments.length);
+    console.log('TCL  item', comments.length);
+  }, [visible]);
+
+  useEffect(() => {
+    setTextInput('');
+    setEditingCommentId(null);
+  }, [visible]);
 
   const formattedDate = format(new Date(), 'dd/MM/yyyy');
 
-  useEffect(() => {
-    setComments(item.comments);
-  }, []);
-
   const handleAddComment = async (content: string) => {
+    console.log('TCL  content:', content);
     if (content === '') return;
 
-    const autCookie = await getUserToken();
+    try {
+      const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+      if (!autCookie) return;
 
-    const newComment = await createComment(
-      {
-        missingPetId: item.id,
-        content,
-      },
-      autCookie
-    );
+      const newComment = await createComment(
+        {
+          missingPetId: item.id,
+          content,
+        },
+        autCookie
+      );
 
-    newComment.user = loggedUser;
+      newComment.user = loggedUser;
 
-    setComments([...comments, newComment]);
-    setTextInput('');
+      setComments([...comments, newComment]);
+      setTextInput('');
+    } catch (err) {
+      console.error(`Erro ${err.response?.data}`);
+    }
   };
 
   const handleDeleteComment = async (id: string) => {
-    const autCookie = await getUserToken();
+    Alert.alert('', 'Tem certeza que deseja excluir?', [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+        onPress: () => {},
+      },
+      {
+        text: 'Excluir',
+        onPress: async () => {
+          try {
+            const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+            if (!autCookie) return;
 
-    await deleteComment(id, autCookie);
+            await deleteComment(id, autCookie);
 
-    setComments(comments.filter((comment) => comment.id !== id));
+            setComments(comments.filter((comment) => comment.id !== id));
+            setTextInput('');
+          } catch (err) {
+            console.error(`Erro ${err.response?.data}`);
+          }
+        },
+      },
+    ]);
   };
 
   const handleEditComment = (id: string) => {
+    commentInput.current.focus();
+
     setEditingCommentId(id);
 
     const commentToEdit = comments.find((comment) => comment.id === id);
 
-    if (commentToEdit) setEditingText(commentToEdit.content);
+    if (commentToEdit) setTextInput(commentToEdit.content);
   };
 
   const handleSaveEditComment = async () => {
     if (!editingCommentId) return;
 
-    const autCookie = await getUserToken();
+    try {
+      const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+      if (!autCookie) return;
 
-    const updatedComments = comments.map((comment) => {
-      if (comment.id === editingCommentId) {
-        return { ...comment, content: editingText };
-      }
+      const updatedComments = comments.map((comment) => {
+        if (comment.id === editingCommentId) {
+          return { ...comment, content: textInput };
+        }
 
-      return comment;
-    });
+        return comment;
+      });
 
-    setComments(updatedComments);
-    setEditingCommentId(null);
+      await updateComment(
+        editingCommentId,
+        {
+          content: textInput,
+        },
+        autCookie
+      );
 
-    await updateComment(
-      editingCommentId,
-      {
-        content: editingText,
-      },
-      autCookie
-    );
+      setComments(updatedComments);
+      setEditingCommentId(null);
+      setTextInput('');
+    } catch (err) {
+      console.error('Error ', err.response?.data);
+    }
   };
 
   return (
     <Portal>
       <Modal visible={visible} contentContainerStyle={styles.modalContainer}>
         <View style={styles.modalHeaderContainer}>
-          <Text variant="titleLarge" style={styles.modalTitle}>
-            Comentarios
-          </Text>
           <IconButton icon="close" size={30} onTouchStart={hideModal} />
+          <Text variant="titleLarge" style={styles.modalTitle}>
+            Comentários
+          </Text>
         </View>
         <View style={styles.modalCardContainer}>
           <ScrollView>
             {comments.length > 0 ? (
-              comments.map((comment) => {
+              comments.map((comment, index: number) => {
                 const isUserComment = comment.user.id === loggedUser.id;
 
                 return (
-                  <Card key={comment.id} style={styles.modalCard}>
-                    <Card.Title
-                      title={comment.user.email}
-                      subtitle={formattedDate}
-                      titleVariant="titleSmall"
-                      subtitleVariant="labelSmall"
-                      left={(props) => (
-                        <Avatar.Icon
-                          {...props}
-                          icon="account"
-                          style={{ backgroundColor: '#ededed' }}
-                        />
-                      )}
-                      right={(props) => (
-                        <>
-                          {isUserComment && (
-                            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-                              <IconButton
-                                {...props}
-                                icon="pencil"
-                                size={15}
-                                style={{ paddingLeft: 10 }}
-                                onPress={() => handleEditComment(comment.id)}
-                              />
-                              <IconButton
-                                {...props}
-                                icon="trash-can-outline"
-                                size={15}
-                                style={{ paddingRight: 10 }}
-                                onPress={() => handleDeleteComment(comment.id)}
-                              />
-                            </View>
-                          )}
-                        </>
-                      )}
-                    />
-                    <Card.Content>
-                      {editingCommentId === comment.id ? (
-                        <TextInput
-                          value={editingText}
-                          maxLength={100}
-                          onChangeText={setEditingText}
-                          onBlur={handleSaveEditComment}
-                          autoFocus
-                          mode="outlined"
-                        />
-                      ) : (
-                        <Text>{comment.content}</Text>
-                      )}
-                    </Card.Content>
-                  </Card>
+                  <>
+                    <Card key={index} style={styles.modalCard}>
+                      <Card.Title
+                        title={comment.user.userName}
+                        subtitle={formattedDate}
+                        titleVariant="titleSmall"
+                        subtitleVariant="labelSmall"
+                        left={(props) => (
+                          <Avatar.Icon
+                            {...props}
+                            icon="account"
+                            style={{ backgroundColor: '#ededed' }}
+                          />
+                        )}
+                        right={(props) => (
+                          <>
+                            {isUserComment && (
+                              <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                                {editingCommentId !== comment.id && (
+                                  <IconButton
+                                    {...props}
+                                    icon="pencil"
+                                    size={15}
+                                    style={{ paddingLeft: 10 }}
+                                    onPress={() => handleEditComment(comment.id)}
+                                  />
+                                )}
+                                <IconButton
+                                  {...props}
+                                  icon="trash-can-outline"
+                                  size={15}
+                                  style={{ paddingRight: 10 }}
+                                  onPress={() => handleDeleteComment(comment.id)}
+                                />
+                              </View>
+                            )}
+                          </>
+                        )}
+                      />
+                      <Card.Content>
+                        <Text>
+                          {editingCommentId && editingCommentId === comment.id
+                            ? textInput
+                            : comment.content}
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                    <Chip icon="chat-processing-outline" style={styles.answerComment}>
+                      Responder...
+                    </Chip>
+                  </>
                 );
               })
             ) : (
@@ -174,24 +213,43 @@ export const Comments = ({ visible, hideModal, item }: CommentsProps) => {
         {Platform.OS === 'android' ? (
           <View style={styles.modalInputContainerAndroid}>
             <TextInput
-              placeholder="Comentario..."
+              placeholder="Digite o comentário..."
               maxLength={100}
               value={textInput}
               onChangeText={(text) => setTextInput(text)}
-              onBlur={() => handleAddComment(textInput)}
               mode="outlined"
+              returnKeyType="done"
+              ref={commentInput}
             />
+            {textInput !== '' && (
+              <IconButton
+                size={22}
+                icon="check"
+                style={styles.modalInputContainerIcon}
+                onPress={() => {
+                  if (editingCommentId) handleSaveEditComment();
+                  else handleAddComment(textInput);
+                }}
+              />
+            )}
           </View>
         ) : (
           <KeyboardAvoidingView behavior="position">
             <View style={styles.modalInputContainerIOS}>
               <TextInput
-                placeholder="Comentario..."
+                placeholder="Digite o comentário..."
                 maxLength={100}
                 value={textInput}
                 onChangeText={(text) => setTextInput(text)}
                 onBlur={() => handleAddComment(textInput)}
                 mode="outlined"
+                returnKeyType="done"
+              />
+              <IconButton
+                size={22}
+                icon="check"
+                style={styles.modalInputContainerIcon}
+                onPress={() => handleAddComment(textInput)}
               />
             </View>
           </KeyboardAvoidingView>

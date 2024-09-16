@@ -82,6 +82,9 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  sightingDescription: {
+    fontSize: 16,
+  },
   editInput: {
     fontSize: 16,
     marginTop: 10,

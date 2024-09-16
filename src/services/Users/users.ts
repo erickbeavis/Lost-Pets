@@ -37,7 +37,7 @@ export const loginUser = async (body: UserLoginBody) => {
   }
 };
 
-export const userId = async (id: string, method: string, body?: UserRequestBody) => {
+export const getUser = async (id: string, method: string, body?: UserRequestBody) => {
   try {
     const config: RequestConfig = {
       method,

@@ -31,7 +31,7 @@ export const SightingModal = () => {
   const missingPetId = routes.params?.missingPetId as string;
 
   const handleSightingDate = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || date.toLocaleDateString('pt-br');
 
     setShowDate(false);
     setDate(currentDate);

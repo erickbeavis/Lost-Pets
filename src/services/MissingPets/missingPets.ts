@@ -5,25 +5,13 @@ import { EditMissingPetType, MissingPetTypeRequest } from '~/types/missingPetTyp
 const URL = process.env.URL;
 
 export const addMissingPet = async (body: MissingPetTypeRequest, autCookie: string) => {
-  try {
-    const { data } = await axios.post<Promise<MissingPetTypeRequest>>(
-      `${URL}/api/MissingPet`,
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${autCookie}`,
-        },
-      }
-    );
+  const { data } = await axios.post<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet`, body, {
+    headers: {
+      Authorization: `Bearer ${autCookie}`,
+    },
+  });
 
-    if (!data) return;
-
-    return data;
-  } catch (err) {
-    console.error('Response data:', err.response?.data.errors);
-
-    throw new Error(`Error ${err}`);
-  }
+  return data;
 };
 
 export const getMissingPet = async (lat: number, lng: number, radius: number) => {
@@ -57,36 +45,25 @@ export const editMissingPet = async (
   body: EditMissingPetType,
   autCookie: string
 ) => {
-  try {
-    const { data } = await axios.put<Promise<MissingPetTypeRequest>>(
-      `${URL}/api/MissingPet/${petId}`,
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${autCookie}`,
-        },
-      }
-    );
-
-    if (!data) return;
-
-    return data;
-  } catch (err) {
-    console.error('Response data:', err.response?.data.errors);
-    throw new Error(`Error ${err.response?.data.errors}`);
-  }
-};
-
-export const deleteMissingPet = async (petId: string, autCookie: string) => {
-  try {
-    return await axios.delete<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet/${petId}`, {
+  const { data } = await axios.put<Promise<MissingPetTypeRequest>>(
+    `${URL}/api/MissingPet/${petId}`,
+    body,
+    {
       headers: {
         Authorization: `Bearer ${autCookie}`,
       },
-    });
-  } catch (err) {
-    throw new Error(`Error ${err}`);
-  }
+    }
+  );
+
+  return data;
+};
+
+export const deleteMissingPet = async (petId: string, autCookie: string) => {
+  return await axios.delete<Promise<MissingPetTypeRequest>>(`${URL}/api/MissingPet/${petId}`, {
+    headers: {
+      Authorization: `Bearer ${autCookie}`,
+    },
+  });
 };
 
 export const deactivateMissingPet = async (petId: string) => {

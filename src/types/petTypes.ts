@@ -4,7 +4,7 @@ export interface PetType {
   id: string;
   name: string;
   species: string;
-  age: number;
+  age: string;
   photos: PhotoType[];
   description: string;
 }
@@ -12,7 +12,7 @@ export interface PetType {
 export interface PetTypeRequest {
   name: string;
   species: string;
-  age: number;
+  age: string;
   photos?: PhotoType[];
   description: string;
 }

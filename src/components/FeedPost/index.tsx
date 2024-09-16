@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { Avatar, Card, IconButton, Text, Chip, Portal, Modal, Icon } from 'react-native-paper';
 
 import { styles } from './styles';
@@ -24,8 +24,8 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
 
   const petName = item.pet.name;
   const petSpecies = item.pet.species;
-  const petAge = item.pet.age.toString();
-  const userContact = item.user.contacts[0]?.content;
+  const petAge = item.pet.age;
+  const userContact = item.user.contacts;
   const petDescription = item.pet.description;
 
   const [visible, setVisible] = useState(false);
@@ -44,25 +44,36 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
     navigation.navigate('sightingModal', { isPost: true, missingPetId: item.id });
   };
 
-  const handleDelete = async (id: string) => {
-    const autCookie = await getUserToken();
+  const handleDelete = (id: string) => {
+    Alert.alert('', 'Tem certeza que deseja excluir?', [
+      {
+        text: 'Cancelar',
+        style: 'destructive',
+      },
+      {
+        text: 'Excluir',
+        onPress: async () => {
+          const autCookie = await getUserToken();
 
-    if (!autCookie) return;
+          if (!autCookie) return;
 
-    setLoading(true);
+          setLoading(true);
 
-    await deleteMissingPet(id, autCookie);
+          await deleteMissingPet(id, autCookie);
 
-    handleSearchMissingPet();
+          handleSearchMissingPet();
 
-    setLoading(false);
+          setLoading(false);
+        },
+      },
+    ]);
   };
 
   return (
     <View style={styles.cardContainer} key={index}>
       <Card style={{ backgroundColor: '#fffafa' }}>
         <Card.Title
-          title={item.user.email}
+          title={item.user.userName}
           subtitle={new Date(item.createdAt).toLocaleString('pt-br', {
             day: '2-digit',
             month: '2-digit',
@@ -118,11 +129,19 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               </Text>
               <View style={styles.contactContainer}>
                 <Icon source="phone" size={18} />
-                <Text style={styles.postContent}>{userContact}</Text>
+                <Text style={styles.postContent}>
+                  {userContact.length > 1
+                    ? `${userContact[0]?.content} | ${userContact[1]?.content}`
+                    : `${userContact[0]?.content}`}
+                </Text>
               </View>
               <View style={styles.ageContainer}>
                 <Icon source="calendar-month" size={18} />
-                <Text style={styles.postContent}>{petAge}</Text>
+                <Text style={styles.postContent}>
+                  {petAge.includes('00')
+                    ? `${petAge.replace('00', '')} ${petAge === '001' ? 'Mes' : 'Meses'}`
+                    : `${petAge.replace('11', '')} ${petAge === '111' ? 'Ano' : 'Anos'}`}
+                </Text>
               </View>
             </View>
             <Text style={styles.petDescription}>{petDescription}</Text>
@@ -150,6 +169,8 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
               onDismiss={() => setRenderPostSightings(false)}
               contentContainerStyle={styles.postSightingsModalContainer}>
               <View style={styles.postSightingsModalHeader}>
+                <IconButton icon="close" size={30} onPress={() => setRenderPostSightings(false)} />
+                <Text style={styles.sightingTitle}>Avistamentos</Text>
                 <IconButton
                   icon="plus"
                   size={20}
@@ -157,8 +178,6 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                   iconColor="#fff"
                   style={{ backgroundColor: '#228c80' }}
                 />
-                <Text style={styles.sightingTitle}>Avistamentos</Text>
-                <IconButton icon="close" size={30} onPress={() => setRenderPostSightings(false)} />
               </View>
               <ScrollView>
                 {item.sightings.map(
@@ -168,7 +187,7 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                     return (
                       <Card style={styles.sightingCard} key={id}>
                         <Card.Title
-                          title={new Date(sightingDate).toLocaleDateString()}
+                          title={new Date(sightingDate).toLocaleDateString('pt-br')}
                           titleVariant="titleMedium"
                           right={(props) => (
                             <>
@@ -184,8 +203,19 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                                       return;
                                     }
 
-                                    handleRemoveSighting(`${id}`);
-                                    setRenderPostSightings(false);
+                                    Alert.alert('', 'Tem certeza que deseja excluir?', [
+                                      {
+                                        text: 'Cancelar',
+                                        style: 'destructive',
+                                      },
+                                      {
+                                        text: 'Excluir',
+                                        onPress: async () => {
+                                          handleRemoveSighting(`${id}`);
+                                          setRenderPostSightings(false);
+                                        },
+                                      },
+                                    ]);
                                   }}
                                   style={{ paddingRight: 10 }}
                                   size={20}
@@ -195,7 +225,9 @@ export const FeedPost = ({ item, index }: FeedPostProps) => {
                           )}
                         />
                         <Card.Content>
-                          <Text variant="bodyMedium">{description}</Text>
+                          <Text style={styles.sightingDescription} variant="bodyMedium">
+                            {description}
+                          </Text>
                           <Text variant="bodyMedium">{location?.address}</Text>
                           <View style={styles.sightingLocation}>
                             <SightingMap isModal location={location} />

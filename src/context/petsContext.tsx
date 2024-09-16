@@ -4,6 +4,7 @@ import React, { createContext, useContext, ReactNode, useState, useEffect } from
 import { addMissingPet, editMissingPet, getMissingPet } from '~/services/MissingPets/missingPets';
 import { createSighthing, deleteSighthing } from '~/services/MissingPets/sighthings';
 import { loginUser, registerUser } from '~/services/Users/users';
+import { CommentsType } from '~/types/commentTypes';
 import { LocationType } from '~/types/locationTypes';
 import { PetTypeRequest } from '~/types/petTypes';
 import { ImageType } from '~/types/photoTypes';
@@ -29,14 +30,16 @@ type MyContextType = {
   setPetDescription: (petDescription: string) => void;
   sightings: any[];
   setSightings: (sightings: any) => void;
-  sightingDate: string;
-  setSightingDate: (sightingDate: string) => void;
+  sightingDate: Date;
+  setSightingDate: (sightingDate: Date) => void;
   sightingDescription: string;
   setSightingDescription: (sightingDescription: string) => void;
   showSightings: boolean;
   setShowSightings: (showSightings: boolean) => void;
   addSightingVisible: boolean;
   setAddSightingVisible: (addSightingVisible: boolean) => void;
+  comments: any;
+  setComments: (comments: any) => void;
   handleAddSighting: (isPost: boolean, missingPetId: string) => void;
   handleSubmitMissingPet: (data: PetTypeRequest) => void;
   sightingLocation: LocationType;
@@ -82,7 +85,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     lng: 0,
   });
 
-  const [sightingDate, setSightingDate] = useState('');
+  const [sightingDate, setSightingDate] = useState(new Date());
   const [sightingDescription, setSightingDescription] = useState('');
   const [showSightings, setShowSightings] = useState(false);
   const [addSightingVisible, setAddSightingVisible] = useState(false);
@@ -96,6 +99,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [petPhoto, setPetPhoto] = useState<any>([]);
   const [missingPetContact, setMissingPetContact] = useState('');
   const [postSightings, setPostSightings] = useState<any>([]);
+
+  const [comments, setComments] = useState([]);
 
   const [sightings, setSightings] = useState<SighthingType[]>([]);
   const [missingPetPost, setMissingPetPost] = useState([]);
@@ -186,7 +191,6 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     setSightings([...sightings, newSighting]);
-    setSightingDate('');
     setSightingDescription('');
     setShowSightings(true);
     setAddSightingVisible(false);
@@ -211,10 +215,10 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const handleSubmitMissingPet = async (data: PetTypeRequest) => {
     if (
       data.name === '' ||
-      data.species === '' ||
       data.age === null ||
-      data.description === ''
-      // sightings.length === 0
+      data.species === '' ||
+      data.description === '' ||
+      sightings.length === 0
     ) {
       alert('É necessário preencher todos os campos informados e pelos menos um avistamento');
       return;
@@ -233,7 +237,7 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       pet: {
         name: data.name,
         species: data.species,
-        age: Number(data.age),
+        age: data.age,
         photos: petPhoto.map((photo: ImageType, index: number) => ({
           id: index.toString(),
           location: photo.uri,
@@ -244,67 +248,74 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       status: 0,
     };
 
-<<<<<<< HEAD
-    setMissingPetPost(postData);
-=======
-    const token = await getUserToken();
+    try {
+      const token = await getUserToken();
 
-    if (!token) return;
+      if (!token) return;
 
-    setLoading(true);
+      setLoading(true);
 
     await addMissingPet(postData, token);
->>>>>>> upstream/main
 
-    setPetName('');
-    setPetSpecies('');
-    setPetAge('');
-    setPetDescription('');
-    setSightings([]);
-    setPetPhoto([]);
-    setMissingPetContact('');
+      setPetPhoto([]);
+      setMissingPetContact('');
 
-    handleSearchMissingPet();
+      handleSearchMissingPet();
 
-    setLoading(false);
-    setTabIndex(0);
+      setLoading(false);
+      setTabIndex(0);
+    } catch (err) {
+      console.error('Error:', err);
+
+      setLoading(false);
+
+      return {
+        error: err,
+      };
+    }
   };
 
   const handleEditMissingPet = async (id: string, data: PetTypeRequest) => {
-    const autCookie = await getUserToken();
+    try {
+      const autCookie = await getUserToken();
 
-    if (
-      !autCookie ||
-      data.name === '' ||
-      data.species === '' ||
-      data.age === null ||
-      data.description === ''
-    ) {
-      alert('Preencha todos os campos');
+      if (
+        !autCookie ||
+        data.name === '' ||
+        data.species === '' ||
+        data.age === null ||
+        data.description === ''
+      ) {
+        alert('Preencha todos os campos');
 
-      return;
+        return;
+      }
+
+      const body = {
+        pet: {
+          id,
+          name: data.name,
+          species: data.species,
+          age: data.age,
+          description: data.description,
+        },
+        status: 0,
+      };
+
+      setLoading(true);
+
+      await editMissingPet(id, body, autCookie);
+
+      handleSearchMissingPet();
+
+      setLoading(false);
+
+      navigation.navigate('feed');
+    } catch (err) {
+      setLoading(false);
+
+      console.error('Error:', err.response?.data.errors);
     }
-
-    const body = {
-      pet: {
-        id,
-        name: data.name,
-        species: data.species,
-        age: Number(data.age),
-        description: data.description,
-      },
-      status: 0,
-    };
-
-    setLoading(true);
-
-    await editMissingPet(id, body, autCookie);
-
-    handleSearchMissingPet();
-
-    setLoading(false);
-
-    navigation.navigate('feed');
   };
 
   const handleSearchMissingPet = async () => {
@@ -336,6 +347,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setSightingDate,
         sightingDescription,
         setSightingDescription,
+        comments,
+        setComments,
         showSightings,
         setShowSightings,
         addSightingVisible,

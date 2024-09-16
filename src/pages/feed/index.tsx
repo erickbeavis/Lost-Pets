@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, RefreshControl } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Chip } from 'react-native-paper';
@@ -24,6 +24,10 @@ export const Feed = () => {
 
     setRefreshing(false);
   };
+
+  useEffect(() => {
+    handleSearchMissingPet();
+  }, []);
 
   return (
     <>
