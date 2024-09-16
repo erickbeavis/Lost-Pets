@@ -4,6 +4,7 @@ import React, { createContext, useContext, ReactNode, useState, useEffect } from
 import { addMissingPet, editMissingPet, getMissingPet } from '~/services/MissingPets/missingPets';
 import { createSighthing, deleteSighthing } from '~/services/MissingPets/sighthings';
 import { loginUser, registerUser } from '~/services/Users/users';
+import { CommentsType } from '~/types/commentTypes';
 import { LocationType } from '~/types/locationTypes';
 import { PetTypeRequest } from '~/types/petTypes';
 import { ImageType } from '~/types/photoTypes';
@@ -29,14 +30,16 @@ type MyContextType = {
   setPetDescription: (petDescription: string) => void;
   sightings: any[];
   setSightings: (sightings: any) => void;
-  sightingDate: string;
-  setSightingDate: (sightingDate: string) => void;
+  sightingDate: Date;
+  setSightingDate: (sightingDate: Date) => void;
   sightingDescription: string;
   setSightingDescription: (sightingDescription: string) => void;
   showSightings: boolean;
   setShowSightings: (showSightings: boolean) => void;
   addSightingVisible: boolean;
   setAddSightingVisible: (addSightingVisible: boolean) => void;
+  comments: any;
+  setComments: (comments: any) => void;
   handleAddSighting: (isPost: boolean, missingPetId: string) => void;
   handleSubmitMissingPet: (data: PetTypeRequest) => void;
   sightingLocation: LocationType;
@@ -96,6 +99,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [petPhoto, setPetPhoto] = useState<any>([]);
   const [missingPetContact, setMissingPetContact] = useState('');
   const [postSightings, setPostSightings] = useState<any>([]);
+
+  const [comments, setComments] = useState([]);
 
   const [sightings, setSightings] = useState<SighthingType[]>([]);
   const [missingPetPost, setMissingPetPost] = useState([]);
@@ -187,7 +192,6 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     setSightings([...sightings, newSighting]);
-    setSightingDate('');
     setSightingDescription('');
     setShowSightings(true);
     setAddSightingVisible(false);
@@ -344,6 +348,8 @@ export const PetsProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setSightingDate,
         sightingDescription,
         setSightingDescription,
+        comments,
+        setComments,
         showSightings,
         setShowSightings,
         addSightingVisible,

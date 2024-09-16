@@ -18,10 +18,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     width: '100%',
+    marginTop: 10,
   },
   title: {
     fontSize: 16,
     marginBottom: 5,
+    marginLeft: 2,
     fontWeight: 'bold',
   },
   addImg: {

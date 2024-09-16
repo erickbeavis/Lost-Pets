@@ -3,6 +3,6 @@ export interface CommentsType {
   userId: string;
   createdAt: string;
   awnsersTo: string;
-  answers: null | CommentsType;
+  answers: [] | CommentsType;
   content: string;
 }

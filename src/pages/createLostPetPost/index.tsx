@@ -66,6 +66,7 @@ export const CreateLostPetPost = () => {
       setPetAge('');
       setPetDescription('');
       setSightings([]);
+      setUserContact(loggedUser.contacts);
     }
   }, [tabIndex]);
 
@@ -209,7 +210,7 @@ export const CreateLostPetPost = () => {
             <TextInput
               ref={opContactInput}
               style={styles.input}
-              value={userContact[1].content ?? loggedUser.contacts[0].content}
+              value={userContact[1].content ?? loggedUser.contacts[1].content}
               onChangeText={(text) => {
                 let formattedText = text.replace(/\D/g, '');
 
@@ -223,7 +224,7 @@ export const CreateLostPetPost = () => {
 
                 setUserContact((prevContacts) => {
                   const updatedContacts = [...prevContacts];
-                  updatedContacts[0] = { ...updatedContacts[1], content: formattedText };
+                  updatedContacts[1] = { ...updatedContacts[1], content: formattedText };
 
                   return updatedContacts;
                 });
@@ -246,132 +247,79 @@ export const CreateLostPetPost = () => {
               returnKeyType="next"
               placeholder="Descrição..."
             />
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate('sightingModal')}>
-              <Text style={styles.addButtonLabel}>Adicionar Avistamento</Text>
-            </TouchableOpacity>
-            {sightings.length > 0 ||
-              (editingPost?.sightings.length > 0 && (
-                <TouchableOpacity
-                  style={styles.showSightingButton}
-                  onPress={() => setShowSightings(!showSightings)}>
-                  <Text style={styles.showSightingButtonLabel}>
-                    {showSightings ? 'Esconder Avistamentos' : 'Ver Avistamentos'}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            {showSightings && (
+
+            {!editingPost && (
               <>
-                {editingPost?.sightings.length > 0
-                  ? editingPost?.sightings.map((item: SighthingType, index: number) => {
-                      return (
-                        <Card style={styles.sightingCard} key={index}>
-                          <Card.Title
-                            title={new Date(item.sightingDate).toLocaleDateString('pt-br')}
-                            titleVariant="titleMedium"
-                            right={(props) => (
-                              <View style={{ flexDirection: 'row' }}>
-                                {editingIndex === index ? (
-                                  <IconButton
-                                    {...props}
-                                    icon="check"
-                                    onPress={() => handleSave(index, item)}
-                                    style={{ paddingLeft: 10 }}
-                                    size={20}
-                                  />
-                                ) : (
-                                  <IconButton
-                                    {...props}
-                                    icon="pencil"
-                                    onPress={() => handleEditToggle(index, item)}
-                                    style={{ paddingLeft: 10 }}
-                                    size={20}
-                                  />
-                                )}
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => navigation.navigate('sightingModal')}>
+                  <Text style={styles.addButtonLabel}>Adicionar Avistamento</Text>
+                </TouchableOpacity>
+                {sightings.length > 0 ||
+                  (editingPost?.sightings.length > 0 && (
+                    <TouchableOpacity
+                      style={styles.showSightingButton}
+                      onPress={() => setShowSightings(!showSightings)}>
+                      <Text style={styles.showSightingButtonLabel}>
+                        {showSightings ? 'Esconder Avistamentos' : 'Ver Avistamentos'}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                {showSightings &&
+                  sightings.map((item: SighthingType, index: number) => {
+                    return (
+                      <Card style={styles.sightingCard} key={index}>
+                        <Card.Title
+                          title={item.sightingDate.toLocaleDateString('pt-br')}
+                          titleVariant="titleMedium"
+                          right={(props) => (
+                            <View style={{ flexDirection: 'row' }}>
+                              {editingIndex === index ? (
                                 <IconButton
                                   {...props}
-                                  icon="trash-can-outline"
-                                  onPress={() => handleRemoveSighting(index)}
-                                  style={{ paddingRight: 10 }}
+                                  icon="check"
+                                  onPress={() => handleSave(index, item)}
+                                  style={{ paddingLeft: 10 }}
                                   size={20}
                                 />
-                              </View>
-                            )}
-                          />
-                          <Card.Content>
-                            {editingIndex === index ? (
-                              <TextInput
-                                value={tempData.description}
-                                onChangeText={(text) => handleInputChange('description', text)}
-                                style={[styles.input, styles.sightingDescription]}
-                              />
-                            ) : (
-                              <Text style={styles.sightingDescription} variant="bodyMedium">
-                                {item.description}
-                              </Text>
-                            )}
-                            <View style={styles.sightingLocation}>
-                              <SightingMap isModal location={item.location} />
-                            </View>
-                          </Card.Content>
-                        </Card>
-                      );
-                    })
-                  : sightings.map((item: SighthingType, index: number) => {
-                      return (
-                        <Card style={styles.sightingCard} key={index}>
-                          <Card.Title
-                            title={new Date(item.sightingDate).toLocaleDateString('pt-br')}
-                            titleVariant="titleMedium"
-                            right={(props) => (
-                              <View style={{ flexDirection: 'row' }}>
-                                {editingIndex === index ? (
-                                  <IconButton
-                                    {...props}
-                                    icon="check"
-                                    onPress={() => handleSave(index, item)}
-                                    style={{ paddingLeft: 10 }}
-                                    size={20}
-                                  />
-                                ) : (
-                                  <IconButton
-                                    {...props}
-                                    icon="pencil"
-                                    onPress={() => handleEditToggle(index, item)}
-                                    style={{ paddingLeft: 10 }}
-                                    size={20}
-                                  />
-                                )}
+                              ) : (
                                 <IconButton
                                   {...props}
-                                  icon="trash-can-outline"
-                                  onPress={() => handleRemoveSighting(index)}
-                                  style={{ paddingRight: 10 }}
+                                  icon="pencil"
+                                  onPress={() => handleEditToggle(index, item)}
+                                  style={{ paddingLeft: 10 }}
                                   size={20}
                                 />
-                              </View>
-                            )}
-                          />
-                          <Card.Content>
-                            {editingIndex === index ? (
-                              <TextInput
-                                value={tempData.description}
-                                onChangeText={(text) => handleInputChange('description', text)}
-                                style={[styles.input, styles.sightingDescription]}
+                              )}
+                              <IconButton
+                                {...props}
+                                icon="trash-can-outline"
+                                onPress={() => handleRemoveSighting(index)}
+                                style={{ paddingRight: 10 }}
+                                size={20}
                               />
-                            ) : (
-                              <Text style={styles.sightingDescription} variant="bodyMedium">
-                                {item.description}
-                              </Text>
-                            )}
-                            <View style={styles.sightingLocation}>
-                              <SightingMap isModal location={item.location} />
                             </View>
-                          </Card.Content>
-                        </Card>
-                      );
-                    })}
+                          )}
+                        />
+                        <Card.Content>
+                          {editingIndex === index ? (
+                            <TextInput
+                              value={tempData.description}
+                              onChangeText={(text) => handleInputChange('description', text)}
+                              style={[styles.input, styles.sightingDescription]}
+                            />
+                          ) : (
+                            <Text style={styles.sightingDescription} variant="bodyMedium">
+                              {item.description}
+                            </Text>
+                          )}
+                          <View style={styles.sightingLocation}>
+                            <SightingMap isModal location={item.location} />
+                          </View>
+                        </Card.Content>
+                      </Card>
+                    );
+                  })}
               </>
             )}
             <ImagePickerScreen />
