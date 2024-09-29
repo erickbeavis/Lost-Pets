@@ -53,7 +53,10 @@ export const ModalMenu = ({ visible, closeModal }: ModalMenuProps) => {
             <Text style={styles.menuTitle}>Menu</Text>
           </View>
           <View style={styles.menuItems}>
-            <TouchableOpacity style={styles.menuItem}>
+            <TouchableOpacity style={styles.menuItem} onPress={() => {
+              navigation.navigate('myProfile')
+              closeModal()
+            }}>
               <Text style={styles.menuItemText}>Perfil</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem}>
