@@ -37,7 +37,7 @@ export const MyProfile = () => {
     fetchUserData();
   }, []);
 
-  // Função para renderizar as informações do usuário
+  
   const renderUserInfo = () => (
     <View style={styles.userInfo}>
       <View style={styles.userInfoContent}>
@@ -55,7 +55,7 @@ export const MyProfile = () => {
     </View>
   );
 
-  // Função para renderizar as publicações
+  
   const renderMissingPets = () => (
     <View style={styles.userInfoContent}>
       <Text style={styles.userInfoLabel}>Minhas publicações</Text>
@@ -63,7 +63,7 @@ export const MyProfile = () => {
         <FlatList 
           data={missingPetPost}
           renderItem={({ item, index }) => <FeedPost item={item} index={index} />}
-          keyExtractor={(item) => item.id} // Adicione uma keyExtractor para evitar avisos
+          keyExtractor={(item) => item.id}
         />
       ) : (
         <Text style={styles.userInfoValue}>Não há nenhuma publicação</Text>
@@ -73,7 +73,7 @@ export const MyProfile = () => {
 
   return (
     <FlatList
-      data={[{}]} // Necessário para renderizar a lista
+      data={[{}]}
       renderItem={() => (
         <View style={styles.container}>
           <Image
@@ -85,7 +85,7 @@ export const MyProfile = () => {
           {renderMissingPets()}
         </View>
       )}
-      keyExtractor={() => 'unique-key'} // Adicione uma keyExtractor
+      keyExtractor={() => 'unique-key'} 
     />
   );
 };
