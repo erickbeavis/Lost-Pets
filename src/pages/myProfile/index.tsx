@@ -16,10 +16,10 @@ export const MyProfile = () => {
   });
 
   const fetchUserData = async () => {
-    const userId = '955be872-7ee4-44dc-8592-f604c2602dc5';
+    const id = '955be872-7ee4-44dc-8592-f604c2602dc5';
 
     try {
-      const response = await axios.get(`https://a96a-2804-14d-8e85-57c6-00-e3a5.ngrok-free.app/api/User/${userId}`);
+      const response = await axios.get(`https://a96a-2804-14d-8e85-57c6-00-e3a5.ngrok-free.app/api/User/${id}`);
       const user = response.data;
 
       setUserData({
@@ -41,12 +41,12 @@ export const MyProfile = () => {
   const renderUserInfo = () => (
     <View style={styles.userInfo}>
       <View style={styles.userInfoContent}>
-        <Text style={styles.userInfoLabel}>Email:</Text>
-        <Text style={styles.userInfoValue}>{userData.email}</Text>
-      </View>
-      <View style={styles.userInfoContent}>
         <Text style={styles.userInfoLabel}>Nome:</Text>
         <Text style={styles.userInfoValue}>{userData.userName}</Text>
+      </View>
+      <View style={styles.userInfoContent}>
+        <Text style={styles.userInfoLabel}>Email:</Text>
+        <Text style={styles.userInfoValue}>{userData.email}</Text>
       </View>
       <View style={styles.userInfoContent}>
         <Text style={styles.userInfoLabel}>Contato:</Text>
